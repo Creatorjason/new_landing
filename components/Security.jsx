@@ -13,7 +13,7 @@ const Security = () => {
           <div className="w-full text-left mb-8 space-y-6 mx-4 md:mx-0"> 
             <h1 className="text-3xl md:text-6xl font-bold text-[#141F1F] mb-4">Frustrate thieves</h1>
             <p className="text-[#111111] max-w-lg text-base md:text-lg">
-              Each quarter, our customers entrust us with moving over £30 billion of their money. Here's how we ensure their protection.
+              Each quarter, our customers entrust us with moving over £30 billion of their money. Here&apos;s how we ensure their protection.
             </p>
             <button className="bg-[#141F1F] text-white py-3 px-10 rounded-full font-medium">
               Send Money Now
