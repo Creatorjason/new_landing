@@ -4,7 +4,7 @@ const FeatureSection = () => {
   return (
     <section className="p-4 py-10 md:p-10 text-[#141F1F] relative overflow-hidden">
       <div className="mb-8 space-y-2">
-        <div className="w-max text-[#141F1F] px-10 md:px-16 py-6 bg-custom-gradient-2 rounded-full text-3xl md:text-4xl font-semibold transform rotate-[8deg]">Save on Fees</div>
+        <div className="w-max text-[#141F1F] px-10 md:px-16 py-6 bg-custom-gradient-2 hover:rotate-0 transition-all ease-in-out duration-200 rounded-full text-3xl md:text-4xl font-semibold transform rotate-[8deg]">Save on Fees</div>
         <div className="w-max text-[#141F1F] px-10 md:px-16 py-6 bg-custom-gradient-2 rounded-full text-3xl md:text-4xl font-semibold">Sending</div>
         <div className="w-max text-[#141F1F] px-10 md:px-16 py-6 bg-custom-gradient-2 rounded-full text-3xl md:text-4xl font-semibold">Money Abroad</div>
       </div>
