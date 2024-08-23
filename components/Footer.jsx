@@ -5,10 +5,10 @@ import { FaFacebook } from 'react-icons/fa6';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#141F1F] text-[#DFE8EB] p-10">
-      <div className="container mx-auto px-4">
+    <footer className="bg-[#141F1F] text-[#DFE8EB] px-4 py-10 md:p-10">
+      <div className="container mx-auto md:px-4">
         {/* Newsletter Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center border-b border-[#626262] pb-8">
+        <div className="flex flex-col md:flex-row justify-between md:items-center border-b border-[#626262] pb-8">
           <div className="mb-8 md:mb-0">
             <h2 className="text-xl font-semibold mb-2">Join our newsletter</h2>
             <p className="text-sm mb-4">Get all the latest GranularX news <br />delivered to your inbox.</p>
@@ -29,7 +29,7 @@ const Footer = () => {
         </div>
 
         {/* Links Section */}
-        <div className="flex flex-col md:flex-row justify-between py-8">
+        <div className="flex flex-col md:flex-row justify-between px-2 py-8 md:px-0">
           <div className="flex flex-col md:flex-row w-full justify-between">
             <div className="mb-8 md:mb-0">
               <h3 className="font-semibold mb-4">Product</h3>

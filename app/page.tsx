@@ -14,7 +14,7 @@ export default function Home() {
         <Header />
         <div className="container mx-auto">
           <Hero />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-16 mb-10 bg-custom-gradient">
+          <div className="flex justify-center gap-4 md:gap-32 flex-wrap p-4 md:p-16 mb-10 bg-custom-gradient">
             <FeatureSection />
             <TransferForm />
           </div>

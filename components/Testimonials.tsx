@@ -4,20 +4,20 @@ import Image from 'next/image';
 
 const Testimonials = () => {
   return (
-    <section className="py-12 mx-10">
+    <section className="p-6 px-4 md:py-12 md:mx-10">
       <div className="flex justify-between items-center mb-10">
         <div className='p-2 px-6 rounded-full bg-[#141F1F14] border border-[#0000001F] flex items-center gap-x-2'>
-          <Image src={"/badge.png"} width={20} height={20} alt='Badge' />
+          <Image src={"/badge.png"} width={18} height={18} alt='Badge' />
           <span className='text-[#141F1F] text-base'>Testimonials</span>
         </div>
 
-        <div className='flex items-center gap-x-6'>
-          <button className='bg-[#F5F5F5] p-4 rounded-full'>
+        <div className='flex items-center gap-x-2 md:gap-x-6'>
+          <button className='bg-[#F5F5F5] p-3 md:p-4 rounded-full'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#141F1F" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
           </button>
-          <button className='bg-[#141F1F] p-4 rounded-full'>
+          <button className='bg-[#141F1F] p-3 md:p-4 rounded-full'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
