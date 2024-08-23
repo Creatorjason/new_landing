@@ -12,12 +12,12 @@ const Testimonials = () => {
         </div>
 
         <div className='flex items-center gap-x-2 md:gap-x-6'>
-          <button className='bg-[#F5F5F5] p-3 md:p-4 rounded-full'>
+          <button className='bg-[#F5F5F5]/80 hover:bg-[#F5F5F5] transition duration-200 ease-in-out p-3 md:p-4 rounded-full'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#141F1F" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
           </button>
-          <button className='bg-[#141F1F] p-3 md:p-4 rounded-full'>
+          <button className='bg-[#141F1F]/85 hover:bg-[#141F1F] transition duration-200 ease-in-out p-3 md:p-4 rounded-full'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>

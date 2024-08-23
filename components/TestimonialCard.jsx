@@ -3,10 +3,10 @@ import React from 'react';
 
 const TestimonialCard = ({ flag, name, text }) => {
   return (
-    <div className="bg-[#F6F6F6] rounded-2xl p-10 text-left">
+    <div className="bg-[#F6F6F6] rounded-2xl p-10 text-left text-[#141F1F] hover:text-white hover:bg-[#141F1F] transition duration-200 ease-in-out">
       <Image src={flag} alt={`${name} flag`} width={100} height={100} className="w-14 mb-4" />
-      <h3 className="text-lg text-[#141F1F] mb-4 font-semibold">{name}</h3>
-      <p className="text-[#52525B] text-base mt-2">{text}</p>
+      <h3 className="text-lg  mb-4 font-semibold">{name}</h3>
+      <p className="text-base mt-2">{text}</p>
     </div>
   );
 };
