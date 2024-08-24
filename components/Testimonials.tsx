@@ -32,7 +32,7 @@ const Testimonials = () => {
         />
         <TestimonialCard
           flag="/flags/usa.png"
-          name="Charles Charles"
+          name="Charles Emmanuel"
           text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eleifend nullam consectetur placerat pellentesque ut massa volutpat at. Diam pretium orci dui sagittis."
         />
         <TestimonialCard
