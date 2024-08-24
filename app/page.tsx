@@ -6,6 +6,7 @@ import TransferForm from "@/components/TransferForm";
 import CallToAction from "@/components/CallToAction";
 import Security from "@/components/Security";
 import Footer from "@/components/Footer";
+import AnimateOnScroll from "@/hooks/AnimateOnScroll";
 
 export default function Home() {
   return (
@@ -13,14 +14,22 @@ export default function Home() {
       <div className="container mx-auto">
         <Header />
         <div className="container mx-auto">
-          <Hero />
-          <div className="flex justify-center gap-4 md:gap-32 flex-wrap p-4 md:p-16 mb-10 bg-custom-gradient">
+          <AnimateOnScroll>
+            <Hero />
+          </AnimateOnScroll>
+          <AnimateOnScroll className="flex justify-center gap-4 md:gap-32 flex-wrap p-4 md:p-16 mb-10 bg-custom-gradient">
             <FeatureSection />
             <TransferForm />
-          </div>
-          <Testimonials />
-          <CallToAction />
-          <Security />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Testimonials />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <CallToAction />
+          </AnimateOnScroll>
+          <AnimateOnScroll>
+            <Security />
+          </AnimateOnScroll>
         </div>
         <Footer />
       </div>

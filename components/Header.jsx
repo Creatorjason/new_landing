@@ -29,7 +29,7 @@ export default function Header() {
       <motion.nav
         initial={false}
         animate={isScrolled ? "scrolled" : "top"}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4 }}
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-[7px] flex justify-between items-center p-4 py-3 bg-white/50 m-4 md:mx-10 rounded-full shadow-custom-shadow"
       >
         <div className="container mx-auto flex justify-between items-center">
