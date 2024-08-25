@@ -58,10 +58,10 @@ export default function Header() {
             ))}
 
             <div className="hidden md:flex font-medium items-center gap-x-6 ml-10">
-              <Link href={"/"} className='text-[#141F1F]'>
+              <Link href={"/auth/signin"} className='text-[#141F1F]'>
                 Login
               </Link>
-              <Link href={"/"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+              <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
                 Create Account
               </Link>
             </div>

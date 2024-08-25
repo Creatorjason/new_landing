@@ -57,3 +57,8 @@ body {
 .animate-bounce-2 {
   animation: bounce-2 1.5s ease-in-out infinite;
 }
+
+.gradient-01 {
+  background: linear-gradient(203.85deg, #141F1F -0.89%, #2E5252 18.41%, #141F1F 50.32%, #141F1F 50.81%, #28676A 77.78%, #141F1F 100%);
+  ;
+}
