@@ -36,7 +36,7 @@ const Register = () => {
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold mb-2 text-[#141F1F]">Get Started</h1>
-          <p className="text-gray-600 text-xs md:text-sm mb-8">Welcome to GranularX peer bank, you're a step closer to the future.</p>
+          <p className="text-gray-600 text-xs md:text-sm mb-8">Welcome to GranularX peer bank, you&apos;re a step closer to the future.</p>
           
           <form className="flex flex-col gap-y-6" onSubmit={handleCreateAccount}>
             <div>
