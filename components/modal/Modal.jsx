@@ -1,54 +1,94 @@
+"use client"
+
 import Image from "next/image";
 import React from "react";
-import { LiaMoneyBillSolid } from "react-icons/lia";
 import { MdOutlineClose } from "react-icons/md";
+import { motion, AnimatePresence } from "framer-motion";
+import { Money } from "iconsax-react";
 
-const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, handleSubmit, amounts }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white p-6 rounded-lg max-w-md w-full">
-      {!showSuccess ? (
-        <>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-x-3">
-              <LiaMoneyBillSolid className="text-2xl text-[#141F1F]" />
-              <h2 className="text-sm text-[#141F1F]">Amount to start with</h2>
+const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, handleSubmit, amounts, takeMeForASpin }) => (
+  <AnimatePresence>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+    >
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="bg-white dark:bg-[#141F1F] p-5 mx-4 rounded-2xl max-w-md w-full shadow-2xl"
+      >
+        {!showSuccess ? (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-x-3">
+                <Money size="32" color="#000000"/>
+                <h2 className="text-lg font-semibold text-[#141F1F] dark:text-white">Amount to start with</h2>
+              </div>
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setShowModal(false)} 
+                className="hover:text-red-700 transition-colors duration-200"
+              >
+                <MdOutlineClose className="text-2xl text-red-500" />
+              </motion.button>
             </div>
-            <button onClick={() => setShowModal(false)} className="hover:text-red-700">
-              <MdOutlineClose className="text-2xl text-red-500" />
-            </button>
-          </div>
-          <select
-            value={selectedAmount}
-            onChange={(e) => setSelectedAmount(e.target.value)}
-            className="w-full bg-white text-[#141F1F] text-sm p-2 py-3 mb-4 border rounded"
+            <motion.select
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              value={selectedAmount}
+              onChange={(e) => setSelectedAmount(e.target.value)}
+              className="w-full bg-white dark:bg-[#141F1F] dark:text-white text-[#141F1F] text-lg p-3 mb-6 border-2 border-gray-500 rounded-lg focus:border-[#141F1F] dark:focus:border-gray-600 focus:ring-2 focus:ring-[#141F1F] transition-all duration-200"
+            >
+              <option value="">Select amount</option>
+              {amounts.map((amount) => (
+                <option key={amount} className="text-base text-[#141F1F]" value={amount}>{amount}</option>
+              ))}
+            </motion.select>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSubmit}
+              className="w-full py-3 px-4 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-lg font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-200"
+            >
+              Submit
+            </motion.button>
+          </>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex items-center justify-between flex-col text-[#141F1F] text-center"
           >
-            <option value="">Select</option>
-            {amounts.map((amount) => (
-              <option key={amount} className="text-sm text-[#141F1F]" value={amount}>{amount}</option>
-            ))}
-          </select>
-          <button
-            onClick={handleSubmit}
-            className="w-full py-2 px-4 bg-black text-white rounded hover:bg-gray-800"
-          >
-            Submit
-          </button>
-        </>
-      ) : (
-        <div className="flex items-center flex-col text-[#141F1F] text-center">
-          <Image src="/confetti.png" alt="Success" width={60} height={60} />
-          <h2 className="text-xl font-bold my-4">Peer Bank Account successful</h2>
-          <p className="mb-4">Welcome to Granular X. You are a step closer to experiencing our new technology.</p>
-          <button
-            onClick={() => setShowModal(false)}
-            className="py-2 px-4 bg-black text-white rounded hover:bg-gray-800"
-          >
-            Take me for a spin
-          </button>
-        </div>
-      )}
-    </div>
-  </div>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 10, stiffness: 100 }}
+              className="bg-[#7DF9FF1A] border border-[#7DF9FF70] p-3 rounded-2xl"
+            >
+              <Image src="/confetti.svg" alt="Success" width={50} height={50} />
+            </motion.div>
+            <h2 className="text-xl md:text-2xl dark:text-white font-bold my-4">Peer Bank Account successful</h2>
+            <p className="mb-6 text-gray-600 dark:text-gray-50 text-base">Welcome to GranularX. You are a step closer to experiencing our new technology.</p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={takeMeForASpin}
+              className="py-3 px-6 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-lg font-medium w-full rounded-lg hover:bg-gray-800 transition-colors duration-200"
+            >
+              Take me for a spin
+            </motion.button>
+          </motion.div>
+        )}
+      </motion.div>
+    </motion.div>
+  </AnimatePresence>
 );
 
 export default Modal;

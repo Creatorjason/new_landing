@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+// import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import ThemeToggleButton from "@/components/themeToggle/ThemeToggleButton";
 
-const space = Space_Grotesk({ subsets: ["latin"] });
+// const space = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GranularX Finance",
@@ -16,7 +18,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${space.className} bg-white`}>{children}</body>
+      <body className={`bg-white`}>
+        <ThemeProvider attribute="class">
+          {children}
+
+          <ThemeToggleButton />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

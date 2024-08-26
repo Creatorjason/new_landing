@@ -1,0 +1,145 @@
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useTheme } from 'next-themes';
+import { LogoutCurve, ProfileCircle, Setting2 } from 'iconsax-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Notification } from 'iconsax-react';
+import Link from 'next/link';
+
+const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
+  return (
+    <nav className="bg-white fixed top-0 left-0 w-full dark:bg-[#1C2626] py-2 shadow-sm transition-colors duration-200">
+      <div className="container mx-auto px-2 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <div className='flex items-center'>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-md focus:outline-none text-[#141F1F] dark:text-gray-200"
+            >
+              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            </button>
+            
+            {/* Logo Section */}
+            <Link href={"/"} className="flex items-center">
+              <Image src="/brand/brand.png" alt="Granula X" width={32} height={32} />
+              <span className="ml-2 text-lg md:text-xl font-semibold text-[#141F1F] dark:text-white">GranularX</span>
+            </Link>
+          </div>
+          
+
+          {/* Desktop Menu */}
+          <div className="flex items-center gap-x-2 md:gap-x-4">
+            <span className="bg-green-100 hidden md:inline-block text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 focus:outline-none transition-colors duration-200"
+            >
+              <span className="sr-only">Toggle theme</span>
+              {theme === 'dark' ? (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            <Notification size={24} color="#333333" variant="Bulk"/>
+
+            <div className="flex items-center rounded-full p-2 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center text-sm rounded-full focus:outline-none"
+                id="user-menu"
+                aria-haspopup="true"
+              >
+                <span className="sr-only">Open user menu</span>
+                <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-[#1C2626] dark:text-white text-gray-700 flex items-center justify-center">
+                  <span className="font-medium text-base">L</span>
+                </div>
+                <span className="hidden md:inline-block ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">Leonard Ogbu</span>
+                <svg
+                  className={`hidden md:inline-block ml-2 h-5 w-5 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="origin-top-right absolute top-16 right-0 mt-2 w-48 flex flex-col p-4 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="user-menu"
+                  >
+                    <Link href="#" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                      <ProfileCircle size={24} color="#333333" variant="Bulk"/>
+                      <span>Profile</span>
+                    </Link>
+                    <Link href="#" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                      <Setting2 size={24} color="#333333" variant="Bulk" />
+                      <span>Settings</span>
+                    </Link>
+                    <Link href="#" className="flex items-center gap-x-2 pb-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                      <LogoutCurve size={24} color="#333333" variant="Bulk"/>
+                      <span>Log Out</span>
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+        
+        {/* Mobile Menu */}
+        {/* {isMobileMenuOpen && (
+          <div className="lg:hidden">
+            <div className="pt-4 pb-3 space-y-1">
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="w-full text-left p-2 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 focus:outline-none transition-colors duration-200"
+              >
+                {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              </button>
+              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
+                <ProfileCircle size={24} color="#333333" variant="Bulk"/>
+                <span>Profile</span>
+              </a>
+              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
+                <Setting2 size={24} color="#333333" variant="Bulk" />
+                <span>Settings</span>
+              </a>
+              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
+                <LogoutCurve size={24} color="#333333" variant="Bulk"/>
+                <span>Log Out</span>
+              </a>
+            </div>
+          </div>
+        )} */}
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

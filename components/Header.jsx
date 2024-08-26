@@ -30,19 +30,19 @@ export default function Header() {
         initial={false}
         animate={isScrolled ? "scrolled" : "top"}
         transition={{ duration: 0.4 }}
-        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-[7px] flex justify-between items-center p-4 py-3 bg-white/50 m-4 md:mx-10 rounded-full shadow-custom-shadow"
+        className="fixed top-0 left-0 right-0 z-50 flex mt-2 justify-between items-center"
       >
-        <div className="container mx-auto flex justify-between items-center">
+        <div className="container mx-auto flex justify-between backdrop-blur-[7px] shadow-custom-shadow items-center p-4 bg-white/50 dark:bg-[#141F1F]/50 rounded-full">
           <Link href="/" className={`text-2xl font-bold text-[#141F1F] flex items-center`}>
             <Image src={"/brand/brand.png"} alt='Brand Logo' width={50} height={50} className='object-cover' />
-            <p className='text-lg'>GranularX</p>
+            <p className='text-lg dark:text-white'>GranularX</p>
           </Link>
 
           <div className="hidden md:flex items-center text-[#141F1F]">
             {links.map(({ href, label }) => (
               <Link key={href} href={href}>
                 <motion.div
-                  className={`relative p-2 text-base mx-2`}
+                  className={`relative p-2 text-base mx-2 dark:text-gray-100`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -58,16 +58,16 @@ export default function Header() {
             ))}
 
             <div className="hidden md:flex font-medium items-center gap-x-6 ml-10">
-              <Link href={"/auth/signin"} className='text-[#141F1F]'>
+              <Link href={"/auth/signin"} className='text-[#141F1F] dark:text-gray-100'>
                 Login
               </Link>
-              <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+              <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
                 Create Account
               </Link>
             </div>
           </div>
 
-        <div className={`md:hidden ${isScrolled ? "text-[#141F1F]" : "text-gray-600"}`}>   
+        <div className={`md:hidden ${isScrolled ? "text-[#141F1F] dark:text-[#7DF9FF]" : "text-gray-600 dark:text-gray-100"}`}>   
             <button onClick={() => setIsOpen(!isOpen)} className="p-2">
               {isOpen ? (  
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-6">
@@ -124,7 +124,7 @@ export default function Header() {
                 <Link href={"/"} className='text-white'>
                   Login
                 </Link>
-                <Link href={"/"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
                   Create Account
                 </Link>
               </div>

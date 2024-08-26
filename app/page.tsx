@@ -10,7 +10,7 @@ import AnimateOnScroll from "@/hooks/AnimateOnScroll";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white dark:bg-[#141F1F]">
       <div className="container mx-auto">
         <Header />
         <div className="container mx-auto">

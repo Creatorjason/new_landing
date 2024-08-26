@@ -16,6 +16,42 @@
   }
 }
 
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/ProductSans-Light.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/ProductSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/ProductSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/ProductSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Google Sans';
+  src: url('/fonts/ProductSans-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -24,6 +60,7 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  font-family: "Google Sans", "Space Grotesk", "Outfit", sans-serif;
 }
 
 @layer utilities {
@@ -60,5 +97,4 @@ body {
 
 .gradient-01 {
   background: linear-gradient(203.85deg, #141F1F -0.89%, #2E5252 18.41%, #141F1F 50.32%, #141F1F 50.81%, #28676A 77.78%, #141F1F 100%);
-  ;
 }

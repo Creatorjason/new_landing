@@ -10,7 +10,7 @@ const Hero = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="text-center p-4 pb-40 md:p-40 pt-36 flex justify-center items-center text-black relative overflow-hidden"
+      className="text-center p-4 pb-40 md:p-40 pt-36 flex justify-center items-center dark:text-white text-black relative overflow-hidden"
     >
       <motion.div
         initial={{ y: 50, opacity: 0 }}
@@ -31,7 +31,7 @@ const Hero = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-xl mb-8 text-gray-600 max-w-[60ch]"
+            className="text-xl mb-8 text-gray-600 dark:text-[#7DF9FF] max-w-[60ch]"
           >
             Get your money moving internationally. Save on hidden fees when you send with GranularX.
           </motion.p>
@@ -46,7 +46,7 @@ const Hero = () => {
             <Link href="/send" className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800">Send Money Now</Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/signup" className="px-6 py-3 border border-black text-black rounded-full hover:bg-gray-100">Open an account</Link>
+            <Link href="/auth/register" className="px-6 py-3 border border-black dark:border-gray-200 text-black dark:text-gray-200 dark:hover:text-[#141F1F] rounded-full hover:bg-gray-100">Open an account</Link>
           </motion.div>
         </motion.div>
         <div className="hidden sm:block mt-8">
