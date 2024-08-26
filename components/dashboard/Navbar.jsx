@@ -40,10 +40,10 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
 
           {/* Desktop Menu */}
           <div className="flex items-center gap-x-2 md:gap-x-4">
-            <span className="bg-green-100 hidden md:inline-block text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
+            <span className="bg-green-100 hidden md:inline-block text-green-800 text-sm font-medium mr-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 focus:outline-none transition-colors duration-200"
+              className="text-gray-600 dark:text-white"
             >
               <span className="sr-only">Toggle theme</span>
               {theme === 'dark' ? (
@@ -57,7 +57,7 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
               )}
             </button>
 
-            <Notification size={24} color="#333333" variant="Bulk"/>
+            <Notification size={24} className="text-[#333333] dark:text-white" variant="Bulk"/>
 
             <div className="flex items-center rounded-full p-2 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
               <button

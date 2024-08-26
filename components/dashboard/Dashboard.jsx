@@ -59,7 +59,7 @@ const Dashboard = () => {
                       pathname === '/dashboard' ? 'bg-[#141F1F] text-white' : 'bg-gray-200 text-gray-800'
                     }`}
                   >
-                    <Category size={24} color="#ffffff" variant="Bulk" />
+                    <Category size={24} variant="Bulk" className='text-white' />
                     <span>Dashboard</span>
                   </Link>
                 </li>
@@ -70,7 +70,7 @@ const Dashboard = () => {
                       pathname === '/services' ? 'bg-[#141F1F] text-white' : 'text-gray-500 hover:bg-gray-100'
                     }`}
                   >
-                    <MouseCircle size={24} color="#333333" variant="Bulk" />
+                    <MouseCircle size={24} className='text-[#333333] dark:text-white' variant="Bulk" />
                     <span>My Services</span>
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ const Dashboard = () => {
                       pathname === '/payments' ? 'bg-[#141F1F] text-white' : 'text-gray-500 hover:bg-gray-100'
                     }`}
                   >
-                    <EmptyWallet size={24} color="#333333" variant="Bulk" />
+                    <EmptyWallet size={24} className='text-[#333333] dark:text-white' variant="Bulk" />
                     <span>Payments</span>
                   </Link>
                 </li>
@@ -92,7 +92,7 @@ const Dashboard = () => {
                       pathname === '/settings' ? 'bg-[#141F1F] text-white' : 'text-gray-500 hover:bg-gray-100'
                     }`}
                   >
-                    <Setting2 size={24} color="#333333" variant="Bulk" />
+                    <Setting2 size={24} className='text-[#333333] dark:text-white' variant="Bulk" />
                     <span>Settings</span>
                   </Link>
                 </li>

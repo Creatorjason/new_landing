@@ -72,7 +72,7 @@ const TransferForm = () => {
               <div className="bg-[#D9D9D9] dark:bg-[#7DF9FF] p-1 h-3 w-3 rounded-full"></div>
               <span className='font-semibold text-sm md:text-base text-black dark:text-white'>992.98 USD</span>
             </div>
-            <div className="flex items-center text-sm md:text-base font-semibold text-black dark:text-white">Total amount we'll convert</div>
+            <div className="flex items-center text-sm md:text-base font-semibold text-black dark:text-white">Total amount we&apos;ll convert</div>
           </div>
           <div className="flex justify-between mb-2">
             <div className='flex items-center gap-x-4'>

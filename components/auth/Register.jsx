@@ -39,7 +39,7 @@ const Register = () => {
       <div className="w-full md:w-1/2 flex justify-center items-center">
         <div className='max-w-lg p-4'>
           <div className="mb-8">
-            <Image src="/brand/brand2.png" alt="GranuloX Logo" width={60} height={60} className="bg-black dark:bg-[#141F1F] p-2 py-3 rounded-lg" />
+            <Image src="/brand/brand.png" alt="GranuloX Logo" width={60} height={60} className="bg-black dark:bg-[#141F1F] p-2 py-3 rounded-lg" />
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold mb-2 text-[#141F1F] dark:text-white">Get Started</h1>

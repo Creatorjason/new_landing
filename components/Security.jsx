@@ -12,7 +12,7 @@ const Security = () => {
           <div className="w-full text-left mb-8 space-y-6 mx-4 md:mx-0">
             <h1 className="text-3xl md:text-6xl font-bold text-[#141F1F] dark:text-white mb-4">Frustrate thieves</h1>
             <p className="text-[#111111] dark:text-gray-100 max-w-lg text-base md:text-lg">
-              Each quarter, our customers entrust us with moving over £30 billion of their money. Here's how we ensure their protection.
+              Each quarter, our customers entrust us with moving over £30 billion of their money. Here&apos;s how we ensure their protection.
             </p>
             <button className="bg-[#141F1F] dark:bg-[#7DF9FF] text-white dark:text-[#1C2626] py-3 px-10 rounded-full font-medium hover:bg-opacity-90 transition duration-200">
               Send Money Now
@@ -31,7 +31,7 @@ const Security = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mt-12">
           <div className="flex items-center justify-between px-8 py-10 md:p-10 gap-x-6 bg-[#F6F6F6] dark:bg-[#141F1F] rounded-2xl">
             <div className="w-9 h-11">
-              <svg width="34" height="45" viewBox="0 0 34 45" fill="none" xmlns="http://www.w3.org/2000/svg"className="fill-black dark:fill-white">
+              <svg width="34" height="45" viewBox="0 0 34 45" fill="none" xmlns="http://www.w3.org/2000/svg"className="text-[#141F1F] dark:text-white">
                 <path 
                   opacity="0.4" 
                   d="M0 22.8436C0 18.1492 3.80558 14.3436 8.5 14.3436H25.5C30.1944 14.3436 34 18.1492 34 22.8436V35.5936C34 40.288 30.1944 44.0936 25.5 44.0936H8.5C3.80558 44.0936 0 40.288 0 35.5936V22.8436Z" 
@@ -56,7 +56,7 @@ const Security = () => {
           </div>
           <div className="flex items-center px-8 py-10 md:p-10 gap-x-6 bg-[#F6F6F6] dark:bg-[#141F1F] rounded-2xl">
             <div className="w-9 h-11">
-              <svg width="42" height="45" viewBox="0 0 42 45" fill="none" xmlns="http://www.w3.org/2000/svg"className="fill-black dark:fill-white">
+              <svg width="42" height="45" viewBox="0 0 42 45" fill="none" xmlns="http://www.w3.org/2000/svg"className="text-[#141F1F] dark:text-white">
                 <path 
                   opacity="0.4" 
                   d="M17.1723 0.809586L5.43417 6.02654C2.0389 7.53555 -0.201689 10.9149 0.0143634 14.6241C0.859016 29.1252 5.10549 35.5092 16.1398 42.9795C19.0629 44.9585 22.916 44.9633 25.837 42.9812C36.9052 35.4702 40.9997 28.9959 41.9186 14.6743C42.1581 10.9406 39.9139 7.52539 36.495 6.00586L24.8034 0.809584C22.3742 -0.270025 19.6014 -0.270024 17.1723 0.809586Z" 
@@ -75,7 +75,7 @@ const Security = () => {
           </div>
           <div className="flex items-center px-8 py-10 md:p-10 gap-x-6 bg-[#F6F6F6] dark:bg-[#141F1F] rounded-2xl">
             <div className="w-9 h-11">
-              <svg width="34" height="43" viewBox="0 0 34 43" fill="none" xmlns="http://www.w3.org/2000/svg"className="fill-black dark:fill-white">
+              <svg width="34" height="43" viewBox="0 0 34 43" fill="none" xmlns="http://www.w3.org/2000/svg"className="text-[#141F1F] dark:text-white">
                 <path 
                   opacity="0.4" 
                   d="M23.375 -0.00012207H6.375C2.85418 -0.00012207 0 2.85406 0 6.37488V36.1249C0 39.6457 2.85419 42.4999 6.375 42.4999H23.375C26.8958 42.4999 29.75 39.6457 29.75 36.1249V6.37488C29.75 2.85406 26.8958 -0.00012207 23.375 -0.00012207Z" 

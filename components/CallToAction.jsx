@@ -7,7 +7,7 @@ const CallToAction = () => {
         Achieve financial freedom without borders
       </h2>
       <p className="text-xs md:text-xl mb-6 max-w-3xl">
-        We're creating the ultimate way to transfer and manage money globally —
+        We&apos;re creating the ultimate way to transfer and manage money globally —
         minimal fees, maximum convenience, and lightning-fast.
       </p>
       <button className="bg-[#7DF9FF] text-[#141F1F] dark:bg-white dark:text-[#1C2626] py-3 px-6 rounded-full font-medium hover:bg-opacity-90 transition duration-200">
