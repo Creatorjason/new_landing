@@ -8,7 +8,7 @@ const FeatureSection = () => {
         <div className="w-max text-[#141F1F] dark:text-gray-100 px-10 md:px-16 py-6 bg-custom-gradient-2 rounded-full text-3xl md:text-4xl font-semibold">Sending</div>
         <div className="w-max text-[#141F1F] dark:text-gray-100 px-10 md:px-16 py-6 bg-custom-gradient-2 rounded-full text-3xl md:text-4xl font-semibold">Money Abroad</div>
       </div>
-      <p className="mb-6 text-base max-w-[400px] text-[#333333] dark:text-[#7DF9FF] leading-snug">
+      <p className="mb-6 text-sm md:text-base max-w-[400px] text-[#333333] dark:text-[#7DF9FF] leading-snug">
         Whether it&apos;s 50 euros or 50,000 dollars, sending money shouldn&apos;t cost the earth. GranulaX lets you transfer money internationally, free from hidden fees.
       </p>
       <Link href="/learn-more" className="inline-block px-8 py-3 bg-[#141F1F] dark:bg-white dark:text-[#141F1F] text-white rounded-full hover:bg-opacity-90 font-semibold text-base">

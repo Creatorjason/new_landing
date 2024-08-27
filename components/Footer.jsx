@@ -33,7 +33,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row w-full justify-between">
             <div className="mb-8 md:mb-0">
               <h3 className="font-semibold mb-4">Product</h3>
-              <ul>
+              <ul className='text-sm md:text-base'>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Editor</Link></li>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Runtimes</Link></li>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Rendered</Link></li>
@@ -42,7 +42,7 @@ const Footer = () => {
             </div>
             <div className="mb-8 md:mb-0">
               <h3 className="font-semibold mb-4">Community</h3>
-              <ul>
+              <ul className='text-sm md:text-base'>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">GranularX Club</Link></li>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Discord</Link></li>
                 <li><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Get Support</Link></li>
@@ -50,7 +50,7 @@ const Footer = () => {
             </div>
             <div className="mb-8 md:mb-0">
               <h3 className="font-semibold mb-4">Learn</h3>
-              <ul>
+              <ul className='text-sm md:text-base'>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Documentation</Link></li>
                 <li className="mb-2"><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Blog</Link></li>
                 <li><Link href="#" className="hover:text-[#7DF9FF] transition-all ease-in-out duration-300">Features</Link></li>
@@ -67,17 +67,17 @@ const Footer = () => {
                 <Image src="/brand/brand.png" alt="GranularX Logo" width={50} height={50} />
                 <span>GranularX</span>
               </div>
-              <p className="mb-4 text-base">
+              <p className="mb-4 text-sm md:text-base">
                 © 2024 GranularX. All rights reserved.
               </p>
-              <p className="mb-8 text-base">
+              <p className="mb-8 text-sm md:text-base">
                 All trademarks, logos, and brand names are the <br />property of their respective owners.
               </p>
             </div>          
-            <div className="text-xs flex space-x-6">
-              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-base">Terms of Service</Link>
-              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-base">Privacy Policy</Link>
-              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-base">Security</Link>
+            <div className="flex space-x-6">
+              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-sm md:text-base">Terms of Service</Link>
+              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-sm md:text-base">Privacy Policy</Link>
+              <Link href="#" className="hover:text-[#7DF9FF] transition duration-300 ease-in-out text-sm md:text-base">Security</Link>
             </div>
           </div>
           

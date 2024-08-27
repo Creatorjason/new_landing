@@ -47,20 +47,20 @@ const Register = () => {
           
           <form className="flex flex-col gap-y-6" onSubmit={handleCreateAccount}>
             <div>
-              <label htmlFor="bvn" className="block text-base mb-1 font-medium text-[#141F1F] dark:text-white">Bank Verification Number (BVN)</label>
+              <label htmlFor="bvn" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">Bank Verification Number (BVN)</label>
               <input type="text" id="bvn" name="bvn" placeholder="Enter your BVN" className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]" />
             </div>
             <div>
-              <label htmlFor="iban" className="block text-base mb-1 font-medium text-[#141F1F] dark:text-white">International Bank Account Number (IBAN)</label>
+              <label htmlFor="iban" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">International Bank Account Number (IBAN)</label>
               <input type="text" id="iban" name="iban" placeholder="Enter your IBAN" className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7DF9FF]" />
             </div>
             <div>
-              <label htmlFor="nin" className="block text-base mb-1 font-medium text-[#141F1F] dark:text-white">National Identification Number (NIN)</label>
+              <label htmlFor="nin" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">National Identification Number (NIN)</label>
               <input type="text" id="nin" name="nin" placeholder="Enter your NIN" className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7DF9FF]" />
             </div>
             <div className="flex items-start md:items-center my-4">
               <input id="terms" name="terms" type="checkbox" className="h-4 w-4 text-[#7DF9FF29] dark:text-[#7DF9FF] border-[#7DF9FF29] dark:border-[#7DF9FF] rounded" />
-              <label htmlFor="terms" className="ml-2 block text-xs md:text-sm text-gray-900 dark:text-gray-100">
+              <label htmlFor="terms" className="ml-2 block text-sm text-gray-900 dark:text-gray-100">
                 I have read and agree to GranularX Terms of Service and Privacy Policy
               </label>
             </div>

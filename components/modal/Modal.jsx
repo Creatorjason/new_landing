@@ -25,8 +25,8 @@ const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, h
           <>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-x-3">
-                <Money size="32" color="#000000"/>
-                <h2 className="text-lg font-semibold text-[#141F1F] dark:text-white">Amount to start with</h2>
+                <Money size="24" className="text-[#000000] dark:text-white"/>
+                <h2 className="text-sm md:text-base font-semibold text-[#141F1F] dark:text-white">Amount to start with</h2>
               </div>
               <motion.button 
                 whileHover={{ scale: 1.1 }}
@@ -43,7 +43,7 @@ const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, h
               transition={{ delay: 0.1 }}
               value={selectedAmount}
               onChange={(e) => setSelectedAmount(e.target.value)}
-              className="w-full bg-white dark:bg-[#141F1F] dark:text-white text-[#141F1F] text-lg p-3 mb-6 border-2 border-gray-500 rounded-lg focus:border-[#141F1F] dark:focus:border-gray-600 focus:ring-2 focus:ring-[#141F1F] transition-all duration-200"
+              className="w-full bg-white dark:bg-[#141F1F] dark:text-white text-[#141F1F] text-sm md:text-lg p-3 mb-6 border-2 border-gray-500 rounded-lg focus:border-[#141F1F] dark:focus:border-gray-600 focus:ring-2 focus:ring-[#141F1F] transition-all duration-200"
             >
               <option value="">Select amount</option>
               {amounts.map((amount) => (
@@ -54,7 +54,7 @@ const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, h
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSubmit}
-              className="w-full py-3 px-4 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-lg font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="w-full py-3 px-4 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-sm md:text-base font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-200"
             >
               Submit
             </motion.button>
@@ -74,13 +74,13 @@ const Modal = ({ showSuccess, setShowModal, selectedAmount, setSelectedAmount, h
             >
               <Image src="/confetti.svg" alt="Success" width={50} height={50} />
             </motion.div>
-            <h2 className="text-xl md:text-2xl dark:text-white font-bold my-4">Peer Bank Account successful</h2>
-            <p className="mb-6 text-gray-600 dark:text-gray-50 text-base">Welcome to GranularX. You are a step closer to experiencing our new technology.</p>
+            <h2 className="text-lg md:text-2xl dark:text-white font-bold my-4">Peer Bank Account successful</h2>
+            <p className="mb-6 text-gray-600 dark:text-gray-50 text-sm md:text-base">Welcome to GranularX. You are a step closer to experiencing our new technology.</p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={takeMeForASpin}
-              className="py-3 px-6 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-lg font-medium w-full rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="py-3 px-6 bg-black dark:bg-[#7DF9FF] dark:text-[#141F1F] text-white text-sm md:text-lg font-medium w-full rounded-lg hover:bg-gray-800 transition-colors duration-200"
             >
               Take me for a spin
             </motion.button>
