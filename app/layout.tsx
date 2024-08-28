@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from 'react-hot-toast'
 import ThemeToggleButton from "@/components/themeToggle/ThemeToggleButton";
 
 // const space = Space_Grotesk({ subsets: ["latin"] });
@@ -22,6 +23,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light">
           {children}
 
+          <Toaster />
           <ThemeToggleButton />
         </ThemeProvider>
       </body>
