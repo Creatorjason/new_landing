@@ -73,7 +73,7 @@ const Wallet = () => {
   ];
 
   return (
-    <div className="p-0 md:p-6">
+    <div className="p-0 md:py-6">
       <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} />
       <PaymentHistory payments={paymentHistory} />
 

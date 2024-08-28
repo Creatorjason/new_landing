@@ -111,32 +111,6 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
             </div>
           </div>
         </div>
-        
-        {/* Mobile Menu */}
-        {/* {isMobileMenuOpen && (
-          <div className="lg:hidden">
-            <div className="pt-4 pb-3 space-y-1">
-              <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="w-full text-left p-2 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 focus:outline-none transition-colors duration-200"
-              >
-                {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              </button>
-              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
-                <ProfileCircle size={24} color="#333333" variant="Bulk"/>
-                <span>Profile</span>
-              </a>
-              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
-                <Setting2 size={24} color="#333333" variant="Bulk" />
-                <span>Settings</span>
-              </a>
-              <Link href="#" className="flex items-center gap-x-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-md">
-                <LogoutCurve size={24} color="#333333" variant="Bulk"/>
-                <span>Log Out</span>
-              </a>
-            </div>
-          </div>
-        )} */}
       </div>
     </nav>
   );

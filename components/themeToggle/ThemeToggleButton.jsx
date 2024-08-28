@@ -17,7 +17,7 @@ const ThemeToggleButton = () => {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="px-4 py-2 rounded-full bg-[#141F1F] dark:bg-white fixed bottom-5 right-5 md:bottom-10 md:right-10"
+      className="px-4 py-2 rounded-full bg-[#141F1F] dark:bg-white fixed bottom-16 right-5 md:bottom-10 md:right-10"
     >
       <div className="relative w-6 h-6">
         <div

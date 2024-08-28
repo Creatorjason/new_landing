@@ -8,7 +8,11 @@ export const metadata = {
 
 const page = () => {
   return (
-    <Register />
+    <main className="min-h-screen bg-white dark:bg-[#141F1F]">
+      <div className="container mx-auto">
+        <Register />
+      </div>
+    </main>
   )
 }
 
