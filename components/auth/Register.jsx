@@ -110,7 +110,7 @@ const Register = () => {
       return;
     }
   
-    const request = axios.post(`${BASE_URL}/auth/signup/`, {
+    const request = axios.post(`${BASE_URL}/auth/signup`, {
       username: formData.username,
       position: formData.position,
       identifier: formData.identifier,
