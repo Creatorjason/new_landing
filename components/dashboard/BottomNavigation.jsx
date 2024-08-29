@@ -11,7 +11,7 @@ const BottomNavigation = () => {
   const navItems = [
     { href: "/dashboard", icon: Category, label: "Home" },
     { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
-    { href: "/dashboard/payment", icon: MouseCircle, label: "History" },
+    { href: "/dashboard/payment", icon: MouseCircle, label: "Payments" },
     { href: "/dashboard/settings", icon: Setting2, label: "Profile" },
   ];
 
