@@ -110,7 +110,7 @@ const Register = () => {
       return;
     }
   
-    const request = axios.post(`${BASE_URL}/auth/signup`, {
+    const request = axios.post(`${BASE_URL}/auth/signup/`, {
       username: formData.username,
       position: formData.position,
       identifier: formData.identifier,
@@ -118,10 +118,8 @@ const Register = () => {
       password: formData.password,
       pin: parseInt(formData.pin)
     }, {
-      withCredentials: true, // This ensures cookies are sent with the request
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
       }
     });
   
@@ -196,7 +194,7 @@ const Register = () => {
                 </div>
                 <div className="w-1/2">
                   <label htmlFor="identifier" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">
-                    Identify As
+                    Identify as
                   </label>
                   <input
                     type="text"
