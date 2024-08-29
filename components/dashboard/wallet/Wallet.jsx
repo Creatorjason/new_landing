@@ -5,7 +5,7 @@ import { ClipboardText, Clock } from 'iconsax-react';
 import WalletModal from '@/components/modal/WalletModal';
 
 const WalletBalance = ({ balance, setIsModalOpen }) => (
-  <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex items-center justify-between">
+  <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
     <div className="flex items-center">
       <div className="bg-[#7df8ff3d] p-4 rounded-lg mr-4">
         <ClipboardText size={30} className="text-[#141F1F] dark:text-white" />
