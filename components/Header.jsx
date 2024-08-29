@@ -61,7 +61,7 @@ export default function Header() {
               <Link href={"/auth/signin"} className='text-[#141F1F] dark:text-gray-100'>
                 Login
               </Link>
-              <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+              <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
                 Create Account
               </Link>
             </div>
@@ -121,10 +121,10 @@ export default function Header() {
               </div>
 
               <div className="mt-8 flex flex-col gap-y-8 items-center justify-center">
-                <Link href={"/"} className='text-white'>
+                <Link href={"/auth/signin"} className='text-white'>
                   Login
                 </Link>
-                <Link href={"/auth/register"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
                   Create Account
                 </Link>
               </div>

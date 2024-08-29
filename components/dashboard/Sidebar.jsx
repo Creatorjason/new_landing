@@ -24,7 +24,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             {[
               { href: "/dashboard", icon: Category, label: "Dashboard" },
               { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
-              { href: "/dashboard/payments", icon: MouseCircle, label: "Payments" },
+              { href: "/dashboard/payment", icon: MouseCircle, label: "Payments" },
               { href: "/dashboard/settings", icon: Setting2, label: "Settings" },
             ].map(({ href, icon: Icon, label }) => (
               <li key={href} className="mb-2">

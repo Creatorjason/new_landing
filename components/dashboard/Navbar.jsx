@@ -21,14 +21,6 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
         <div className="flex justify-between h-16 items-center">
           <div className='flex items-center'>
             {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-md focus:outline-none text-[#141F1F] dark:text-gray-200"
-            >
-              <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            </button>
             
             {/* Logo Section */}
             <Link href={"/"} className="flex items-center">
@@ -41,7 +33,7 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
           {/* Desktop Menu */}
           <div className="flex items-center gap-x-2 md:gap-x-4">
             <span className="bg-green-100 hidden md:inline-block text-green-800 text-sm font-medium mr-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
-            <button
+            <button                                                                                                       
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="text-gray-600 dark:text-white"
             >

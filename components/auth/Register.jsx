@@ -8,8 +8,13 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Eye, EyeSlash, TickCircle } from 'iconsax-react';
 import { FaCheck } from 'react-icons/fa6';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+const BASE_URL="https://api.granularx.com";
 
 const Register = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     username: '',
     position: '',
@@ -104,13 +109,19 @@ const Register = () => {
       return;
     }
   
-    const request = axios.post('https://www.granularx.com/auth/signup', {
+    const request = axios.post(`${BASE_URL}/auth/signup`, {
       username: formData.username,
       position: formData.position,
       identifier: formData.identifier,
       phone_number: formData.phone_number,
       password: formData.password,
       pin: parseInt(formData.pin)
+    }, {
+      withCredentials: true, // This ensures cookies are sent with the request
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
     });
   
     toast.promise(
@@ -119,6 +130,7 @@ const Register = () => {
         loading: 'Creating your account...',
         success: (res) => {
           console.log(res.data);
+          router.push("/dashboard");
           return 'Account created successfully!';
         },
         error: (err) => {
@@ -328,6 +340,8 @@ const Register = () => {
               Create a peer account
             </button>
           </form>
+          
+          <p className='my-4 mb-2 text-sm text-[#141f1f] dark:text-white'>Already have an account? <Link href={"/auth/signin"} className='font-semibold hover:underline'>Sign in</Link></p>
         </div>
       </div>
 

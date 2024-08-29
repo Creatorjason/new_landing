@@ -1,5 +1,4 @@
 "use client"
-
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Category, MouseCircle, EmptyWallet, Setting2 } from 'iconsax-react';
@@ -12,12 +11,12 @@ const BottomNavigation = () => {
   const navItems = [
     { href: "/dashboard", icon: Category, label: "Home" },
     { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
-    { href: "/dashboard/payments", icon: MouseCircle, label: "History" },
+    { href: "/dashboard/payment", icon: MouseCircle, label: "History" },
     { href: "/dashboard/settings", icon: Setting2, label: "Profile" },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1C2626] sm:hidden p-2 py-4">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1C2626] sm:hidden p-2 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.2)] dark:shadow-[0_-4px_6px_-1px_rgba(255,255,255,0.2)]">
       <ul className="flex justify-around items-center">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname === href;
@@ -26,8 +25,8 @@ const BottomNavigation = () => {
               <motion.button
                 onClick={() => router.push(href)}
                 className={`flex items-center justify-center p-2 px-4 rounded-full ${
-                  isActive 
-                    ? 'bg-[#141F1F] text-white dark:bg-[#7df8ff23]' 
+                  isActive
+                    ? 'bg-[#141F1F] text-white dark:bg-[#7df8ff23]'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
                 whileTap={{ scale: 0.95 }}

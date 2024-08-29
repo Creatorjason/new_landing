@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloseCircle } from 'iconsax-react';
-import AmountInput from '@/components/dashboard/pay/AmountInput';
+import WalletAmountInput from '@/components/dashboard/pay/WalletAmountInput';
 import PinInput from '@/components/dashboard/pay/PinInput';
-import ConfirmationStep from '@/components/dashboard/pay/ConfirmationStep';
-import SuccessStep from '@/components/dashboard/pay/SuccessStep';
-import Receipt from '@/components/dashboard/payment/Receipt';
+import ConfirmOrderStep from '@/components/dashboard/pay/ConfirmOrderStep';
+import BackedFiatonsStep from '@/components/dashboard/pay/BackedFiatonsStep';
+import WalletSuccessStep from '@/components/dashboard/pay/WalletSuccessStep';
+import FailureStep from '@/components/dashboard/pay/FailureStep';
+import Receipt from '@/components/dashboard/wallet/Receipt';
 
-const PaymentModal = ({ isOpen, onClose, balance }) => {
+const WalletModal = ({ isOpen, onClose, balance }) => {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [step, setStep] = useState(1);
-  const [pin, setPin] = useState(['', '', '', '']);
+  const [pin, setPin] = useState('');
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
-  const handleConfirmTransfer = () => setTransactionSuccess(true);
+  const handleCreatePin = (newPin) => {
+    setPin(newPin);
+    handleProceed();
+  };
+  const handleConfirmOrder = () => {
+    // Simulate a random success/failure
+    const success = Math.random() > 0.5;
+    setTransactionSuccess(success);
+    setStep(5);
+  };
   const handleViewReceipt = () => setShowReceipt(true);
 
   const handleCloseModal = (e) => {
@@ -29,15 +40,10 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
 
   const resetModal = () => {
     setAmount('');
+    setPin('');
     setStep(1);
-    setPin(['', '', '', '']);
     setTransactionSuccess(false);
     setShowReceipt(false);
-  };
-
-  const handleCloseReceipt = () => {
-    setShowReceipt(false);
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -60,13 +66,13 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base md:text-lg font-bold">Payment</h2>
+              <h2 className="text-base md:text-lg font-bold">Top Up</h2>
               <button onClick={handleCloseModal}><CloseCircle className="text-[#141F1F] dark:text-white"/></button>
             </div>
 
             <AnimatePresence mode='wait'>
               {step === 1 && (
-                <AmountInput
+                <WalletAmountInput
                   amount={amount}
                   setAmount={setAmount}
                   currency={currency}
@@ -78,24 +84,35 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
 
               {step === 2 && (
                 <PinInput
-                  pin={pin}
-                  setPin={setPin}
-                  onCreatePin={handleProceed}
-                  onBack={handleBack}
+                  onCreatePin={handleCreatePin}
+                  onClose={handleCloseModal}
                 />
               )}
 
-              {step === 3 && !transactionSuccess && (
-                <ConfirmationStep
-                  onConfirm={handleConfirmTransfer}
-                  onBack={handleBack}
+              {step === 3 && (
+                <ConfirmOrderStep
+                  onConfirm={handleProceed}
+                  onReject={handleBack}
                 />
               )}
 
-              {transactionSuccess && !showReceipt && (
-                <SuccessStep
-                  amount={amount}
+              {step === 4 && (
+                <BackedFiatonsStep
+                  onDone={handleConfirmOrder}
+                />
+              )}
+
+              {step === 5 && transactionSuccess && !showReceipt && (
+                <WalletSuccessStep
                   onViewReceipt={handleViewReceipt}
+                />
+              )}
+
+              {step === 5 && !transactionSuccess && (
+                <FailureStep
+                  amount={amount}
+                  currency={currency}
+                  onGoBack={handleBack}
                 />
               )}
 
@@ -109,8 +126,7 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
                   accountNumber="12345678901"
                   accountName="Jason Charles"
                   transactionID="Tyuhcjdb874892f"
-                  onClose={handleCloseReceipt}
-                  resetModal={resetModal}
+                  onClose={handleCloseModal}
                 />
               )}
             </AnimatePresence>
@@ -121,4 +137,4 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
   );
 };
 
-export default PaymentModal;
+export default WalletModal;

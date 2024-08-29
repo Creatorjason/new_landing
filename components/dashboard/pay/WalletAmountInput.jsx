@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const AmountInput = ({ amount, setAmount, currency, setCurrency, balance, onProceed }) => {
+const WalletAmountInput = ({ amount, setAmount, currency, setCurrency, balance, onProceed }) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const AmountInput = ({ amount, setAmount, currency, setCurrency, balance, onProc
       <button
         onClick={onProceed}
         disabled={!!error || amount === ''}
-        className={`w-full p-3 py-2 font-medium text-sm rounded ${
+        className={`w-full p-3 py-2 text-sm font-medium rounded ${
           error || amount === '' ? 'bg-gray-300 dark:bg-gray-800 cursor-not-allowed' 
           : 'bg-[#141F1F] text-white dark:shadow dark:shadow-[#7df8ff3d]'
         }`}
@@ -91,4 +91,4 @@ const AmountInput = ({ amount, setAmount, currency, setCurrency, balance, onProc
   );
 };
 
-export default AmountInput;
+export default WalletAmountInput;
