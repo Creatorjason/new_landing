@@ -57,35 +57,35 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
       const pinString = pin.join('');
       const pinNumber = pinString ? parseInt(pinString, 10) : null;
   
-      console.log('Formatted Amount:', formattedAmount);
-      console.log('PIN:', pin);
-  
       const payload = {
         amount: formattedAmount,
         uns: recipientUNS,
         base_currency: currency,
-        transaction_type: 'base', // Adjust based on your requirements
+        transaction_type: 'base',
         pin: pinNumber,
       };
   
       // Make the API call
-      const response = await axios.post('https://api.granularx.com/wallet/topup?type=base', payload);
+      // const response = await axios.post('https://api.granularx.com/wallet/topup?type=base', payload);
   
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
+
+      setTransactionSuccess(true);
   
-      // Check the response and update state accordingly
-      if (response.status === 200) {
-        setTransactionSuccess(true);
-        handleViewReceipt();
-      } else {
-        setApiError(response.data.error || 'Transaction failed. Please try again.');
-      }
+      // // Check if the transaction was successful
+      // if (response.data.status === 'SUCCESS') {
+      //   const { auth_url } = response.data.data;
+  
+      //   // Redirect the user to the authentication URL
+      //   window.location.href = auth_url;
+      // } else {
+      //   setApiError(response.data.error || 'Transaction failed. Please try again.');
+      // }
     } catch (error) {
       console.error('API error:', error);
       setApiError('Transaction failed. Please try again.');
     }
-  };
-  
+  };  
 
   if (!isOpen) return null;
 
@@ -149,6 +149,7 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
               {transactionSuccess && !showReceipt && (
                 <SuccessStep
                   amount={amount}
+                  recipientUNS={recipientUNS}
                   onViewReceipt={handleViewReceipt}
                 />
               )}

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-const SuccessStep = ({ amount, onViewReceipt }) => {
+const SuccessStep = ({ amount, onViewReceipt, recipientUNS }) => {
   return (
     <motion.div
       initial={{ x: 100, opacity: 0 }}
@@ -15,7 +15,7 @@ const SuccessStep = ({ amount, onViewReceipt }) => {
         </div>
         <h3 className="text-xl font-bold mb-2">Transfer Successful!</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          You have successfully sent ₦{amount} to Sarah Banks
+          You have successfully sent ₦{amount} to {recipientUNS}
         </p>
         <button onClick={onViewReceipt} className="w-full p-3 py-2 text-sm rounded border border-[#141F1F] bg-[#141F1F] text-white dark:shadow dark:shadow-[#7df8ff3d]">
           View Receipt

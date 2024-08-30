@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloseCircle } from 'iconsax-react';
-// import WalletAmountInput from '@/components/dashboard/pay/WalletAmountInput';
+import WalletAmountInput from '@/components/dashboard/pay/WalletAmountInput';
 // import PinInput from '@/components/dashboard/pay/PinInput';
 import ConfirmOrderStep from '@/components/dashboard/pay/ConfirmOrderStep';
 import BackedFiatonsStep from '@/components/dashboard/pay/BackedFiatonsStep';
@@ -10,7 +10,7 @@ import FailureStep from '@/components/dashboard/pay/FailureStep';
 import Receipt from '@/components/dashboard/wallet/Receipt';
 
 const WalletModal = ({ isOpen, onClose, balance }) => {
-  const [amount, setAmount] = useState('50000');
+  const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [step, setStep] = useState(1);
   // const [pin, setPin] = useState('');
@@ -27,7 +27,7 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
     // Simulate a random success/failure
     const success = Math.random() > 0.5;
     setTransactionSuccess(success);
-    setStep(3);
+    setStep(4);
   };
   const handleViewReceipt = () => setShowReceipt(true);
 
@@ -78,19 +78,30 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
               )}
 
               {step === 2 && (
+                <WalletAmountInput
+                  amount={amount}
+                  setAmount={setAmount}
+                  currency={currency}
+                  setCurrency={setCurrency}
+                  balance={balance}
+                  onProceed={handleProceed}
+                />
+              )}
+
+              {step === 3 && (
                 <ConfirmOrderStep
                   onConfirm={handleConfirmOrder}
                   onReject={handleBack}
                 />
               )}
 
-              {step === 3 && transactionSuccess && !showReceipt && (
+              {step === 4 && transactionSuccess && !showReceipt && (
                 <WalletSuccessStep
                   onViewReceipt={handleViewReceipt}
                 />
               )}
 
-              {step === 3 && !transactionSuccess && (
+              {step === 4 && !transactionSuccess && (
                 <FailureStep
                   amount={amount}
                   currency={currency}
