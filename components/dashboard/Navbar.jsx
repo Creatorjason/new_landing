@@ -5,15 +5,21 @@ import { LogoutCurve, ProfileCircle, Setting2 } from 'iconsax-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification } from 'iconsax-react';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/auth/signin' });
+  };
 
   return (
     <nav className="bg-white fixed top-0 left-0 w-full dark:bg-[#1C2626] py-2 shadow-sm transition-colors duration-200">
@@ -32,7 +38,10 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
 
           {/* Desktop Menu */}
           <div className="flex items-center gap-x-2 md:gap-x-4">
-            <span className="bg-green-100 hidden md:inline-block text-green-800 text-sm font-medium mr-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
+            {session && (
+              <span className="bg-green-100 hidden md:inline-block text-green-800 text-sm font-medium mr-2 px-3 py-1 rounded-full dark:bg-green-900 dark:text-green-300">Active</span>
+            )}
+
             <button                                                                                                       
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="text-gray-600 dark:text-white"
@@ -51,56 +60,62 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
 
             <Notification size={24} className="text-[#333333] dark:text-white" variant="Bulk"/>
 
-            <div className="flex items-center rounded-full p-2 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center text-sm rounded-full focus:outline-none"
-                id="user-menu"
-                aria-haspopup="true"
-              >
-                <span className="sr-only">Open user menu</span>
-                <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-[#1C2626] dark:text-white text-gray-700 flex items-center justify-center">
-                  <span className="font-medium text-base">L</span>
-                </div>
-                <span className="hidden md:inline-block ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">Leonard Ogbu</span>
-                <svg
-                  className={`hidden md:inline-block ml-2 h-5 w-5 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
+            {session ? (
+              <div className="flex items-center rounded-full p-2 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center text-sm rounded-full focus:outline-none"
+                  id="user-menu"
+                  aria-haspopup="true"
                 >
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="origin-top-right absolute top-16 right-0 mt-2 w-48 flex flex-col p-4 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="user-menu"
+                  <span className="sr-only">Open user menu</span>
+                  <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-[#1C2626] dark:text-white text-gray-700 flex items-center justify-center">
+                    <span className="font-medium text-base">{session.user.username ? session.user.username[0].toUpperCase() : 'U'}</span>
+                  </div>
+                  <span className="hidden md:inline-block ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">{session.user.username || 'User'}</span>
+                  <svg
+                    className={`hidden md:inline-block ml-2 h-5 w-5 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'transform rotate-180' : ''}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
                   >
-                    <Link href="#" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                      <ProfileCircle size={24} color="#333333" variant="Bulk"/>
-                      <span>Profile</span>
-                    </Link>
-                    <Link href="#" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                      <Setting2 size={24} color="#333333" variant="Bulk" />
-                      <span>Settings</span>
-                    </Link>
-                    <Link href="#" className="flex items-center gap-x-2 pb-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                      <LogoutCurve size={24} color="#333333" variant="Bulk"/>
-                      <span>Log Out</span>
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="origin-top-right absolute top-16 right-0 mt-2 w-48 flex flex-col p-4 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="user-menu"
+                    >
+                      <Link href="/dashboard/profile" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <ProfileCircle size={24} color="#333333" variant="Bulk"/>
+                        <span>Profile</span>
+                      </Link>
+                      <Link href="/dashboard/settings" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <Setting2 size={24} color="#333333" variant="Bulk" />
+                        <span>Settings</span>
+                      </Link>
+                      <button onClick={handleSignOut} className="flex items-center gap-x-2 pb-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <LogoutCurve size={24} color="#333333" variant="Bulk"/>
+                        <span>Log Out</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link href="/auth/signin" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </div>

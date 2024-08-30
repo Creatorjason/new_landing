@@ -3,7 +3,7 @@ import { CloseCircle, Receipt1 } from 'iconsax-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
-const Receipt = ({ amount, date, status, transactionType, bankName, accountNumber, resetModal, accountName, transactionID, onClose }) => {
+const Receipt = ({ amount, status, currency, recipientUNS, resetModal, onClose }) => {
   const receiptRef = useRef(null);
   const pdfReceiptRef = useRef(null);
   const [html2pdf, setHtml2pdf] = useState(null);
@@ -49,8 +49,8 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
             <button onClick={onClose}><CloseCircle className="text-[#141F1F] dark:text-white"/></button>
           </div>
           <div className="text-center mb-4">
-            <p className="text-2xl font-bold text-green-700 dark:text-[#11BB16]">+₦{amount}</p>
-            <p className="text-[#666666] dark:text-[#dbdbdb] text-sm">{date}</p>
+            <p className="text-2xl font-bold text-green-700 dark:text-[#11BB16]">+{currency} {amount}</p>
+            <p className="text-[#666666] dark:text-[#dbdbdb] text-sm">Few seconds ago</p>
           </div>
         </div>
         <div className="mb-4 flex flex-col gap-y-4">
@@ -59,19 +59,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
             <span className="text-[#11BB16] py-1 px-3 rounded-full text-sm bg-[#E8FDE8] dark:bg-[#11bb172c]">{status}</span>
           </p>
           <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Transaction Type:</strong> {transactionType}
-          </p>
-          <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Bank Name:</strong> {bankName}
-          </p>
-          <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Account Number:</strong> {accountNumber}
-          </p>
-          <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Account Name:</strong> {accountName}
-          </p>
-          <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Transaction ID:</strong> {transactionID}
+            <strong className='text-[#666666] dark:text-gray-400'>Recipient:</strong> {recipientUNS}
           </p>
         </div>
         <div className="flex justify-center">
@@ -97,8 +85,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
               <h2 className="text-base text-[#141F1F] font-semibold text-center">Transaction Receipt</h2>
             </div>
             <div className="text-center mb-4">
-              <p className="text-2xl font-bold text-green-700">+₦{amount}</p>
-              <p className="text-[#666666] text-sm">{date}</p>
+              <p className="text-2xl font-bold text-green-700">+{currency} {amount}</p>
             </div>
           </div>
           <div className="mb-4 flex flex-col gap-y-4 border-b border-dashed border-[#999999] py-2 pb-6">
@@ -107,26 +94,14 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
               <span className="text-[#11BB16] text-sm">{status}</span>
             </p>
             <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Transaction Type:</strong> {transactionType}
-            </p>
-            <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Bank Name:</strong> {bankName}
-            </p>
-            <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Account Number:</strong> {accountNumber}
-            </p>
-            <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Account Name:</strong> {accountName}
-            </p>
-            <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Transaction ID:</strong> {transactionID}
+              <strong className='text-[#666666]'>Recipient:</strong> {recipientUNS}
             </p>
           </div>
           <div className='text-center text-[#666666] text-sm relative'>
             <p><strong>Support:</strong> support@granularx.com</p>
             <p className='mt-4 text-sm'>
               Enjoy a borderless and seamless transfers with lightning-fast transactions,<br />and more, on GranularX.
-              GranularX is licensed by the Central Bank of Nigeria and<br /> insured by the NDIC (just kidding)
+              GranularX is licensed by the Central Bank of Nigeria and<br /> insured by the NDIC
             </p>
 
             <Image src={"/brand/approved.svg"} alt='' width={100} height={100} className='absolute bottom-0 right-0' />

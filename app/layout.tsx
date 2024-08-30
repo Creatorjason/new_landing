@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from 'react-hot-toast'
 import ThemeToggleButton from "@/components/themeToggle/ThemeToggleButton";
+import { SessionProvider } from "next-auth/react";
 
 // const space = Space_Grotesk({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`bg-white`}>
         <ThemeProvider attribute="class" defaultTheme="light">
-          {children}
+          <SessionProvider>
+            {children}
+          </SessionProvider>
 
           <Toaster />
           <ThemeToggleButton />

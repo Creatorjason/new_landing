@@ -1,53 +1,61 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import axios from 'axios'
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import axios from "axios";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        uns: { label: "UNS", type: "text" },
-        password: { label: "Password", type: "password" }
+        uns: { label: "UNS", type: "text", placeholder: "Username or Email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.uns || !credentials?.password) {
-          throw new Error('Missing credentials')
-        }
-
         try {
-          const response = axios.post('https://api.granularx.com/auth/signin?platform=web', {
+          const response = await axios.post("https://api.granularx.com/auth/signin?platform=web", {
             uns: credentials.uns,
-            password: credentials.password
+            password: credentials.password,
           });
-
-          if (response.data) {
-            return response.data
+      
+          const user = response.data;
+      
+          if (user && user.status === 'SUCCESS') {
+            return {
+              id: user.data.WalletID, // Using WalletID as the unique identifier
+              username: user.data.Username,
+              phoneNumber: user.data.Phonenumber,
+              walletId: user.data.WalletID,
+            };
+          } else {
+            return null;
           }
-
-          throw new Error('Invalid credentials')
         } catch (error) {
-          console.error('Authentication error:', error.response?.data || error.message);
-          throw new Error(error.response?.data?.error || 'Authentication failed')
+          throw new Error(error.response?.data?.error || "Authentication failed");
         }
       }
-    })
+    }),
   ],
-  pages: {
-    signIn: '/auth/signin',
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.accessToken;
-        token.id = user.id;
+        token.username = user.username;
+        token.phoneNumber = user.phoneNumber;
+        token.walletId = user.walletId;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.accessToken = token.accessToken;
-      session.user.id = token.id;
+      session.user = {
+        id: token.sub,
+        username: token.username,
+        phoneNumber: token.phoneNumber,
+        walletId: token.walletId,
+      };
       return session;
     },
   },
-})
+  pages: {
+    signIn: "/auth/signin",
+  },
+  secret: process.env.AUTH_SECRET,
+});

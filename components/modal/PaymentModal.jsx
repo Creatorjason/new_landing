@@ -6,6 +6,8 @@ import PinInput from '@/components/dashboard/pay/PinInput';
 import ConfirmationStep from '@/components/dashboard/pay/ConfirmationStep';
 import SuccessStep from '@/components/dashboard/pay/SuccessStep';
 import Receipt from '@/components/dashboard/payment/Receipt';
+import UNSInput from '@/components/dashboard/pay/UNSInput';
+import axios from 'axios';
 
 const PaymentModal = ({ isOpen, onClose, balance }) => {
   const [amount, setAmount] = useState('');
@@ -14,10 +16,11 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
   const [pin, setPin] = useState(['', '', '', '']);
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [recipientUNS, setRecipientUNS] = useState('');
+  const [apiError, setApiError] = useState(null); // State to handle API errors
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
-  const handleConfirmTransfer = () => setTransactionSuccess(true);
   const handleViewReceipt = () => setShowReceipt(true);
 
   const handleCloseModal = (e) => {
@@ -33,11 +36,45 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
     setPin(['', '', '', '']);
     setTransactionSuccess(false);
     setShowReceipt(false);
+    setRecipientUNS('');
+    setApiError(null); // Reset API error state
   };
 
   const handleCloseReceipt = () => {
     setShowReceipt(false);
     onClose();
+  };
+
+  const handleConfirmUNS = async (uns) => {
+    setRecipientUNS(uns);
+    setStep(4);
+  };
+
+  const handleConfirmTransfer = async () => {
+    try {
+      // Prepare the API request payload
+      const payload = {
+        amount: parseFloat(amount),
+        uns: recipientUNS,
+        base_currency: currency,
+        transaction_type: 'base', // Adjust based on your requirements
+        pin: parseInt(pin.join(''), 10),
+      };
+
+      // Make the API call
+      const response = await axios.post('https://api.granularx.com/wallet/topup', payload);
+
+      // Check the response and update state accordingly
+      if (response.status === 200) {
+        setTransactionSuccess(true);
+        handleViewReceipt();
+      } else {
+        setApiError('Transaction failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('API error:', error);
+      setApiError('Transaction failed. Please try again.');
+    }
   };
 
   if (!isOpen) return null;
@@ -61,7 +98,9 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-base md:text-lg font-bold">Payment</h2>
-              <button onClick={handleCloseModal}><CloseCircle className="text-[#141F1F] dark:text-white"/></button>
+              <button onClick={handleCloseModal}>
+                <CloseCircle className="text-[#141F1F] dark:text-white" />
+              </button>
             </div>
 
             <AnimatePresence mode='wait'>
@@ -85,10 +124,15 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
                 />
               )}
 
-              {step === 3 && !transactionSuccess && (
+              {step === 3 && (
+                <UNSInput onConfirm={handleConfirmUNS} />
+              )}
+
+              {step === 4 && !transactionSuccess && (
                 <ConfirmationStep
                   onConfirm={handleConfirmTransfer}
                   onBack={handleBack}
+                  apiError={apiError} // Display API error message if any
                 />
               )}
 
@@ -102,13 +146,9 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
               {showReceipt && (
                 <Receipt
                   amount={amount}
-                  date="9 Nov 2023 18:30"
+                  currency={currency}
                   status="Success"
-                  transactionType="Fund Wallet"
-                  bankName="GranularX"
-                  accountNumber="12345678901"
-                  accountName="Jason Charles"
-                  transactionID="Tyuhcjdb874892f"
+                  recipientUNS={recipientUNS}
                   onClose={handleCloseReceipt}
                   resetModal={resetModal}
                 />

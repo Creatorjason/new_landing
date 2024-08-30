@@ -7,10 +7,11 @@ import toast from 'react-hot-toast';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authenticate } from '@/lib/auth-actions';
+import { signIn, useSession } from 'next-auth/react';
 
 const Signin = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const { data: session } = useSession();
   const [formData, setFormData] = useState({
     uns: '',
     password: '',
@@ -32,32 +33,22 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    toast.promise(
-      authenticate(formData),
-      {
-        loading: 'Signing you in...',
-        success: (data) => {
-          if (data.success) {
-            router.push("/dashboard");
-            return 'Authentication successful. Welcome back!';
-          } else {
-            throw new Error(data.error || 'Authentication failed');
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          return err.message || 'Failed to sign in';
-        },
-      },
-      {
-        style: {
-          fontSize: '13px',
-          fontWeight: '500'
-        },
-        position: 'top-center',
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        uns: formData.uns,
+        password: formData.password,
+      });
+
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        router.push("/dashboard");
       }
-    );
-  }
+    } catch (error) {
+      toast.error("Failed to authenticate");
+    }
+  };
 
   return (
     <div className="flex items-center min-h-screen bg-white dark:bg-[#1C2626] text-gray-900 dark:text-gray-100">
