@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CloseCircle } from 'iconsax-react';
 
-const PinInput = ({ onCreatePin, onClose }) => {
-  const [pin, setPin] = useState(['', '', '', '']);
+const PinInput = ({ onCreatePin, pin, setPin, onClose }) => {
   const [confirmPin, setConfirmPin] = useState(['', '', '', '']);
   const [error, setError] = useState('');
   const pinRefs = useRef([...Array(4)].map(() => React.createRef()));
@@ -90,7 +89,7 @@ const PinInput = ({ onCreatePin, onClose }) => {
         onClick={handleCreatePin}
         className="w-full p-3 py-2 text-sm rounded border border-[#141F1F] bg-[#141F1F] text-white dark:shadow dark:shadow-[#7df8ff3d]"
       >
-        Create PIN and Proceed
+        Confirm PIN and Proceed
       </button>
     </motion.div>
   );

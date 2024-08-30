@@ -53,29 +53,39 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
   const handleConfirmTransfer = async () => {
     try {
       // Prepare the API request payload
+      const formattedAmount = parseFloat(amount.replace(/,/g, ''));
+      const pinString = pin.join('');
+      const pinNumber = pinString ? parseInt(pinString, 10) : null;
+  
+      console.log('Formatted Amount:', formattedAmount);
+      console.log('PIN:', pin);
+  
       const payload = {
-        amount: parseFloat(amount),
+        amount: formattedAmount,
         uns: recipientUNS,
         base_currency: currency,
         transaction_type: 'base', // Adjust based on your requirements
-        pin: parseInt(pin.join(''), 10),
+        pin: pinNumber,
       };
-
+  
       // Make the API call
-      const response = await axios.post('https://api.granularx.com/wallet/topup', payload);
-
+      const response = await axios.post('https://api.granularx.com/wallet/topup?type=base', payload);
+  
+      console.log('API Response:', response.data);
+  
       // Check the response and update state accordingly
       if (response.status === 200) {
         setTransactionSuccess(true);
         handleViewReceipt();
       } else {
-        setApiError('Transaction failed. Please try again.');
+        setApiError(response.data.error || 'Transaction failed. Please try again.');
       }
     } catch (error) {
       console.error('API error:', error);
       setApiError('Transaction failed. Please try again.');
     }
   };
+  
 
   if (!isOpen) return null;
 
