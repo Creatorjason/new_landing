@@ -6,7 +6,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Eye, EyeSlash, TickCircle } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-react';
 import { FaCheck } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -109,7 +109,7 @@ const Register = () => {
       return;
     }
   
-    const request = axios.post(`${BASE_URL}/auth/signup/`, {
+    const request = axios.post(`${BASE_URL}/auth/signup`, {
       username: formData.username,
       position: formData.position,
       identifier: formData.identifier,
@@ -128,7 +128,7 @@ const Register = () => {
         loading: 'Creating your account...',
         success: (res) => {
           console.log(res.data);
-          router.push("/dashboard");
+          router.push("/auth/signin");
           return 'Account created successfully!';
         },
         error: (err) => {

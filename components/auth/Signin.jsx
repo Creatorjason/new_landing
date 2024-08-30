@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import 'react-phone-input-2/lib/style.css';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { authenticate } from '@/lib/auth-actions';
 
 const Signin = () => {
   const router = useRouter()
@@ -15,8 +15,8 @@ const Signin = () => {
     uns: '',
     password: '',
   });
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State to toggle password visibility
-  
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -31,26 +31,25 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
-    const request = axios.post(`${process.env.BASE_URL}/auth/signin`, {
-      uns: formData.uns,
-      password: formData.password
-    });
-  
+
     toast.promise(
-      request,
+      authenticate(formData),
       {
-        loading: 'Creating your account...',
-        success: (res) => {
-          console.log(res.data);
-          router.push("/dashboard");
-          return 'Account created successfully!';
+        loading: 'Signing you in...',
+        success: (data) => {
+          if (data.success) {
+            router.push("/dashboard");
+            return 'Authentication successful. Welcome back!';
+          } else {
+            throw new Error(data.error || 'Authentication failed');
+          }
         },
         error: (err) => {
           console.error(err);
-          return err.response?.data?.error || 'Failed to create account';
+          return err.message || 'Failed to sign in';
         },
-      }, {
+      },
+      {
         style: {
           fontSize: '13px',
           fontWeight: '500'
@@ -78,13 +77,14 @@ const Signin = () => {
               </label>
               <input
                 type="text"
-                id="username"
-                name="username"
+                id="uns"
+                name="uns"
                 value={formData.uns}
                 onChange={handleInputChange}
                 placeholder="Enter your UNS"
-                className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
+                className="mt-1 mb-2 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
               />
+              <small className='font-medium text-xs mt-2 text-green-800 bg-green-50 px-3 py-1 rounded-full'>UNS Format: Username.Position.Identifier</small>
             </div>
 
             <div>
