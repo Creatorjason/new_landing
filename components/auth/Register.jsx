@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const BASE_URL="https://api.granularx.com";
+// const BASE_URL =  "http://localhost:3001"
 
 const Register = () => {
   const router = useRouter()
@@ -150,7 +151,7 @@ const Register = () => {
       <div className="w-full md:w-1/2 flex justify-center items-center">
         <div className='max-w-lg p-4'>
           <div className="mb-8">
-            <Image src="/brand/brand.png" alt="GranuloX Logo" width={60} height={60} className="bg-black dark:bg-[#141F1F] p-2 py-3 rounded-lg" />
+            <Image src="/brand/brand.png" alt="GranularX Logo" width={60} height={60} className="bg-black dark:bg-[#141F1F] p-2 py-3 rounded-lg" />
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold mb-2 text-[#141F1F] dark:text-white">Get Started</h1>
