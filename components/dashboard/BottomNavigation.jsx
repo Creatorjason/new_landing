@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Category, MouseCircle, EmptyWallet, Setting2 } from 'iconsax-react';
+import { Category, MouseCircle, EmptyWallet, Setting2, Messages1 } from 'iconsax-react';
 import { motion } from 'framer-motion';
 
 const BottomNavigation = () => {
@@ -12,7 +12,7 @@ const BottomNavigation = () => {
     { href: "/dashboard", icon: Category, label: "Home" },
     { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
     { href: "/dashboard/payment", icon: MouseCircle, label: "Payments" },
-    { href: "/dashboard/messages", icon: Setting2, label: "Messages" },
+    { href: "/dashboard/messages", icon: Messages1, label: "Messages" },
     { href: "/dashboard/settings", icon: Setting2, label: "Profile" },
   ];
 

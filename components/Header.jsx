@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 
 const links = [
   { href: '/features', label: 'Features' },
@@ -14,6 +15,7 @@ const links = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const { data: session } = useSession();
   const pathname = usePathname()
 
   useEffect(() => {
@@ -23,6 +25,16 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false, callbackUrl: '/' });
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle any error, perhaps show a notification to the user
+    }
+  };
 
   return (
     <>
@@ -57,14 +69,23 @@ export default function Header() {
               </Link>
             ))}
 
-            <div className="hidden md:flex font-medium items-center gap-x-6 ml-10">
-              <Link href={"/auth/signin"} className='text-[#141F1F] dark:text-gray-100'>
-                Login
-              </Link>
-              <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
-                Create Account
-              </Link>
-            </div>
+            {session ? (
+              <div className="hidden md:flex font-medium items-center gap-x-4 ml-6 mr-4">
+                <Link href={"/dashboard"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                  {session.user.username || 'User'}
+                </Link>
+                <button onClick={handleSignOut} className='text-red-500 hover:text-red-700 transition-all ease-in-out duration-200'>Sign out</button>
+              </div>
+            ) : (
+              <div className="hidden md:flex font-medium items-center gap-x-6 ml-10">
+                <Link href={"/auth/signin"} className='text-[#141F1F] dark:text-gray-100'>
+                  Login
+                </Link>
+                <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                  Create Account
+                </Link>
+              </div>
+            )}
           </div>
 
         <div className={`md:hidden ${isScrolled ? "text-[#141F1F] dark:text-[#7DF9FF]" : "text-gray-600 dark:text-gray-100"}`}>   
@@ -120,14 +141,23 @@ export default function Header() {
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-col gap-y-8 items-center justify-center">
-                <Link href={"/auth/signin"} className='text-white'>
-                  Login
-                </Link>
-                <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
-                  Create Account
-                </Link>
-              </div>
+              {session ? (
+                <div className="mt-8 flex flex-col gap-y-4 items-center justify-center">
+                  <Link href={"/dashboard"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                    {session.user.username || 'User'}
+                  </Link>
+                  <button onClick={handleSignOut} className='text-red-400 hover:text-red-700 transition-all ease-in-out duration-200'>Sign out</button>
+                </div>
+              ) : (
+                <div className="mt-8 flex flex-col gap-y-8 items-center justify-center">
+                  <Link href={"/auth/signin"} className='text-white'>
+                    Login
+                  </Link>
+                  <Link href={"/auth/signup"} className='flex items-center transition duration-300 ease-in-out gap-x-1 text-white dark:bg-gray-100 dark:text-[#141F1F] bg-[#141F1F] hover:bg-[#0d1414] p-2 px-5 rounded-full'>
+                    Create Account
+                  </Link>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

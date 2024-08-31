@@ -6,19 +6,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Notification } from 'iconsax-react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => setMounted(true), []);
 
   if (!mounted) return null;
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/auth/signin' });
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false, callbackUrl: '/auth/signin' });
+      router.push('/auth/signin');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle any error, perhaps show a notification to the user
+    }
   };
 
   return (
@@ -34,7 +42,6 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
               <span className="ml-2 text-lg md:text-xl font-semibold text-[#141F1F] dark:text-white">GranularX</span>
             </Link>
           </div>
-          
 
           {/* Desktop Menu */}
           <div className="flex items-center gap-x-2 md:gap-x-4">
@@ -90,21 +97,21 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
-                      className="origin-top-right absolute top-16 right-0 mt-2 w-48 flex flex-col p-4 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      className="origin-top-right absolute top-16 right-0 mt-2 w-48 flex flex-col p-4 px-2 rounded-md shadow-lg bg-white dark:bg-[#1C2626] ring-1 ring-black ring-opacity-5 focus:outline-none"
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="user-menu"
                     >
-                      <Link href="/dashboard/profile" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                        <ProfileCircle size={24} color="#333333" variant="Bulk"/>
+                      <Link href="/dashboard/profile" className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <ProfileCircle size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk"/>
                         <span>Profile</span>
                       </Link>
-                      <Link href="/dashboard/settings" className="flex items-center gap-x-2 pb-6 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                        <Setting2 size={24} color="#333333" variant="Bulk" />
+                      <Link href="/dashboard/settings" className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <Setting2 size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk" />
                         <span>Settings</span>
                       </Link>
-                      <button onClick={handleSignOut} className="flex items-center gap-x-2 pb-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
-                        <LogoutCurve size={24} color="#333333" variant="Bulk"/>
+                      <button onClick={handleSignOut} className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                        <LogoutCurve size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk"/>
                         <span>Log Out</span>
                       </button>
                     </motion.div>

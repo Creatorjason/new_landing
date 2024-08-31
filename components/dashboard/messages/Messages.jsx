@@ -82,7 +82,7 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="flex h-full transition-all ease-in-out duration-200 mb-10">
+    <div className="flex h-full transition-all ease-in-out duration-200">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-bold">All conversations ({chats.length})</h2>
@@ -107,7 +107,7 @@ const MessagesPage = () => {
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <h3 className="text-2xl font-bold mb-2">Granular SuperDM</h3>
+              <h3 className="text-2xl font-bold mb-2">GranularX SuperDM</h3>
               <p className="text-gray-600 dark:text-gray-400">
                 Send messages to your loved ones, make in-chat payments,
                 <br />access endless services and more...
