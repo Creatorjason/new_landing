@@ -12,6 +12,7 @@ const BottomNavigation = () => {
     { href: "/dashboard", icon: Category, label: "Home" },
     { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
     { href: "/dashboard/payment", icon: MouseCircle, label: "Payments" },
+    { href: "/dashboard/messages", icon: Setting2, label: "Messages" },
     { href: "/dashboard/settings", icon: Setting2, label: "Profile" },
   ];
 

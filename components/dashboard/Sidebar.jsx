@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Category, MouseCircle, EmptyWallet, Setting2 } from 'iconsax-react';
+import { Category, MouseCircle, EmptyWallet, Setting2, Messages1 } from 'iconsax-react';
 
 const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const pathname = usePathname();
@@ -25,6 +25,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               { href: "/dashboard", icon: Category, label: "Dashboard" },
               { href: "/dashboard/wallet", icon: EmptyWallet, label: "Wallet" },
               { href: "/dashboard/payment", icon: MouseCircle, label: "Payments" },
+              { href: "/dashboard/messages", icon: Messages1, label: "Messages" },
               { href: "/dashboard/settings", icon: Setting2, label: "Settings" },
             ].map(({ href, icon: Icon, label }) => (
               <li key={href} className="mb-2">

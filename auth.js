@@ -16,12 +16,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             uns: credentials.uns,
             password: credentials.password,
           });
-      
+     
           const user = response.data;
-      
+     
           if (user && user.status === 'SUCCESS') {
             return {
-              id: user.data.WalletID, // Using WalletID as the unique identifier
+              id: user.data.WalletID,
               username: user.data.Username,
               phoneNumber: user.data.Phonenumber,
               walletId: user.data.WalletID,
@@ -41,6 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.username = user.username;
         token.phoneNumber = user.phoneNumber;
         token.walletId = user.walletId;
+        // Set an expiration time for the token (e.g., 2 hours from now)
+        token.exp = Math.floor(Date.now() / 1000) + 120 * 60;
       }
       return token;
     },
@@ -51,6 +53,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         phoneNumber: token.phoneNumber,
         walletId: token.walletId,
       };
+      // Check if the token has expired
+      if (Date.now() / 1000 > token.exp) {
+        throw new Error('TokenExpired');
+      }
       return session;
     },
   },
@@ -58,4 +64,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/auth/signin",
   },
   secret: process.env.AUTH_SECRET,
+  events: {
+    async signOut({ session, token }) {
+      // Clear any server-side session data if needed
+    },
+  }
 });
