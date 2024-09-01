@@ -13,14 +13,11 @@ const ChatInput = () => {
 
   const handleSuccessfulTransfer = (transferDetails) => {
     setLastTransfer(transferDetails);
-    // Here you would typically send this information to your backend
-    // and then update the chat with the new message
     console.log('Transfer successful:', transferDetails);
   };
 
   const renderReceipt = () => {
     if (!lastTransfer) return null;
-
     return (
       <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-4">
         <h3 className="font-bold mb-2">Transfer Receipt</h3>
@@ -35,7 +32,7 @@ const ChatInput = () => {
   return (
     <>
       {renderReceipt()}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 sm:mb-0 mb-16"> {/* mb-16 ensures space for bottom navigation on mobile */}
         <div className="flex flex-col bg-gray-100 dark:bg-gray-800 rounded-md p-2">
           <div className='flex items-center justify-between'>
             <input
@@ -56,7 +53,7 @@ const ChatInput = () => {
             <button className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
               <VoiceCricle size={20} color="#FF8A65"/>
             </button>
-            <button 
+            <button
               className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               onClick={togglePaymentModal}
             >
@@ -68,8 +65,8 @@ const ChatInput = () => {
           </div>
         </div>
       </div>
-      <PayModal 
-        isOpen={isPaymentModalOpen} 
+      <PayModal
+        isOpen={isPaymentModalOpen}
         onClose={togglePaymentModal}
         onSuccessfulTransfer={handleSuccessfulTransfer}
       />

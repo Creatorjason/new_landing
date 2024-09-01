@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { chats } from '@/data/chats';  // Adjust the import path as necessary
 import { ArrowLeft2 } from 'iconsax-react';
 import ChatInput from './ChatInput';
@@ -34,33 +34,48 @@ const MessageItem = ({ avatar, name, message, time, pinned, unread, isSelected, 
   </div>
 );
 
-const ChatView = ({ chat, onBack }) => (
-  <div className="h-full flex transition-all ease-in-out duration-200 flex-col">
-    <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-      <button onClick={onBack} className="mr-4 sm:hidden">
-        <ArrowLeft2 size="24" />
-      </button>
-      <img src={chat.avatar} alt={chat.name} className="w-10 h-10 rounded-full mr-3" />
-      <div>
-        <h2 className="text-lg md:text-xl font-bold">{chat.name}</h2>
-        <small className='text-[#27962b] bg-[#11c0171a] px-2.5 py-1 text-xs rounded-full'>Active</small>
+const ChatView = ({ chat, onBack }) => {
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [chat.messages]);
+
+  return (
+    <div className="h-full flex flex-col transition-all ease-in-out duration-200">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
+        <button onClick={onBack} className="mr-4 sm:hidden">
+          <ArrowLeft2 size="24" />
+        </button>
+        <img src={chat.avatar} alt={chat.name} className="w-10 h-10 rounded-full mr-3" />
+        <div>
+          <h2 className="text-lg md:text-xl font-bold">{chat.name}</h2>
+          <small className='text-[#27962b] bg-[#11c0171a] px-2.5 py-1 text-xs rounded-full'>Active</small>
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 pb-24 sm:pb-4"> {/* Added padding to ensure last message is visible */}
+          {chat.messages.map((message) => (
+            <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
+              <div className={`inline-block p-3 rounded-lg ${message.sender === 'You' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>
+                <p className='text-[13px]'>{message.content}</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {new Date(message.timestamp).toLocaleTimeString()}
+              </p>
+            </div>
+          ))}
+          <div ref={messagesEndRef} /> {/* This empty div is used to scroll to the bottom */}
+        </div>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800">
+        <ChatInput />
       </div>
     </div>
-    <div className="flex-1 overflow-y-auto p-4">
-      {chat.messages.map((message) => (
-        <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
-          <div className={`inline-block p-3 rounded-lg ${message.sender === 'You' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>
-            <p className='text-[13px]'>{message.content}</p>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            {new Date(message.timestamp).toLocaleTimeString()}
-          </p>
-        </div>
-      ))}
-    </div>
-    <ChatInput />
-  </div>
-);
+  );
+}
 
 const MessagesPage = () => {
   const [selectedChat, setSelectedChat] = useState(null);
