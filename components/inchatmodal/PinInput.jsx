@@ -16,7 +16,7 @@ const PinInput = ({ pin, setPin }) => {
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-4 mb-6 mx-auto max-w-[260px]">
+      <div className="flex flex-wrap items-center justify-center gap-4 mb-6 mx-auto max-w-[280px]">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '←'].map((num, index) => (
           <button
             key={index}

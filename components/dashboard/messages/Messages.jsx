@@ -1,20 +1,31 @@
-"use client"
-import React, { useState, useEffect, useRef } from 'react';
-import { chats } from '@/data/chats';  // Adjust the import path as necessary
-import { ArrowLeft2 } from 'iconsax-react';
-import ChatInput from './ChatInput';
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import { chats } from "@/data/chats"; // Adjust the import path as necessary
+import { ArrowLeft2 } from "iconsax-react";
+import ChatInput from "./ChatInput";
 
 const truncateMessage = (message, limit = 50) => {
-  const words = message.split(' ');
+  const words = message.split(" ");
   if (words.length > 5) {
-    return words.slice(0, 5).join(' ') + '...';
+    return words.slice(0, 5).join(" ") + "...";
   }
-  return message.length > limit ? message.slice(0, limit) + '...' : message;
+  return message.length > limit ? message.slice(0, limit) + "..." : message;
 };
 
-const MessageItem = ({ avatar, name, message, time, pinned, unread, isSelected, onClick }) => (
-  <div 
-    className={`flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${isSelected ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
+const MessageItem = ({
+  avatar,
+  name,
+  message,
+  time,
+  pinned,
+  unread,
+  isSelected,
+  onClick,
+}) => (
+  <div
+    className={`flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
+      isSelected ? "bg-gray-200 dark:bg-gray-700" : ""
+    }`}
     onClick={onClick}
   >
     <img src={avatar} alt={name} className="w-10 h-10 rounded-full mr-3" />
@@ -23,7 +34,9 @@ const MessageItem = ({ avatar, name, message, time, pinned, unread, isSelected, 
         <h3 className="font-semibold truncate">{name}</h3>
         <span className="text-sm text-gray-500 ml-2 flex-shrink-0">{time}</span>
       </div>
-      <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{truncateMessage(message)}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+        {truncateMessage(message)}
+      </p>
     </div>
     {pinned && <span className="ml-2 text-blue-500 flex-shrink-0">📌</span>}
     {unread > 0 && (
@@ -34,7 +47,12 @@ const MessageItem = ({ avatar, name, message, time, pinned, unread, isSelected, 
   </div>
 );
 
-const ChatView = ({ chat, onBack }) => {
+const ChatView = ({
+  chat,
+  onBack,
+  selectedChat,
+  handleUpdateChat,
+}) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -44,7 +62,7 @@ const ChatView = ({ chat, onBack }) => {
   useEffect(scrollToBottom, [chat.messages]);
 
   return (
-    <div className="h-full flex flex-col transition-all ease-in-out duration-200">
+    <div className="h-full flex flex-col transition-all ease-in-out duration-200 relative">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
         <button onClick={onBack} className="mr-4 sm:hidden">
           <ArrowLeft2 size="24" />
@@ -55,8 +73,8 @@ const ChatView = ({ chat, onBack }) => {
           <small className='text-[#27962b] bg-[#11c0171a] px-2.5 py-1 text-xs rounded-full'>Active</small>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 pb-24 sm:pb-4"> {/* Added padding to ensure last message is visible */}
+      <div className="flex-1">
+        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll max-h-[500px] md:h-[420px] sm:pb-4">
           {chat.messages.map((message) => (
             <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
               <div className={`inline-block p-3 rounded-lg ${message.sender === 'You' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>
@@ -67,18 +85,19 @@ const ChatView = ({ chat, onBack }) => {
               </p>
             </div>
           ))}
-          <div ref={messagesEndRef} /> {/* This empty div is used to scroll to the bottom */}
+          <div ref={messagesEndRef} />
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800">
-        <ChatInput />
+      <div className="relative sm:static sm:mb-4"> {/* Wrap the input with a relative div */}
+        <ChatInput selectedChatId={selectedChat?.id} onUpdateChat={handleUpdateChat} />
       </div>
     </div>
   );
-}
+};
 
 const MessagesPage = () => {
   const [selectedChat, setSelectedChat] = useState(null);
+  const [chatsData, setChatsData] = useState(chats); // Added state to manage chats
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -96,14 +115,19 @@ const MessagesPage = () => {
     setSelectedChat(null);
   };
 
+  const handleUpdateChat = (updatedChats) => {
+    setChatsData(updatedChats);
+    setSelectedChat(updatedChats.find(chat => chat.id === selectedChat.id));
+  };
+
   return (
     <div className="flex h-full transition-all ease-in-out duration-200">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold">All conversations ({chats.length})</h2>
+          <h2 className="text-xl font-bold">All conversations ({chatsData.length})</h2>
         </div>
         <div className="overflow-y-auto h-[calc(100vh-230px)]">
-          {chats.map((chat) => (
+          {chatsData.map((chat) => (
             <MessageItem 
               key={chat.id}
               avatar={chat.avatar}
@@ -118,7 +142,7 @@ const MessagesPage = () => {
       </div>
       <div className={`w-full sm:w-2/3 bg-gray-100 dark:bg-gray-800 ${isMobile && !selectedChat ? 'hidden' : 'block'}`}>
         {selectedChat ? (
-          <ChatView chat={selectedChat} onBack={handleBack} />
+          <ChatView chat={selectedChat} onBack={handleBack} selectedChat={selectedChat} handleUpdateChat={handleUpdateChat} />
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, Send } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
+import { chats } from '../../../data/chats'; // Import the chats array
 
-const ChatInput = () => {
+const ChatInput = ({ selectedChatId, onUpdateChat }) => {
   const [message, setMessage] = useState('');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [lastTransfer, setLastTransfer] = useState(null);
@@ -13,25 +14,32 @@ const ChatInput = () => {
 
   const handleSuccessfulTransfer = (transferDetails) => {
     setLastTransfer(transferDetails);
-    console.log('Transfer successful:', transferDetails);
-  };
 
-  const renderReceipt = () => {
-    if (!lastTransfer) return null;
-    return (
-      <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-4">
-        <h3 className="font-bold mb-2">Transfer Receipt</h3>
-        <p>Amount: ₦{lastTransfer.amount.toLocaleString()}</p>
-        <p>Recipient: {lastTransfer.recipientName}</p>
-        <p>Date: {new Date(lastTransfer.date).toLocaleString()}</p>
-        <p>Status: Successful</p>
-      </div>
-    );
+    // Create the receipt message
+    const receiptMessage = {
+      id: Date.now(), // Use a unique ID, could use a better ID generation approach
+      sender: "You",
+      content: `Transfer successful! Amount: ₦${transferDetails.amount.toLocaleString()}, Recipient: ${transferDetails.recipientName}, Date: ${new Date(transferDetails.date).toLocaleString()}`,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Find the chat by ID and update it
+    const updatedChats = chats.map(chat => {
+      if (chat.id === selectedChatId) {
+        return {
+          ...chat,
+          messages: [...chat.messages, receiptMessage],
+        };
+      }
+      return chat;
+    });
+
+    // Update the chat state in the parent component
+    onUpdateChat(updatedChats);
   };
 
   return (
     <>
-      {renderReceipt()}
       <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 sm:mb-0 mb-16"> {/* mb-16 ensures space for bottom navigation on mobile */}
         <div className="flex flex-col bg-gray-100 dark:bg-gray-800 rounded-md p-2">
           <div className='flex items-center justify-between'>
