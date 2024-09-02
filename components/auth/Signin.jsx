@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
 
 const Signin = () => {
@@ -32,6 +33,24 @@ const Signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  //   try {
+  //     const response = await axios.post('https://api.granularx.com/auth/signin?platform=web', {
+  //       uns: formData.uns,
+  //       password: formData.password,
+  //     });
+  
+  //     if (response.data?.error) {
+  //       toast.error(response.data.error);
+  //     } else if (response.data?.url) {
+  //       router.push(response.data.url);
+  //     } else {
+  //       router.push("/dashboard");
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast.error("Failed to authenticate");
+  //   }
+  // };
 
     try {
       const result = await signIn("credentials", {
@@ -40,10 +59,15 @@ const Signin = () => {
         password: formData.password,
       });
 
-      if (result.error) {
+      if (result?.error) {
         toast.error(result.error);
+      } else if (result?.url) {
+        router.push(result.url);
       } else {
         router.push("/dashboard");
+        // for testing purposes only
+        // store UNS in localstorage
+        localStorage.setItem("uns", formData.uns);
       }
     } catch (error) {
       toast.error("Failed to authenticate");
