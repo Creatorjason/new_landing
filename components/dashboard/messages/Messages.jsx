@@ -75,7 +75,7 @@ const ChatView = ({
         </div>
       </div>
       <div className="flex-1">
-        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll max-h-[500px] md:h-[420px] sm:pb-4">
+        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll h-[470px] md:h-[420px] sm:pb-4">
           {chat.messages.map((message) => (
             <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
               <div className={`${message.sender === 'You' ? 'flex items-end justify-end text-right' : 'flex items-end'}`}>
@@ -135,7 +135,7 @@ const MessagesPage = () => {
             <input type="text" name="" id="" placeholder="Search Messages" className="bg-transparent outline-none flex-1 text-sm font-normal" />
           </div>
         </div>
-        <div className="overflow-y-auto h-[calc(100vh-280px)] pl-4">
+        <div className="overflow-y-auto h-[calc(100vh-350px)] md:h-[calc(100vh-280px)] pl-0 md:pl-4">
           {chatsData.map((chat) => (
             <MessageItem 
               key={chat.id}

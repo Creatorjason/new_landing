@@ -40,7 +40,7 @@ const ChatInput = ({ selectedChatId, onUpdateChat }) => {
 
   return (
     <>
-      <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1C2626] sm:mb-0 mb-16"> {/* mb-16 ensures space for bottom navigation on mobile */}
+      <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1C2626] mb-0">
         <div className="flex flex-col bg-gray-50 dark:bg-[#141F1F] rounded-md p-2">
           <div className='flex items-center justify-between'>
             <input
