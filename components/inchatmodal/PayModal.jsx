@@ -7,6 +7,8 @@ import ConfirmTransfer from './ConfirmTransfer';
 import PinInput from './PinInput';
 import TransferSuccess from './TransferSuccess';
 import { CloseCircle } from 'iconsax-react';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
 const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   const [step, setStep] = useState(1);
@@ -15,7 +17,8 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   const [recipientName, setRecipientName] = useState('');
   const [pin, setPin] = useState('');
   const modalRef = useRef(null);
-
+  const { data: session } = useSession();
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -47,18 +50,36 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
     else if (step === 3) setStep(4);
   };
 
-  const handlePinSubmit = () => {
+  const handlePinSubmit = async () => {
     if (pin.length === 4) {
-      setStep(5);
-      setTimeout(() => {
-        onSuccessfulTransfer({
+      try {
+        const response = await axios.post('https://api.granularx.com/wallet/transfer', {
+          sender_wallet_id: session.user.walletId,
+          receiver_wallet_id: "d429698f201fc76bc3dbef55026c6d30e02ed6d5ba82ecafcdf5871f05fa6b1e",
           amount: parseFloat(amount),
-          recipientName,
-          date: new Date().toISOString(),
         });
-        resetModal();
-        onClose();
-      }, 2000);
+  
+        const data = await response.json();
+  
+        if (response.data.status === "SUCCESS") {
+          setStep(5);
+          setTimeout(() => {
+            onSuccessfulTransfer({
+              amount: parseFloat(amount),
+              recipientName,
+              date: new Date().toISOString(),
+            });
+            resetModal();
+            onClose();
+          }, 2000);
+        } else {
+          console.error('Error transferring funds:', data.error);
+          // Handle error appropriately
+        }
+      } catch (error) {
+        console.error('Error making API request:', error);
+        // Handle error appropriately
+      }
     }
   };
 
@@ -71,7 +92,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
       case 3:
         return <ConfirmTransfer amount={formattedAmount} recipientName={recipientName} />;
       case 4:
-        return <PinInput pin={pin} setPin={setPin} />;
+        return <PinInput pin={pin} setPin={setPin} recipientName={recipientName} />;
       case 5:
         return <TransferSuccess amount={formattedAmount} recipientName={recipientName} />;
       default:

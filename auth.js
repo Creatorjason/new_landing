@@ -1,40 +1,46 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
+    Credentials({
       credentials: {
         uns: { label: "UNS", type: "text", placeholder: "Username or Email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      authorize: async (credentials) => {
         try {
-          const response = await axios.post("https://api.granularx.com/auth/signin?platform=web", {
-            uns: credentials.uns,
-            password: credentials.password,
+          const uns = String(credentials.uns); 
+          const password = String(credentials.password); 
+
+          const res = await axios.post("https://api.granularx.com/auth/signin?platform=web", {
+            uns: uns,
+            password: password,
           });
-     
-          const user = response.data;
-     
-          if (user && user.status === 'SUCCESS') {
+    
+          const user = res.data; // Access data directly from res.data with Axios
+  
+          if (user.status === "SUCCESS") {
             return {
               id: user.data.WalletID,
               username: user.data.Username,
               phoneNumber: user.data.Phonenumber,
               walletId: user.data.WalletID,
             };
-          } else {
-            return null;
+          } else if (user.status === "FAILED") {
+            console.log(user.data);
+            throw new Error(user.data || "An error occurred during authentication");
           }
         } catch (error) {
-          throw new Error(error.response?.data?.error || "Authentication failed");
+          throw new Error(error || "An error occurred during authentication");
         }
       }
     }),
   ],
+  pages: {
+    signIn: "/auth/signin", // Custom sign-in page
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -60,13 +66,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  pages: {
-    signIn: "/auth/signin",
-  },
-  secret: process.env.AUTH_SECRET,
-  events: {
-    async signOut({ session, token }) {
-      // Clear any server-side session data if needed
-    },
-  }
 });

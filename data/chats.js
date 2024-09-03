@@ -21,11 +21,11 @@ export const chats = [
   {
     id: 2,
     avatar: "/flags/usa.png",
-    name: "Paul Epstein",
+    name: "Bards.IV.Smart",
     messages: [
-      { id: 1, sender: "Paul Epstein", content: "How can we help you today?", timestamp: "2023-08-31T14:45:00Z" },
+      { id: 1, sender: "Bards.IV.Smart", content: "How can we help you today?", timestamp: "2023-08-31T14:45:00Z" },
       { id: 2, sender: "You", content: "I'm having trouble with the latest update. Can you assist?", timestamp: "2023-08-31T14:46:00Z" },
-      { id: 3, sender: "Paul Epstein", content: "Of course! What specific issues are you encountering?", timestamp: "2023-08-31T14:47:00Z" },
+      { id: 3, sender: "Bards.IV.Smart", content: "Of course! What specific issues are you encountering?", timestamp: "2023-08-31T14:47:00Z" },
       { id: 4, sender: "You", content: "The app keeps crashing when I try to access the settings menu.", timestamp: "2023-08-31T14:48:00Z" },
     ],
   },

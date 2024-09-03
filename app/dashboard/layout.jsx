@@ -1,9 +1,10 @@
 "use client"
+
 import React, { useState, useEffect } from 'react';
 import Sidebar from "@/components/dashboard/Sidebar"
 import Navbar from "@/components/dashboard/Navbar"
 import BottomNavigation from "@/components/dashboard/BottomNavigation"
-import { SessionProvider, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 function DashboardContent({ children }) {
@@ -12,7 +13,6 @@ function DashboardContent({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return; // Do nothing while loading
     if (!session) router.push("/auth/signin");
   }, [session, status, router]);
 
@@ -44,8 +44,6 @@ function DashboardContent({ children }) {
 
 export default function DashboardLayout({ children }) {
   return (
-    <SessionProvider>
-      <DashboardContent>{children}</DashboardContent>
-    </SessionProvider>
+    <DashboardContent>{children}</DashboardContent>
   );
 }

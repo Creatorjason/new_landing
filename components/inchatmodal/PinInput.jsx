@@ -1,6 +1,7 @@
 import React from 'react';
 
-const PinInput = ({ pin, setPin }) => {
+const PinInput = ({ pin, setPin, recipientName }) => {
+  
   return (
     <div className="flex-grow flex flex-col justify-center items-center">
       <h3 className="text-xl mb-4">Enter PIN</h3>

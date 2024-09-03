@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 const links = [
   { href: '/features', label: 'Features' },
@@ -17,6 +17,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const { data: session } = useSession();
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +30,7 @@ export default function Header() {
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false, callbackUrl: '/' });
+      console.log("Signout Successful", session);
       router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);
