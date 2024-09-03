@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
 
 const Signin = () => {
@@ -40,7 +41,25 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    //   try {
+  //     const response = await axios.post('https://api.granularx.com/auth/signin?platform=web', {
+  //       uns: formData.uns,
+  //       password: formData.password,
+  //     });
   
+  //     if (response.data?.error) {
+  //       toast.error(response.data.error);
+  //     } else if (response.data?.url) {
+  //       router.push(response.data.url);
+  //     } else {
+  //       router.push("/dashboard");
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast.error("Failed to authenticate");
+  //   }
+  // };
+
     toast.promise(
       signIn('credentials', {
         redirect: false,
