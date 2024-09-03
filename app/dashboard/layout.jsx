@@ -32,7 +32,7 @@ function DashboardContent({ children }) {
         
         {/* Main content */}
         <div className="flex-1 text-[#141F1F] dark:text-white overflow-y-auto pb-16 sm:pb-0">
-          <div className="p-4 md:p-8">
+          <div className="p-4 md:p-8 md:pt-0">
             {children}
           </div>
         </div>

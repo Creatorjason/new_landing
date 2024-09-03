@@ -15,7 +15,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   };
 
   return (
-    <div className={`w-64 bg-white dark:bg-[#1C2626] transition-all duration-300 ease-in-out sm:relative sm:w-64 md:w-1/4 lg:w-1/5 ${
+    <div className={`w-64 bg-white dark:bg-[#1C2626] rounded-tr-lg transition-all duration-300 ease-in-out sm:relative sm:w-64 md:w-1/4 lg:w-1/5 ${
       isMobileMenuOpen ? "fixed sm:relative sm:translate-x-0 bottom-0 top-24 z-50 translate-x-0" : "fixed sm:relative -translate-x-full sm:translate-x-0"}`}
     >
       <div className="p-4">

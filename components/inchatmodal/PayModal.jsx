@@ -115,9 +115,9 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white dark:bg-gray-800 h-full w-full sm:w-96"
+            className="bg-white dark:bg-[#141f1f] h-full w-full sm:w-[400px]"
           >
-            <div className="p-6 h-[90%] md:h-full flex flex-col">
+            <div className="p-6 md:h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 {step > 1 && (
                   <button onClick={() => setStep(step - 1)} className="mr-4">
