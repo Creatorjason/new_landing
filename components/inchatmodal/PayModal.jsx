@@ -9,6 +9,7 @@ import TransferSuccess from './TransferSuccess';
 import { CloseCircle } from 'iconsax-react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   const [step, setStep] = useState(1);
@@ -54,15 +55,14 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
     if (pin.length === 4) {
       try {
         const response = await axios.post('https://api.granularx.com/wallet/transfer', {
-          sender_wallet_id: session.user.walletId,
-          receiver_wallet_id: "d429698f201fc76bc3dbef55026c6d30e02ed6d5ba82ecafcdf5871f05fa6b1e",
-          amount: parseFloat(amount),
+          "sender_wallet_id":"Bards.IV.Smart",
+          "receiver_wallet_id":"Angel.II.Good",
+          "amount": 5000
         });
-  
-        const data = await response.json();
-  
+
         if (response.data.status === "SUCCESS") {
           setStep(5);
+          toast.success('Transfer successful!');
           setTimeout(() => {
             onSuccessfulTransfer({
               amount: parseFloat(amount),
@@ -73,13 +73,31 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
             onClose();
           }, 2000);
         } else {
-          console.error('Error transferring funds:', data.error);
-          // Handle error appropriately
+          console.error('Error transferring funds:', response.data.error);
+          toast.error(response.data.error || 'An error occurred during transfer. Please try again.');
+          setStep(1); // Reset to first step on error
         }
       } catch (error) {
         console.error('Error making API request:', error);
-        // Handle error appropriately
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          toast.error(error.response.data.error || 'An error occurred during transfer. Please try again.');
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response received:', error.request);
+          toast.error('No response from server. Please check your internet connection and try again.');
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.error('Error setting up request:', error.message);
+          toast.error('An error occurred while setting up the transfer. Please try again.');
+        }
+        setStep(1); // Reset to first step on error
       }
+    } else {
+      toast.error('Please enter a valid 4-digit PIN.');
     }
   };
 
@@ -117,7 +135,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white dark:bg-[#141f1f] h-full w-full sm:w-[400px]"
           >
-            <div className="p-6 md:h-full flex flex-col">
+            <div className="p-6 h-[90%] md:h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 {step > 1 && (
                   <button onClick={() => setStep(step - 1)} className="mr-4">

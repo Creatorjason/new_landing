@@ -63,7 +63,7 @@ const ChatView = ({
   useEffect(scrollToBottom, [chat.messages]);
 
   return (
-    <div className="h-full flex flex-col transition-all ease-in-out duration-200 relative">
+    <div className="h-[90%] md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
         <button onClick={onBack} className="mr-4 sm:hidden">
           <ArrowLeft2 size="24" />
@@ -149,7 +149,7 @@ const MessagesPage = () => {
           ))}
         </div>
       </div>
-      <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block'}`}>
+      <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
         {selectedChat ? (
           <ChatView chat={selectedChat} onBack={handleBack} selectedChat={selectedChat} handleUpdateChat={handleUpdateChat} />
         ) : (
