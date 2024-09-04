@@ -27,7 +27,7 @@ export default function RootLayout({
           </SessionProvider>
 
           <Toaster />
-          {/* <ThemeToggleButton /> */}
+          <ThemeToggleButton />
         </ThemeProvider>
       </body>
     </html>
