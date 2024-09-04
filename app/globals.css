@@ -98,3 +98,7 @@ body {
 .gradient-01 {
   background: linear-gradient(203.85deg, #141F1F -0.89%, #2E5252 18.41%, #141F1F 50.32%, #141F1F 50.81%, #28676A 77.78%, #141F1F 100%);
 }
+
+.verses-banner {
+  background-image: url("/others/verses.jpeg");
+}
