@@ -12,10 +12,6 @@ function DashboardContent({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!session) router.push("/auth/signin");
-  }, [session, status, router]);
-
   if (status === 'loading') {
     return <div className='h-screen flex items-center justify-center'>Loading...</div>; // Or your custom loading component
   }
