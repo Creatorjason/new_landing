@@ -5,6 +5,8 @@ import { ArrowLeft2, SearchNormal1 } from "iconsax-react";
 import Image from "next/image";
 import { Trash } from "iconsax-react";
 import { ToggleOffCircle } from "iconsax-react";
+import MailboxPasswordModal from "./MailboxPasswordModal";  
+import toast from "react-hot-toast";
 
 const truncateMessage = (message, limit = 50) => {
   const words = message.split(" ");
@@ -109,9 +111,11 @@ const MailboxView = ({ mailbox, onBack, selectedItem, onItemSelect, returnToList
 
 const Mailbox = () => {
   const [selectedMailbox, setSelectedMailbox] = useState(null);
-  const [mailboxData, setMailboxData] = useState(mailbox); // Added state to manage mailboxs
+  const [mailboxData, setMailboxData] = useState(mailbox);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -121,14 +125,33 @@ const Mailbox = () => {
   }, []);
 
   const handleMailboxSelect = (mailbox) => {
-    setSelectedMailbox(mailbox);
-    setSelectedItem(null); // Reset the selected item when switching mailboxes
+    if (!isAuthenticated) {
+      setIsModalOpen(true);
+    } else {
+      setSelectedMailbox(mailbox);
+      setSelectedItem(null);
+    }
   };
   
   const setToNull = () => {
     setSelectedItem(null); // Reset the selected item when switching mailboxes
   }
   
+  const handlePasswordSubmit = (password) => {
+    // In a real application, you would validate the password against a backend service
+    if (password === "correct_password") {
+      setIsAuthenticated(true);
+      setIsModalOpen(false);
+      // If a mailbox was previously selected, set it now
+      if (selectedMailbox) {
+        setSelectedMailbox(selectedMailbox);
+      }
+    } else {
+      // Handle incorrect password (e.g., show an error message)
+      toast.error("Incorrect password. Please try again.");
+    }
+  };
+
   const handleItemSelect = (item) => {
     setSelectedItem(item);
   };
@@ -139,6 +162,12 @@ const Mailbox = () => {
 
   return (
     <div className="flex gap-x-4 h-full transition-all ease-in-out duration-200 p-2">
+      <MailboxPasswordModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handlePasswordSubmit}
+      />
+
       <div className={`w-full sm:w-1/3 rounded-lg bg-white dark:bg-[#1C2626] dark:border-gray-700 ${isMobile && selectedMailbox ? 'hidden' : 'block'}`}>
         <div className="p-4">
           <h2 className="text-lg font-bold flex items-center gap-x-2 mb-4">Mailbox <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{mailboxData.length}</span></h2>
@@ -160,7 +189,7 @@ const Mailbox = () => {
       </div>
 
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedMailbox ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
-        {selectedMailbox ? (
+        {isAuthenticated && selectedMailbox ? (
           <MailboxView 
             mailbox={selectedMailbox} 
             onBack={handleBack} 
