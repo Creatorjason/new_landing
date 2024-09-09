@@ -16,7 +16,7 @@ const VersesModal = ({ isOpen, onClose, title, children }) => {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-lg w-full max-w-md mx-4 md:mx-0"
+            className="bg-white dark:bg-[#1C2626] rounded-lg w-full max-w-md mx-4 md:mx-0"
           >
             <div className="flex justify-between items-center pt-4 pb-2 px-6">
               <h2 className="text-lg font-semibold">{title}</h2>

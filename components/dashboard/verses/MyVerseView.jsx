@@ -10,7 +10,7 @@ const VerseItem = ({ title, description, price, imageSrc }) => {
   const [quantity, setQuantity] = useState(1);
 
   return (
-    <div className="flex items-center py-4 border-b border-gray-200">
+    <div className="flex items-center py-4 border-b border-gray-200 dark:border-gray-400">
       <Image src={imageSrc} alt={title} width={70} height={70} className="object-cover mr-4" />
       <div className="flex-grow">
         <h3 className="font-semibold text-base">{title}</h3>
@@ -24,7 +24,7 @@ const VerseItem = ({ title, description, price, imageSrc }) => {
           className="appearance-none text-sm bg-transparent border border-[#71717A] rounded-md py-2 pl-2 outline-none pr-8 cursor-pointer"
         >
           {[1, 2, 3, 4, 5].map((num) => (
-            <option key={num} value={num}>
+            <option key={num} value={num} className='dark:bg-[#1C2626]'>
               {num}
             </option>
           ))}
@@ -61,16 +61,16 @@ const ProductForm = ({ onSubmit }) => {
         </div>
       </div>
       <div>
-        <label htmlFor="product-name" className="block text-sm font-medium text-gray-700">Product Name <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-name" id="product-name" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product name" />
+        <label htmlFor="product-name" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Name <span className='text-red-600'>*</span></label>
+        <input type="text" name="product-name" id="product-name" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product name" />
       </div>
       <div>
-        <label htmlFor="product-price" className="block text-sm font-medium text-gray-700">Product Price <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product price" />
+        <label htmlFor="product-price" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Price <span className='text-red-600'>*</span></label>
+        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product price" />
       </div>
       <div>
-        <label htmlFor="product-color" className="block text-sm font-medium text-gray-700">Product Color <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product color" />
+        <label htmlFor="product-color" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Color <span className='text-red-600'>*</span></label>
+        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product color" />
       </div>
       <div>
         <button type="submit" className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#141f1f]">
@@ -90,16 +90,16 @@ const VerseForm = ({ onSubmit }) => {
   return (
     <form className="flex flex-col gap-y-6 p-2" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="verse-name" className="block text-sm font-medium text-gray-700">Name <span className='text-red-600'>*</span></label>
-        <input type="text" name="verse-name" id="verse-name" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter name" />
+        <label htmlFor="verse-name" className="block text-sm font-medium text-gray-700 dark:text-gray-50">Name <span className='text-red-600'>*</span></label>
+        <input type="text" name="verse-name" id="verse-name" className="mt-1 block w-full border border-gray-300 dark:bg-[#141F1F] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter name" />
       </div>
       <div>
-        <label htmlFor="verse-description" className="block text-sm font-medium text-gray-700">Description <span className='text-red-600'>*</span></label>
-        <textarea name="verse-description" id="verse-description" rows="3" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 outline-none resize-none sm:text-sm" placeholder="Enter Description"></textarea>
+        <label htmlFor="verse-description" className="block text-sm font-medium text-gray-700 dark:text-gray-50">Description <span className='text-red-600'>*</span></label>
+        <textarea name="verse-description" id="verse-description" rows="3" className="mt-1 block w-full border border-gray-300 dark:bg-[#141F1F] rounded-md shadow-sm p-3 outline-none resize-none sm:text-sm" placeholder="Enter Description"></textarea>
       </div>
       <div>
-        <label htmlFor="verse-sector" className="block text-sm font-medium text-gray-700">Sector <span className='text-red-600'>*</span></label>
-        <select name="verse-sector" id="verse-sector" className="mt-1 block w-full p-3 px-2 text-base border border-gray-300 outline-none sm:text-sm rounded-md">
+        <label htmlFor="verse-sector" className="block text-sm font-medium text-gray-700 dark:text-gray-50">Sector <span className='text-red-600'>*</span></label>
+        <select name="verse-sector" id="verse-sector" className="mt-1 block w-full p-3 px-2 text-base border border-gray-300 dark:bg-[#141F1F] outline-none sm:text-sm rounded-md">
           <option>Business</option>
           <option>Technology</option>
           <option>Finance</option>
@@ -107,7 +107,7 @@ const VerseForm = ({ onSubmit }) => {
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Do you want a soft servant to manage and automate your verse?</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-50">Do you want a soft servant to manage and automate your verse?</label>
         <div className="mt-2 flex flex-col gap-y-1">
           <label className="inline-flex items-center">
             <input type="radio" className="form-radio" name="soft-servant" value="yes" />
@@ -139,7 +139,7 @@ const SuccessMessage = ({ title, message, onClose }) => (
       <Image src="/confetti.svg" alt="Success" width={64} height={64} />
     </div>
     <h2 className="text-lg md:text-2xl font-bold mb-2">{title}</h2>
-    <p className="text-gray-600 text-sm md:text-base mb-6">{message}</p>
+    <p className="text-gray-600 dark:text-gray-200 text-sm md:text-base mb-6">{message}</p>
     <button
       onClick={onClose}
       className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#141f1f]"
@@ -202,7 +202,7 @@ const MyVerseView = () => {
       </div>
 
       {/* List goes here */}
-      <div className="bg-white rounded-lg shadow-md p-6 my-6 mt-8">
+      <div className="bg-white dark:bg-[#1C2626] rounded-lg shadow-md p-6 my-6 mt-8">
         {verses.map((verse) => (
           <VerseItem key={verse.id} {...verse} />
         ))}
