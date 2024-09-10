@@ -17,7 +17,7 @@ const PowerCard = ({ icon, title, description, gradient, index }) => (
       transform: `translate(${index % 2 === 0 ? '-4px' : '4px'}, ${index < 2 ? '-4px' : '4px'})`,
     }}
   >
-    <Card className={`${gradient} border-none shadow-md hover:shadow-xl transition-shadow duration-300 bg-opacity-10`}>
+    <Card className={`${gradient} border dark:border-[#1C2626] shadow-md hover:shadow-xl transition-shadow duration-300`}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           {icon}
@@ -64,25 +64,25 @@ const SoftServant = () => {
       icon: <Chart21 size={24} variant="Bold" />,
       title: "Predictive Insights",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam feugiat nullam consectetur placerat pellentesque ut massa volutpat at.",
-      gradient: "bg-gradient-to-br from-yellow-400 to-transparent dark:from-yellow-600"
+      gradient: "bg-gray-50 dark:bg-[#1C2626]"
     },
     {
       icon: <Speedometer size={24} variant="Bold" />,
       title: "Fastest Speed",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam feugiat nullam consectetur placerat pellentesque ut massa volutpat at.",
-      gradient: "bg-gradient-to-br from-blue-400 to-transparent dark:from-blue-600"
+      gradient: "bg-gray-50 dark:bg-[#1C2626]"
     },
     {
       icon: <Data size={24} variant="Bold" />,
       title: "Filtered Data",
       description: "Eleifend nullam consectetur placerat pellentesque ut massa volutpat at. Diam premium orci dui sagittis. Nomen quisque elit amet, consectetur elit.",
-      gradient: "bg-gradient-to-br from-green-400 to-transparent dark:from-green-600"
+      gradient: "bg-gray-50 dark:bg-[#1C2626]"
     },
     {
       icon: <Cloud size={24} variant="Bold" />,
       title: "Everything in Cloud",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam feugiat nullam consectetur placerat pellentesque ut massa volutpat at.",
-      gradient: "bg-gradient-to-br from-pink-400 to-transparent dark:from-pink-600"
+      gradient: "bg-gray-50 dark:bg-[#1C2626]"
     },
   ];
 
