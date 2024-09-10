@@ -19,7 +19,7 @@ const VersesTabView = () => {
         />
 
         <button
-          className={`relative z-[3] py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
+          className={`relative z-0 py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
             activeTab === 'myVerse' ? 'text-white' : 'text-gray-700'
           }`}
           onClick={() => setActiveTab('myVerse')}
@@ -27,7 +27,7 @@ const VersesTabView = () => {
           My Verse
         </button>
         <button
-          className={`relative z-[3] py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
+          className={`relative z-0 py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
             activeTab === 'peerBank' ? 'text-white' : 'text-gray-700'
           }`}
           onClick={() => setActiveTab('peerBank')}

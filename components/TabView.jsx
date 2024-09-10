@@ -19,7 +19,7 @@ const TabView = () => {
         />
 
         <button
-          className={`relative z-10 py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
+          className={`relative py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
             activeTab === 'regular' ? 'text-white' : 'text-gray-700'
           }`}
           onClick={() => setActiveTab('regular')}
@@ -27,7 +27,7 @@ const TabView = () => {
           Regular
         </button>
         <button
-          className={`relative z-10 py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
+          className={`relative py-1.5 px-10 rounded-full text-sm font-medium transition-colors ${
             activeTab === 'peerBank' ? 'text-white' : 'text-gray-700'
           }`}
           onClick={() => setActiveTab('peerBank')}
