@@ -37,7 +37,7 @@ const BottomNavigation = () => {
       label: "Management",
       subItems: [
         { href: "/dashboard/verses", label: "Verses" },
-        { href: "/dashboard/soft-servants", label: "Soft Servants" },
+        { href: "/dashboard/softservants", label: "Soft Servants" },
       ]
     },
     { id: 'settings', icon: Setting2, label: "Settings", href: "/dashboard/settings" },
