@@ -7,10 +7,9 @@ import toast from 'react-hot-toast';
 import { Eye, EyeSlash } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
 
-const Signin = () => {
+const Reset = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false)
   const { data: session, status } = useSession();
@@ -49,14 +48,14 @@ const Signin = () => {
         password: formData.password,
       }),
       {
-        loading: 'Signing in...',
+        loading: 'Sending recovery code...',
         success: (result) => {
           setLoading(false);
           if (result?.error) {
             throw new Error(result.error);
           }
           router.push('/dashboard');
-          return 'Sign-in successful!';
+          return 'Recovery code sent!';
         },
         error: (err) => {
           setLoading(false);
@@ -74,13 +73,13 @@ const Signin = () => {
             <Image src="/brand/brand.png" alt="GranuloX Logo" width={60} height={60} className="bg-black dark:bg-[#141F1F] p-2 py-3 rounded-lg" />
           </div>
           
-          <h1 className="text-2xl md:text-3xl font-bold mb-2 text-[#141F1F] dark:text-white">Welcome back</h1>
-          <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mb-8">Please, sign-in to your account to continue.</p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 text-[#141F1F] dark:text-white">Account Recovery</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-xs md:text-sm mb-8">Enter your email to regain access to your account.</p>
           
           <form className="flex flex-col gap-y-6" onSubmit={handleSubmit}>
             <div className="w-full">
               <label htmlFor="username" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">
-                Unique Naming System (UNS)
+                Email Address
               </label>
               <input
                 type="text"
@@ -88,32 +87,9 @@ const Signin = () => {
                 name="uns"
                 value={formData.uns}
                 onChange={handleInputChange}
-                placeholder="Enter your UNS"
+                placeholder="Enter your email address"
                 className="mt-1 mb-2 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
               />
-              <small className='font-medium text-xs mt-2 text-green-800 bg-green-50 px-3 py-1 rounded-full'>UNS Format: Username.Position.Identifier</small>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">Password</label>
-              <div className='relative'>
-                <input
-                  type={isPasswordVisible ? 'text' : 'password'} autoComplete='on' id="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Minimum 8 characters"
-                  className="mt-1 block w-full p-3 pr-10 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
-                />
-                <button type="button" onClick={togglePasswordVisibility} className="absolute inset-y-1/2 right-3 flex items-center">
-                  {isPasswordVisible ? (
-                    <Eye size={20} className="text-[#141F1F] dark:text-[#7DF9FF29]" />
-                  ) : (
-                    <EyeSlash size={20} className="text-[#141F1F] dark:text-[#7DF9FF29]" />
-                  )}
-                </button>
-              </div>
-
-              <p className='text-sm text-right mt-4'>
-                <span className='mr-1'>Forgot password?</span>
-                <Link href={"/auth/reset"} className='relative inline-block font-bold'><span className='reset-link'>Reset here</span></Link>
-              </p>
             </div>
 
             <button
@@ -142,21 +118,21 @@ const Signin = () => {
                   />
                 </svg>
               )}
-              <span>{loading ? "Signing you in..." : "Sign in"}</span>
+              <span>{loading ? "Sending recovery code..." : "Send recovery code"}</span>
             </button>
           </form>
 
-          <p className='my-4 mb-2 text-sm text-[#141f1f] dark:text-white'>Don&apos;t have an account? <Link href={"/auth/signup"} className='font-semibold hover:underline'>Sign Up</Link></p>
+          <p className='my-4 mb-2 text-sm text-[#141f1f] dark:text-white'>Remembered your password? <Link href={"/auth/signin"} className='font-semibold hover:underline'>Sign In</Link></p>
         </div>
       </div>
 
       {/* Right column */}
       <div className="w-1/2 hidden gradient-01 m-5 rounded-2xl p-12 h-[95%] text-white md:flex flex-col justify-between">
         <h2 className="text-5xl font-bold leading-tight mb-12">
-          Enter<br />
-          the Future<br />
-          of Payments,<br />
-          today
+          Recover<br />
+          your account<br />
+          and pick up where<br />
+          you left off.
         </h2>
         
         <div className="max-w-sm self-end justify-end">
@@ -167,4 +143,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default Reset;

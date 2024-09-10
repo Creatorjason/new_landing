@@ -95,3 +95,33 @@ body {
 .verses-banner {
   background-image: url("/others/verses.jpeg");
 }
+
+.reset-link {
+  position: relative;
+  color: #141f1f;
+  z-index: 1;
+  transition: all .3s ease-in-out;
+}
+
+.reset-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 100%;
+  background-color: #141f1f;
+  z-index: -1;
+  transition: top 0.4s ease;
+}
+
+.reset-link:hover::before,
+.reset-link:focus::before {
+  top: 0;
+}
+
+.reset-link:hover {
+  padding: .5rem;
+  color: #fff;
+  transition: all .3s ease-in-out;
+}
