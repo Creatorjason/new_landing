@@ -112,7 +112,11 @@ const Signin = () => {
 
               <p className='text-sm text-right mt-4'>
                 <span className='mr-1'>Forgot password?</span>
-                <Link href={"/auth/reset"} className='relative inline-block font-bold'><span className='reset-link'>Reset here</span></Link>
+                <Link href={"/auth/reset"} className="relative inline-block font-bold text-[#141f1f] z-[1]">
+                  <span className="transition-all duration-300 ease-in-out relative inline-block before:content-[''] before:absolute before:left-0 before:right-0 before:bottom-0 before:top-full before:bg-[#141f1f] before:-z-[1] before:transition-[top] before:duration-400 before:ease-in hover:before:top-0 focus:before:top-0 hover:text-white hover:p-2">
+                    Reset here
+                  </span>
+                </Link>
               </p>
             </div>
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Category, MouseCircle, EmptyWallet, Setting2, Messages1 } from 'iconsax-react';
 
@@ -15,8 +14,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   };
 
   return (
-    <div className={`w-64 bg-white dark:bg-[#1C2626] rounded-tr-lg transition-all duration-300 ease-in-out sm:relative sm:w-64 md:w-1/4 lg:w-1/5 ${
-      isMobileMenuOpen ? "fixed sm:relative sm:translate-x-0 bottom-0 top-24 z-50 translate-x-0" : "fixed sm:relative -translate-x-full sm:translate-x-0"
+    <div className={`w-64 bg-white dark:bg-[#1C2626] shadow-custom-shadow rounded-tr-lg transition-all duration-300 ease-in-out sm:relative sm:w-64 md:w-1/4 lg:w-1/5 ${
+      isMobileMenuOpen ? "fixed sm:relative sm:translate-x-0 bottom-0 top-0 z-50 translate-x-0" : "fixed sm:relative -translate-x-full sm:translate-x-0"
     }`}>
       <div className="p-4">
         <nav className='mt-6'>
@@ -67,12 +66,12 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             </li>
             <li className="mb-2">
               <button
-                onClick={() => handleLinkClick('/dashboard/messages')}
+                onClick={() => handleLinkClick('/messages')}
                 className={`flex items-center space-x-2 p-4 rounded-lg text-base w-full ${
-                  pathname === '/dashboard/messages' ? 'bg-[#141F1F] text-white' : 'text-[#141F1F] dark:text-gray-400'
+                  pathname === '/messages' ? 'bg-[#141F1F] text-white' : 'text-[#141F1F] dark:text-gray-400'
                 }`}
               >
-                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${pathname === '/dashboard/messages' ? 'bg-[#141F1F] text-white' : 'text-[#141F1F] dark:text-gray-400'}`}>
+                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${pathname === '/messages' ? 'bg-[#141F1F] text-white' : 'text-[#141F1F] dark:text-gray-400'}`}>
                   <path opacity="0.4" d="M8.88889 0H7.77778C3.48223 0 0 3.52576 0 7.875V11.25C0 12.4926 0.994923 13.5 2.22222 13.5H8.88889C12.5708 13.5 15.5556 10.4779 15.5556 6.75C15.5556 6.20688 15.4922 5.67875 15.3726 5.17276C14.6711 2.20566 12.0344 0 8.88889 0Z" className='fill-current'/>
                   <path d="M8.88932 13.5001C12.5712 13.5001 15.556 10.478 15.556 6.75009C15.556 6.20698 15.4926 5.67884 15.373 5.17285C18.099 6.39704 20.0004 9.16124 20.0004 12.3751V15.7501C20.0004 16.9927 19.0055 18.0001 17.7782 18.0001H11.1115C8.20883 18.0001 5.73941 16.1218 4.82422 13.5001H8.88932Z" className='fill-current'/>
                 </svg>

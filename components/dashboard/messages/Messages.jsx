@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { chats } from "@/data/chats"; // Adjust the import path as necessary
-import { ArrowLeft2, SearchNormal1, User } from "iconsax-react";
+import { ArrowLeft, ArrowLeft2, HambergerMenu, SearchNormal1, User } from "iconsax-react";
 import ChatInput from "./ChatInput";
 import Image from "next/image";
 
@@ -63,10 +63,10 @@ const ChatView = ({
   useEffect(scrollToBottom, [chat.messages]);
 
   return (
-    <div className="h-[90%] md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
+    <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
         <button onClick={onBack} className="mr-4 sm:hidden">
-          <ArrowLeft2 size="24" />
+          <ArrowLeft size="24" />
         </button>
         <Image src={chat.avatar} alt={chat.name} width={100} height={100} className="w-9 h-9 rounded-full mr-3" />
         <div>
@@ -75,7 +75,7 @@ const ChatView = ({
         </div>
       </div>
       <div className="flex-1">
-        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll h-[470px] md:h-[420px] sm:pb-4">
+        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll h-[calc(100vh-215px)] md:h-[420px] sm:pb-4">
           {chat.messages.map((message) => (
             <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
               <div className={`${message.sender === 'You' ? 'flex items-end justify-end text-right' : 'flex items-end'}`}>
@@ -100,17 +100,9 @@ const ChatView = ({
   );
 };
 
-const MessagesPage = () => {
+const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMobile }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chatsData, setChatsData] = useState(chats); // Added state to manage chats
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const handleChatSelect = (chat) => {
     setSelectedChat(chat);
@@ -126,16 +118,22 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-2">
+    <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-bold flex items-center gap-x-2 mb-4">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{chatsData.length}</span></h2>
+          <div className="flex items-center justify-between py-2 sm:py-0 mb-4">
+            <h2 className="text-lg font-bold flex items-center gap-x-2">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{chatsData.length}</span></h2>
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden">
+              <HambergerMenu size="20" color="#141f1f"/>
+            </button>
+          </div>
+
           <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center p-3 gap-x-2">
             <SearchNormal1 size="18" color="#999999"/>
             <input type="text" name="" id="" placeholder="Search Messages" className="bg-transparent outline-none flex-1 text-sm font-normal" />
           </div>
         </div>
-        <div className="overflow-y-auto h-[calc(100vh-350px)] md:h-[calc(100vh-280px)] pl-0 md:pl-4">
+        <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
           {chatsData.map((chat) => (
             <MessageItem 
               key={chat.id}

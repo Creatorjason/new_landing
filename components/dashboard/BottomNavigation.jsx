@@ -27,7 +27,7 @@ const BottomNavigation = () => {
       icon: MessageText, 
       label: "Communication",
       subItems: [
-        { href: "/dashboard/messages", label: "Messages" },
+        { href: "/messages", label: "Messages" },
         { href: "/dashboard/mailbox", label: "Mailbox" },
       ]
     },

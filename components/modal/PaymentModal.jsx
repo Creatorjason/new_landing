@@ -97,7 +97,6 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={handleCloseModal}
         >
           <motion.div
             className="bg-white dark:bg-[#1C2626] rounded-lg p-6 w-[23rem] mx-3 md:m-0 relative"

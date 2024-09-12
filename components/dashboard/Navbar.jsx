@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import { LogoutCurve, ProfileCircle, Setting2 } from 'iconsax-react';
+import { HambergerMenu, LogoutCurve, ProfileCircle, Setting2 } from 'iconsax-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Notification } from 'iconsax-react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname()
   const router = useRouter();
 
   useEffect(() => setMounted(true), []);
@@ -30,11 +31,16 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
   };
 
   return (
-    <nav className="bg-white fixed z-10 top-0 left-0 w-full dark:bg-[#1C2626] py-2 shadow-sm transition-colors duration-200">
+    <nav className={`bg-white fixed z-10 top-0 left-0 w-full ${pathname === "/messages" ? "hidden sm:block" : ""} dark:bg-[#1C2626] py-2 shadow-sm transition-colors duration-200`}>
       <div className="container mx-auto px-2 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className='flex items-center'>
             {/* Mobile Menu Button */}
+            {pathname === "/messages" && (
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className='block sm:hidden'>
+                <HambergerMenu size="20" color="#141f1f"/>
+              </button>
+            )}
             
             {/* Logo Section */}
             <Link href={"/"} className="flex items-center">
