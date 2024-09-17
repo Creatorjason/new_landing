@@ -125,3 +125,7 @@ body {
   color: #fff;
   transition: all .3s ease-in-out;
 }
+
+.animated-gradient {
+  background: linear-gradient(90deg, #44ff9b44 -0.55%, #44B0FF44 22.86%, #8B44FF44 48.36%, #FF664444 73.33%, #EBFF7044 99.34%);
+}

@@ -12,12 +12,13 @@ const PowerCard = ({ icon, title, description, gradient, index }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
-    className={`relative z-0 ${index < 2 ? 'mb-4' : ''}`}
+    className={`relative z-0 ${index < 2 ? 'mb-4' : ''} group`}
     style={{
       transform: `translate(${index % 2 === 0 ? '-4px' : '4px'}, ${index < 2 ? '-4px' : '4px'})`,
     }}
   >
-    <Card className={`${gradient} border dark:border-[#1C2626] shadow-md hover:shadow-xl transition-shadow duration-300`}>
+    <div className="absolute inset-0 animated-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg blur-md"></div>
+    <Card className={`${gradient} border dark:border-[#1C2626] shadow-md shadow-[#23286914] hover:shadow-xl transition-shadow duration-300 relative z-10`}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           {icon}
