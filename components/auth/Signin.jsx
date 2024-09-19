@@ -15,7 +15,7 @@ const Signin = () => {
   const [loading, setLoading] = useState(false)
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
-    uns: '',
+    login: '',
     password: '',
   });
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -45,7 +45,7 @@ const Signin = () => {
     toast.promise(
       signIn('credentials', {
         redirect: false,
-        uns: formData.uns,
+        login: formData.login,
         password: formData.password,
       }),
       {
@@ -60,7 +60,7 @@ const Signin = () => {
         },
         error: (err) => {
           setLoading(false);
-          return 'Invalid UNS or password. Please try again.';
+          return 'Invalid UNS/Email or password. Please try again.';
         }
       }
     );
@@ -79,16 +79,16 @@ const Signin = () => {
           
           <form className="flex flex-col gap-y-6" onSubmit={handleSubmit}>
             <div className="w-full">
-              <label htmlFor="username" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">
-                Unique Naming System (UNS)
+              <label htmlFor="login" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">
+                UNS or Email Address
               </label>
               <input
                 type="text"
-                id="uns"
-                name="uns"
-                value={formData.uns}
+                id="login"
+                name="login"
+                value={formData.login}
                 onChange={handleInputChange}
-                placeholder="Enter your UNS"
+                placeholder="Enter your UNS or Email address"
                 className="mt-1 mb-2 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
               />
               <small className='font-medium text-xs mt-2 text-green-800 bg-green-50 px-3 py-1 rounded-full'>UNS Format: Username.Position.Identifier</small>

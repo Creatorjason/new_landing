@@ -22,6 +22,7 @@ const Register = () => {
     position: '',
     identifier: '',
     phone_number: '',
+    email: '',
     password: '',
     confirmPassword: '',
     pin: ''
@@ -58,6 +59,7 @@ const Register = () => {
   
   useEffect(() => {
     validateForm();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData, isTermsAccepted]);
 
   const handleInputChange = (e) => {
@@ -118,6 +120,7 @@ const Register = () => {
       position: formData.position,
       identifier: formData.identifier,
       phone_number: formData.phone_number,
+      email: formData.email,
       password: formData.password,
       pin: parseInt(formData.pin)
     }, {
@@ -132,7 +135,9 @@ const Register = () => {
         loading: 'Creating your account...',
         success: (res) => {
           setLoading(false);
-          router.push("/auth/signin");
+          // Store the email in local storage
+          localStorage.setItem('userEmail', formData.email);
+          router.push("/auth/verify");
           return 'Account created successfully!';
         },
         error: (err) => {
@@ -221,6 +226,19 @@ const Register = () => {
                 inputClass='!border-none !w-full !py-2 !pl-16 !bg-transparent !text-base'
                 buttonClass='!bg-transparent hover:!bg-transparent !p-2'
                 dropdownClass='dark:!bg-[#141f1f]'
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Email address"
+                className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
               />
             </div>
 
