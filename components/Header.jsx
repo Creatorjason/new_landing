@@ -47,10 +47,21 @@ export default function Header() {
         className="fixed top-0 left-0 right-0 z-50 flex mt-2 justify-between items-center"
       >
         <div className="container mx-auto flex justify-between backdrop-blur-[7px] shadow-custom-shadow items-center p-4 bg-white/50 dark:bg-[#141F1F]/50 rounded-full">
-          <Link href="/" className={`text-2xl font-bold text-[#141F1F] flex items-center`}>
-            <Image src={"/brand/brand.png"} alt='Brand Logo' width={50} height={50} className='object-cover' />
-            <p className='text-lg dark:text-white'>GranularX</p>
-          </Link>
+          <div className='flex items-center gap-x-8'>
+            <Link href="/" className={`text-2xl font-bold text-[#141F1F] flex items-center`}>
+              <Image src={"/brand/brand.png"} alt='Brand Logo' width={50} height={50} className='object-cover' />
+              <p className='text-lg dark:text-white'>GranularX</p>
+            </Link>
+
+            <div className='flex items-center gap-x-4'>
+              <Link href="#" className={`text-base text-white bg-[#141F1F] rounded-full p-1 px-4 flex items-center`}>
+                <p className='dark:text-white'>Personal</p>
+              </Link>
+              <Link href="#" className={`text-base text-[#141F1F] flex items-center`}>
+                <p className='dark:text-white'>Platform</p>
+              </Link>
+            </div>
+          </div>
 
           <div className="hidden md:flex items-center text-[#141F1F]">
             {links.map(({ href, label }) => (

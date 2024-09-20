@@ -19,6 +19,16 @@ const Hero = () => {
         className='mb-14 px-2'
       >
         <div className='flex flex-col items-center mb-2'>
+          <motion.div
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="flex justify-center items-center bg-[#F1FEFF] px-8 border border-[#9FA5F71A] py-1 mb-8 rounded-full"
+          >
+            <motion.p className='text-[#050505] flex items-center gap-x-2 font-semibold'>
+              <span>🔥</span> The Economic Super App
+            </motion.p>
+          </motion.div>
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -33,7 +43,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-xl mb-8 text-gray-600 dark:text-[#7DF9FF] max-w-[60ch]"
           >
-            Get your money moving internationally. Save on hidden fees when you send with GranularX.
+            Your all-in-one platform for in-chat/cross-border payments, customer/community engagement, finance managemant and staying connected. The super app that optimises you everyday.
           </motion.p>
         </div>
         <motion.div
@@ -42,11 +52,11 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="gap-4 flex justify-center flex-col md:flex-row"
         >
-          <motion.div className='mb-4' whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/send" className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800">Send Money Now</Link>
-          </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link href="/auth/register" className="px-6 py-3 border border-black dark:border-gray-200 text-black dark:text-gray-200 dark:hover:text-[#141F1F] rounded-full hover:bg-gray-100">Open an account</Link>
+          </motion.div>
+          <motion.div className='mb-4' whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link href="/send" className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800">Send Money Now</Link>
           </motion.div>
         </motion.div>
         <div className="hidden sm:block mt-8">

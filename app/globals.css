@@ -92,6 +92,14 @@ body {
   background: linear-gradient(203.85deg, #141F1F -0.89%, #2E5252 18.41%, #141F1F 50.32%, #141F1F 50.81%, #28676A 77.78%, #141F1F 100%);
 }
 
+.line-bg {
+  background: url("/Lines.png");
+}
+
+.line-bg-2 {
+  background: url("/Vector.png") no-repeat;
+}
+
 .verses-banner {
   background-image: url("/others/verses.jpeg");
 }

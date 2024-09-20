@@ -14,7 +14,8 @@ export default function Home() {
       <div className="container mx-auto">
         <Header />
         <div className="container mx-auto">
-          <AnimateOnScroll>
+          <AnimateOnScroll className="line-bg">
+            <div className="line-bg-2"></div>
             <Hero />
           </AnimateOnScroll>
           <AnimateOnScroll className="flex justify-center gap-4 md:gap-32 flex-wrap p-4 md:p-16 mb-10 bg-custom-gradient">

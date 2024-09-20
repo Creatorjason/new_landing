@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const password = String(credentials.password);
 
           const res = await axios.post("https://api.granularx.com/auth/signin?platform=web", {
-            uns: login, // The backend API should handle both email and UNS
+            uns: login, // Backend should handle both email and UNS
             password: password,
           });
 
@@ -23,17 +23,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (user.status === "SUCCESS") {
             // Extract tokens from response headers
-            const authToken = res.headers['set-cookie'].find(cookie => cookie.startsWith('auth-token='));
-            const refreshToken = res.headers['set-cookie'].find(cookie => cookie.startsWith('refresh-token='));
+            const cookies = res.headers['set-cookie'];
+            const csrfToken = res.headers['x-csrf-token'];
+            let authToken, refreshToken;
 
+            console.log(cookies);
+
+            cookies.forEach(cookie => {
+              if (cookie.startsWith('Auth-Token=')) {
+                authToken = cookie;
+              } else if (cookie.startsWith('Refresh-Token=')) {
+                refreshToken = cookie;
+              }
+            });
+            
             return {
               id: user.data.wallet_id,
               username: user.data.username,
               email: user.data.email,
               phoneNumber: user.data.phonenumber,
               walletId: user.data.wallet_id,
-              authToken: authToken ? authToken.split(';')[0].split('=')[1] : null,
-              refreshToken: refreshToken ? refreshToken.split(';')[0].split('=')[1] : null,
+              authToken: authToken || null,
+              refreshToken: refreshToken || null,
+              csrfToken: csrfToken || null,
             };
           } else {
             throw new Error(user.error || "Authentication failed");
@@ -57,6 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.walletId = user.walletId;
         token.authToken = user.authToken;
         token.refreshToken = user.refreshToken;
+        token.csrfToken = user.csrfToken;
       }
       return token;
     },
@@ -68,6 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         phoneNumber: token.phoneNumber,
         walletId: token.walletId,
       };
+      session.csrfToken = token.csrfToken;
       session.authToken = token.authToken;
       session.refreshToken = token.refreshToken;
       return session;

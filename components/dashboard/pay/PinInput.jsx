@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { CloseCircle } from 'iconsax-react';
 
 const PinInput = ({ onCreatePin, pin, setPin, onClose }) => {
-  const [confirmPin, setConfirmPin] = useState(['', '', '', '']);
+  // const [confirmPin, setConfirmPin] = useState(['', '', '', '']);
   const [error, setError] = useState('');
   const pinRefs = useRef([...Array(4)].map(() => React.createRef()));
-  const confirmPinRefs = useRef([...Array(4)].map(() => React.createRef()));
+  // const confirmPinRefs = useRef([...Array(4)].map(() => React.createRef()));
 
   const handlePinChange = (index, value, isPinConfirmation) => {
     if (/^[0-9]?$/.test(value)) {
@@ -31,9 +31,7 @@ const PinInput = ({ onCreatePin, pin, setPin, onClose }) => {
   };
 
   const handleCreatePin = () => {
-    if (pin.join('') !== confirmPin.join('')) {
-      setError('PINs do not match. Please try again.');
-    } else if (pin.join('').length !== 4) {
+    if (pin.join('').length !== 4) {
       setError('Please enter a 4-digit PIN.');
     } else {
       onCreatePin(pin.join(''));
@@ -59,24 +57,6 @@ const PinInput = ({ onCreatePin, pin, setPin, onClose }) => {
               value={digit}
               onChange={(e) => handlePinChange(index, e.target.value, false)}
               onKeyDown={(e) => handlePinKeyDown(index, e, false)}
-              className="w-16 h-16 text-center border rounded-lg outline-none dark:bg-[#1c2626] border-[#5f5e5e4e] focus:border-[#a2a2a2c2]"
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <p className="mb-2 text-sm font-medium">Re-enter PIN</p>
-        <div className="flex justify-between mb-4">
-          {confirmPin.map((digit, index) => (
-            <input
-              key={`confirm-pin-${index}`}
-              ref={confirmPinRefs.current[index]}
-              type="password"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handlePinChange(index, e.target.value, true)}
-              onKeyDown={(e) => handlePinKeyDown(index, e, true)}
               className="w-16 h-16 text-center border rounded-lg outline-none dark:bg-[#1c2626] border-[#5f5e5e4e] focus:border-[#a2a2a2c2]"
             />
           ))}

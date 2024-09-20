@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ClipboardText, Clock } from 'iconsax-react';
 import WalletModal from '@/components/modal/WalletModal';
+import { useSession } from 'next-auth/react';
 
 const WalletBalance = ({ balance, setIsModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
@@ -44,6 +45,7 @@ const TransactionItem = ({ name, amount, receiver, time, type }) => (
 );
 
 const Wallet = () => {
+  const { data: session } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const walletBalance = '334,000,234.56';
   const transactions = [
@@ -61,6 +63,7 @@ const Wallet = () => {
         ))}
       </div>
       <WalletModal
+        session={session}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         balance={parseFloat(walletBalance.replace(/,/g, ''))}

@@ -1,34 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloseCircle } from 'iconsax-react';
 import WalletAmountInput from '@/components/dashboard/pay/WalletAmountInput';
-// import PinInput from '@/components/dashboard/pay/PinInput';
+import PinInput from '@/components/dashboard/pay/PinInput';
 import ConfirmOrderStep from '@/components/dashboard/pay/ConfirmOrderStep';
 import BackedFiatonsStep from '@/components/dashboard/pay/BackedFiatonsStep';
 import WalletSuccessStep from '@/components/dashboard/pay/WalletSuccessStep';
 import FailureStep from '@/components/dashboard/pay/FailureStep';
 import Receipt from '@/components/dashboard/wallet/Receipt';
+import { useSession } from 'next-auth/react';
 
-const WalletModal = ({ isOpen, onClose, balance }) => {
+const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('NGN');
   const [step, setStep] = useState(1);
-  // const [pin, setPin] = useState('');
+  const [pin, setPin] = useState(['', '', '', '']);
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [apiResponse, setApiResponse] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Check for payment status in URL parameters when component mounts
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('payment_status');
+    if (status) {
+      setPaymentStatus(status);
+      setStep(5);
+      setTransactionSuccess(status === 'success');
+    }
+  }, []);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
-  // const handleCreatePin = (newPin) => {
-  //   setPin(newPin);
-  //   handleProceed();
-  // };
-  const handleConfirmOrder = () => {
-    // Simulate a random success/failure
-    const success = Math.random() > 0.5;
-    setTransactionSuccess(success);
-    setStep(4);
+
+  // console.log(session);
+
+  const handleConfirmOrder = async () => {
+    try {
+      const response = await fetch('https://api.granularx.com/wallet/topup?type=base&platform=web', {
+        credentials: 'include', // This ensures cookies are sent with the request
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.authToken}`,
+          'Set-Cookie': `${session.authToken}`,
+          'Set-Cookie': `${session.refreshToken}`,
+        },
+        body: JSON.stringify({
+          amount: parseInt(amount),
+          email: session.user.email,
+          uns: session.user.username,
+          base_currency: currency,
+          transaction_type: 'base',
+          pin: parseInt(pin.join('')),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'SUCCESS') {
+        setApiResponse(data.data);
+        // Redirect to the payment gateway
+        window.location.href = data.data.auth_url;
+      } else {
+        setTransactionSuccess(false);
+        setError(data.error || 'An error occurred during the transaction.');
+        setStep(5);
+      }
+    } catch (error) {
+      console.error('API request failed:', error);
+      setTransactionSuccess(false);
+      setError('An unexpected error occurred. Please try again later.');
+      setStep(5);
+    }
   };
+
   const handleViewReceipt = () => setShowReceipt(true);
 
   const handleCloseModal = (e) => {
@@ -40,10 +88,13 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
 
   const resetModal = () => {
     setAmount('');
-    // setPin('');
+    setPin(['', '', '', '']);
     setStep(1);
     setTransactionSuccess(false);
     setShowReceipt(false);
+    setApiResponse(null);
+    setPaymentStatus(null);
+    setError(null);
   };
 
   if (!isOpen) return null;
@@ -56,7 +107,6 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={handleCloseModal}
         >
           <motion.div
             className="bg-white dark:bg-[#1C2626] rounded-lg p-6 w-[23rem] mx-3 md:m-0 relative"
@@ -89,19 +139,28 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
               )}
 
               {step === 3 && (
+                <PinInput
+                  pin={pin}
+                  setPin={setPin}
+                  onCreatePin={handleProceed}
+                  onBack={handleBack}
+                />
+              )}
+
+              {step === 4 && (
                 <ConfirmOrderStep
                   onConfirm={handleConfirmOrder}
                   onReject={handleBack}
                 />
               )}
 
-              {step === 4 && transactionSuccess && !showReceipt && (
+              {step === 5 && transactionSuccess && !showReceipt && (
                 <WalletSuccessStep
                   onViewReceipt={handleViewReceipt}
                 />
               )}
 
-              {step === 4 && !transactionSuccess && (
+              {step === 5 && !transactionSuccess && (
                 <FailureStep
                   amount={amount}
                   currency={currency}
@@ -112,13 +171,13 @@ const WalletModal = ({ isOpen, onClose, balance }) => {
               {showReceipt && (
                 <Receipt
                   amount={amount}
-                  date="9 Nov 2023 18:30"
-                  status="Success"
+                  date={new Date().toLocaleString()}
+                  status={transactionSuccess ? "Success" : "Failed"}
                   transactionType="Fund Wallet"
                   bankName="GranularX"
-                  accountNumber="12345678901"
-                  accountName="Jason Charles"
-                  transactionID="Tyuhcjdb874892f"
+                  accountNumber={apiResponse?.reference || "N/A"}
+                  accountName={uns}
+                  transactionID={apiResponse?.access_code || "N/A"}
                   onClose={handleCloseModal}
                 />
               )}
