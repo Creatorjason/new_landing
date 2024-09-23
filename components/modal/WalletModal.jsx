@@ -9,6 +9,8 @@ import WalletSuccessStep from '@/components/dashboard/pay/WalletSuccessStep';
 import FailureStep from '@/components/dashboard/pay/FailureStep';
 import Receipt from '@/components/dashboard/wallet/Receipt';
 import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
   const [amount, setAmount] = useState('');
@@ -30,51 +32,93 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
       setStep(5);
       setTransactionSuccess(status === 'success');
     }
+
+    console.log(window.location)
   }, []);
+
+  useEffect(() => {
+    const verifyTransaction = async (reference) => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`https://api.granularx.com/wallet/topup/verify/${reference}`, {
+          headers: {
+            'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
+            'x-csrf-token': session.csrfToken,
+          },
+        });
+
+        const data = response.data;
+
+        if (data.status === 'SUCCESS') {
+          toast.success(data.data); // Show the success message from the response
+        } else {
+          toast.error(data.error || 'Transaction verification failed.');
+        }
+      } catch (error) {
+        console.error('Verification failed:', error);
+        toast.error('An error occurred during verification. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (status === 'success' && reference) {
+      verifyTransaction(reference); // Only verify if Paystack returns with success and a reference
+    }
+  }, [session.authToken, session.csrfToken]);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
 
-  // console.log(session);
+  // console.log(session.authToken);
 
   const handleConfirmOrder = async () => {
-    try {
-      const response = await fetch('https://api.granularx.com/wallet/topup?type=base&platform=web', {
-        credentials: 'include', // This ensures cookies are sent with the request
-        method: 'POST',
+    const request = axios.post(
+      'https://api.granularx.com/wallet/topup?type=base&platform=web',
+      {
+        amount: parseInt(amount.replace(/,/g, '')),
+        email: session.user.email,
+        uns: session.user.username,
+        base_currency: currency,
+        transaction_type: 'base',
+        pin: parseInt(pin.join('')),
+      },
+      {
+        withCredentials: true, // Crucial for Axios to handle cookies correctly
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.authToken}`,
-          'Set-Cookie': `${session.authToken}`,
-          'Set-Cookie': `${session.refreshToken}`,
+          'x-csrf-token': `${session.csrfToken}`,
         },
-        body: JSON.stringify({
-          amount: parseInt(amount),
-          email: session.user.email,
-          uns: session.user.username,
-          base_currency: currency,
-          transaction_type: 'base',
-          pin: parseInt(pin.join('')),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'SUCCESS') {
-        setApiResponse(data.data);
-        // Redirect to the payment gateway
-        window.location.href = data.data.auth_url;
-      } else {
-        setTransactionSuccess(false);
-        setError(data.error || 'An error occurred during the transaction.');
-        setStep(5);
       }
-    } catch (error) {
-      console.error('API request failed:', error);
-      setTransactionSuccess(false);
-      setError('An unexpected error occurred. Please try again later.');
-      setStep(5);
-    }
+    );
+
+    toast.promise(
+      request,
+      {
+        loading: 'Processing your transaction...',
+        success: (response) => {
+          const data = response.data;
+          if (data.status === 'SUCCESS') {
+            setApiResponse(data.data);
+            window.location.href = data.data.auth_url;
+            return 'Transaction logged. Redirecting to Paystack!';
+          } else {
+            setTransactionSuccess(false);
+            setError(data.error || 'An error occurred during the transaction.');
+            setStep(5);
+            throw new Error(data.error || 'Transaction failed.');
+          }
+        },
+        error: (err) => {
+          console.error('API request failed:', err);
+          setTransactionSuccess(false);
+          setError('An unexpected error occurred. Please try again later.');
+          setStep(5);
+          return 'An unexpected error occurred. Please try again later.';
+        },
+      }
+    );
   };
 
   const handleViewReceipt = () => setShowReceipt(true);

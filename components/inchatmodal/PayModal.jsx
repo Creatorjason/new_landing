@@ -16,9 +16,33 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   const [amount, setAmount] = useState('');
   const [formattedAmount, setFormattedAmount] = useState('');
   const [recipientName, setRecipientName] = useState('');
+  const [submitting, setSubmitting] = useState(false)
+  const [balance, setBalance] = useState('0')
   const [pin, setPin] = useState('');
   const modalRef = useRef(null);
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      if (session) {
+        try {
+          const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
+            headers: {
+              'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
+              'x-csrf-token': session.csrfToken,
+            },
+          });
+
+          const data = response.data;
+          setBalance(parseFloat(data.data)); // Set the fetched balance
+        } catch (error) {
+          console.error('Error fetching wallet balance:', error);
+        }
+      }
+    };
+
+    fetchWalletBalance();
+  }, [session]);
   
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,51 +76,57 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   };
 
   const handlePinSubmit = async () => {
-    if (pin.length === 4) {
-      try {
-        const response = await axios.post('https://api.granularx.com/wallet/transfer', {
-          "sender_wallet_id":"Bards.IV.Smart",
-          "receiver_wallet_id":"Angel.II.Good",
-          "amount": 5000
-        });
+    const request = axios.post('https://api.granularx.com/fiatons/send/peer?platform=web', {
+      sender_wallet_id: session.user.username,
+      receiver_wallet_id: recipientName,
+      amount: parseInt(amount.replace(/,/g, ''))
+    });
 
-        if (response.data.status === "SUCCESS") {
-          setStep(5);
-          toast.success('Transfer successful!');
-          setTimeout(() => {
-            onSuccessfulTransfer({
-              amount: parseFloat(amount),
-              recipientName,
-              date: new Date().toISOString(),
-            });
-            resetModal();
-            onClose();
-          }, 2000);
-        } else {
-          console.error('Error transferring funds:', response.data.error);
-          toast.error(response.data.error || 'An error occurred during transfer. Please try again.');
-          setStep(1); // Reset to first step on error
+    console.log(request)
+
+    if (pin.length === 4) {
+      setSubmitting(true);
+
+      toast.promise(
+        request,
+        {
+          loading: 'Processing transfer...',
+          success: (response) => {
+            if (response.data.status === 'SUCCESS') {
+              setSubmitting(false);
+
+              setStep(5);
+              setTimeout(() => {
+                onSuccessfulTransfer({
+                  amount: parseFloat(amount),
+                  recipientName,
+                  date: new Date().toISOString(),
+                });
+                resetModal();
+                onClose();
+              }, 2000);
+              return 'Transfer successful!';
+            } else {
+              setSubmitting(false)
+              throw new Error(response.data.error || 'Transfer failed');
+            }
+          },
+          error: (error) => {
+            if (error.response) {
+              setSubmitting(false)
+              return error.response.data.error || 'An error occurred during the transfer.';
+            } else if (error.request) {
+              setSubmitting(false)
+              return 'No response from server. Please check your internet connection.';
+            } else {
+              setSubmitting(false)
+              return 'An error occurred while setting up the transfer.';
+            }
+          }
         }
-      } catch (error) {
-        console.error('Error making API request:', error);
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.error('Error response data:', error.response.data);
-          console.error('Error response status:', error.response.status);
-          toast.error(error.response.data.error || 'An error occurred during transfer. Please try again.');
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.error('No response received:', error.request);
-          toast.error('No response from server. Please check your internet connection and try again.');
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.error('Error setting up request:', error.message);
-          toast.error('An error occurred while setting up the transfer. Please try again.');
-        }
-        setStep(1); // Reset to first step on error
-      }
+      ).catch(() => setStep(1)); // Reset to step 1 if there's an error
     } else {
+      setSubmitting(false)
       toast.error('Please enter a valid 4-digit PIN.');
     }
   };
@@ -104,7 +134,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <AmountInput amount={amount} formattedAmount={formattedAmount} setAmount={setAmount} setFormattedAmount={setFormattedAmount} />;
+        return <AmountInput balance={balance} amount={amount} formattedAmount={formattedAmount} setAmount={setAmount} setFormattedAmount={setFormattedAmount} />;
       case 2:
         return <RecipientInput recipientName={recipientName} setRecipientName={setRecipientName} />;
       case 3:
@@ -125,7 +155,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-end"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-end"
         >
           <motion.div 
             ref={modalRef}
@@ -133,13 +163,13 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white dark:bg-[#141f1f] h-full w-full sm:w-[400px]"
+            className="bg-white dark:bg-[#141f1f] z-50 h-full w-full sm:w-[400px]"
           >
             <div className="p-6 h-[90%] md:h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 {step > 1 && (
                   <button onClick={() => setStep(step - 1)} className="mr-4">
-                    <ArrowLeft size="24" className="text-gray-600 dark:text-gray-400" />
+                    <ArrowLeft size="24" className="text-[#141f1f] dark:text-gray-400" />
                   </button>
                 )}
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -150,7 +180,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
                 </h2>
 
                 <button onClick={() => onClose()}>
-                  <CloseCircle size="24" className="text-gray-600 dark:text-gray-400" />
+                  <CloseCircle size="24" className="text-[#141f1f] dark:text-gray-400" />
                 </button>
               </div>
               {renderStep()}
@@ -161,7 +191,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
                     (step === 1 && !amount) ||
                     (step === 2 && !recipientName)
                   }
-                  className={`w-full bg-[#FF8A65] text-white py-3 rounded-md hover:bg-[#FF7043] transition-colors ${
+                  className={`w-full bg-[#141f1f] text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
                     ((step === 1 && !amount) || (step === 2 && !recipientName))
                       ? 'opacity-50 cursor-not-allowed'
                       : ''
@@ -173,12 +203,34 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
               {step === 4 && (
                 <button
                   onClick={handlePinSubmit}
-                  disabled={pin.length !== 4}
-                  className={`w-full bg-[#FF8A65] text-white py-3 rounded-md hover:bg-[#FF7043] transition-colors ${
+                  disabled={pin.length !== 4 || submitting}
+                  className={`w-full bg-[#141f1f] flex items-center justify-center gap-x-1 text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
                     pin.length !== 4 ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  Submit
+                  {submitting && (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+              )}
+              <span>{submitting ? "Processing..." : "Pay now"}</span>
                 </button>
               )}
             </div>

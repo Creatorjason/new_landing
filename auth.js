@@ -27,13 +27,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const csrfToken = res.headers['x-csrf-token'];
             let authToken, refreshToken;
 
-            console.log(cookies);
-
             cookies.forEach(cookie => {
               if (cookie.startsWith('Auth-Token=')) {
-                authToken = cookie;
+                authToken = cookie.split('Auth-Token=')[1].split(';')[0]; // Extract the token part
               } else if (cookie.startsWith('Refresh-Token=')) {
-                refreshToken = cookie;
+                refreshToken = cookie.split('Refresh-Token=')[1].split(';')[0]; // Extract the token part
               }
             });
             
@@ -43,6 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               email: user.data.email,
               phoneNumber: user.data.phonenumber,
               walletId: user.data.wallet_id,
+              has_wallet: user.data.has_wallet, 
+              mailbox_id: user.data.mailbox_id,
               authToken: authToken || null,
               refreshToken: refreshToken || null,
               csrfToken: csrfToken || null,
@@ -67,6 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email;
         token.phoneNumber = user.phoneNumber;
         token.walletId = user.walletId;
+        token.has_wallet = user.has_wallet;
+        token.mailbox_id = user.mailbox_id;
         token.authToken = user.authToken;
         token.refreshToken = user.refreshToken;
         token.csrfToken = user.csrfToken;
@@ -80,6 +82,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: token.email,
         phoneNumber: token.phoneNumber,
         walletId: token.walletId,
+        has_wallet: token.has_wallet,
+        mailbox_id: token.mailbox_id
       };
       session.csrfToken = token.csrfToken;
       session.authToken = token.authToken;

@@ -15,7 +15,7 @@ const links = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname()
   const router = useRouter()
 
@@ -30,7 +30,7 @@ export default function Header() {
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false, callbackUrl: '/' });
-      console.log("Signout Successful", session);
+      console.log("Signout Successful", status);
       router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);

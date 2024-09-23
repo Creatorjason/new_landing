@@ -25,11 +25,11 @@ const MessageItem = ({
 }) => (
   <div
     className={`flex items-center p-3 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
-      isSelected ? "bg-gray-200 dark:bg-gray-700" : ""
+      isSelected ? "bg-[#F9F9F9] dark:bg-gray-700" : ""
     }`}
     onClick={onClick}
   >
-    <img src={avatar} alt={name} className="w-10 h-10 rounded-full mr-3" />
+    <Image width={40} height={40} src={avatar} alt={name} className="w-10 h-10 rounded-full mr-3" />
     <div className="flex-1 min-w-0">
       <div className="flex justify-between items-center">
         <p className="font-semibold truncate text-base">{name}</p>
@@ -121,16 +121,11 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between py-2 sm:py-0 mb-4">
+          <div className="flex items-center justify-between py-2 sm:py-0">
             <h2 className="text-lg font-bold flex items-center gap-x-2">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{chatsData.length}</span></h2>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden">
               <HambergerMenu size="20" color="#141f1f"/>
             </button>
-          </div>
-
-          <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center p-3 gap-x-2">
-            <SearchNormal1 size="18" color="#999999"/>
-            <input type="text" name="" id="" placeholder="Search Messages" className="bg-transparent outline-none flex-1 text-sm font-normal" />
           </div>
         </div>
         <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
@@ -145,6 +140,13 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
               onClick={() => handleChatSelect(chat)}
             />
           ))}
+          <div className="p-4">
+            <p className="text-sm font-medium mb-2">Add friend by UNS</p>
+            <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center p-3 gap-x-2">
+              <SearchNormal1 size="18" color="#999999"/>
+              <input type="text" name="" id="" placeholder="Search by UNS..." className="bg-transparent outline-none flex-1 text-sm font-normal" />
+            </div>
+          </div>
         </div>
       </div>
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>

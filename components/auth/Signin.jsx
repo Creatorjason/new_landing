@@ -98,7 +98,7 @@ const Signin = () => {
               <label htmlFor="password" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">Password</label>
               <div className='relative'>
                 <input
-                  type={isPasswordVisible ? 'text' : 'password'} autoComplete='on' id="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Minimum 8 characters"
+                  type={isPasswordVisible ? 'text' : 'password'} autoComplete='on' id="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="Enter your password"
                   className="mt-1 block w-full p-3 pr-10 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
                 />
                 <button type="button" onClick={togglePasswordVisibility} className="absolute inset-y-1/2 right-3 flex items-center">
@@ -113,7 +113,7 @@ const Signin = () => {
               <p className='text-sm text-right mt-4'>
                 <span className='mr-1'>Forgot password?</span>
                 <Link href={"/auth/reset"} className="relative inline-block font-bold text-[#141f1f] z-[1]">
-                  <span className="transition-all duration-300 ease-in-out relative inline-block before:content-[''] before:absolute before:left-0 before:right-0 before:bottom-0 before:top-full before:bg-[#141f1f] before:-z-[1] before:transition-[top] before:duration-400 before:ease-in hover:before:top-0 focus:before:top-0 hover:text-white hover:p-2">
+                  <span className="transition-all duration-300 ease-in-out relative inline-block before:content-[''] before:absolute before:left-0 before:right-0 before:bottom-0 before:top-full before:bg-[#141f1f] before:-z-[1] before:transition-[top] before:duration-400 before:ease-in hover:before:top-0 focus:before:top-0 hover:text-white hover:py-1 hover:px-2">
                     Reset here
                   </span>
                 </Link>

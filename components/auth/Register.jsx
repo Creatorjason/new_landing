@@ -12,7 +12,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const BASE_URL="https://api.granularx.com";
-// const BASE_URL =  "http://localhost:3001"
 
 const Register = () => {
   const router = useRouter()
@@ -71,7 +70,7 @@ const Register = () => {
 
     if (name === 'password') {
       setPasswordValidation({
-        hasMinLength: value.length >= 8,
+        hasMinLength: value.length >= 10,
         hasUppercase: /[A-Z]/.test(value),
         hasLowerCase: /[a-z]/.test(value),
         hasNumber: /\d/.test(value),
@@ -333,7 +332,7 @@ const Register = () => {
                             <span>5</span>
                           )}
                       </div>
-                      Minimum of 8 characters
+                      Minimum of 10 characters
                     </li>
                 </ul>
               </div>
@@ -341,9 +340,12 @@ const Register = () => {
 
             <div>
               <label htmlFor="pin" className="block text-sm md:text-base mb-1 font-medium text-[#141F1F] dark:text-white">PIN</label>
-              <input
-                type="text" id="pin" name="pin" value={formData.pin} maxLength={4} onChange={handleInputChange} placeholder="4-digit PIN"
-                className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
+              <input type="text" id="pin" name="pin" value={formData.pin} maxLength={4} 
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+                  handleInputChange({ target: { name: 'pin', value } });
+                }}
+                placeholder="4-digit PIN" inputMode="numeric"  pattern="\d*" className="mt-1 block w-full p-3 transition-all duration-200 ease-in-out bg-gray-100 dark:bg-[#141F1F] border border-[#7DF9FF29] dark:border-[#7DF9FF29] rounded-md shadow-sm shadow-[#1018280D] focus:outline-none focus:border-[#141F1F] dark:focus:border-[#7df8ff8e]"
               />
             </div>
 
