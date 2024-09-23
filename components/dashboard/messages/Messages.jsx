@@ -17,12 +17,12 @@ const truncateMessage = (message, limit = 50) => {
 };
 
 const MessageItem = ({
-  avatar,
+  // avatar,
   name,
-  message,
-  time,
-  pinned,
-  unread,
+  // message,
+  // time,
+  // pinned,
+  // unread,
   isSelected,
   onClick,
 }) => (
@@ -32,22 +32,22 @@ const MessageItem = ({
     }`}
     onClick={onClick}
   >
-    <Image width={40} height={40} src={avatar} alt={name} className="w-10 h-10 rounded-full mr-3" />
+    <Image width={30} height={30} src={"/earth.png"} alt={name} className="w-10 h-10 rounded-full mr-3" />
     <div className="flex-1 min-w-0">
       <div className="flex justify-between items-center">
         <p className="font-semibold truncate text-base">{name}</p>
-        <span className="text-[13px] text-gray-500 ml-2 font-medium flex-shrink-0">{time}</span>
+        {/* <span className="text-[13px] text-gray-500 ml-2 font-medium flex-shrink-0">{time}</span> */}
       </div>
-      <p className="text-[13px] text-gray-600 dark:text-gray-400 truncate">
+      {/* <p className="text-[13px] text-gray-600 dark:text-gray-400 truncate">
         {truncateMessage(message)}
-      </p>
+      </p> */}
     </div>
-    {pinned && <span className="ml-2 text-blue-500 flex-shrink-0">📌</span>}
-    {unread > 0 && (
+    {/* {pinned && <span className="ml-2 text-blue-500 flex-shrink-0">📌</span>} */}
+    {/* {unread > 0 && (
       <span className="ml-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full flex-shrink-0">
         {unread}
       </span>
-    )}
+    )} */}
   </div>
 );
 
@@ -122,7 +122,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
   const {data: session} = useSession();
   const [friendUns, setFriendUns] = useState('');
   const [selectedChat, setSelectedChat] = useState(null);
-  const [friendList, setFriendList] = useState({});
+  const [friendList, setFriendList] = useState([]);
   const [chatsData, setChatsData] = useState(chats); // Added state to manage chats
 
   const handleChatSelect = (chat) => {
@@ -136,6 +136,26 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
   const handleUpdateChat = (updatedChats) => {
     setChatsData(updatedChats);
     setSelectedChat(updatedChats.find(chat => chat.id === selectedChat.id));
+  };
+
+  const fetchFriendList = async () => {
+    if (session) {
+      try {
+        const response = await axios.post(`https://api.granularx.com/chat/friends?platform=web`, {
+          uns: session.user.username,
+        }, {
+          headers: {
+            'Authorization': `Bearer ${session.authToken}`,
+            'x-csrf-token': session.csrfToken,
+          },
+        });
+
+        const data = response.data.data;
+        setFriendList(data); // Set the fetched list
+      } catch (error) {
+        console.error('Error fetching friend list:', error);
+      }
+    }
   };
 
   const addFriend = async () => {
@@ -152,7 +172,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
     const request = axios.post(
       'https://api.granularx.com/chat/add?platform=web', data,
       {
-        withCredentials: true, // Crucial for Axios to handle cookies correctly
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.authToken}`,
@@ -160,14 +180,15 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
         },
       }
     );
-  
+
     toast.promise(
       request,
       {
         loading: 'Adding friend...',
-        success: (response) => {
+        success: async (response) => {
           const data = response.data;
           if (data.status === 'SUCCESS') {
+            await fetchFriendList(); // Call fetchFriendList after successful addition
             return 'Friend added successfully';
           }
         },
@@ -177,32 +198,12 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
         },
       }
     );
-  }
+  };
 
   useEffect(() => {
-    const fetchFriendList = async () => {
-      if (session) {
-        try {
-          const response = await axios.post(`https://api.granularx.com/chat/friends?platform=web`, {
-            uns: session.user.username,
-          }, {
-            headers: {
-              'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
-              'x-csrf-token': session.csrfToken,
-            },
-          });
-
-          const data = response.data;
-          setFriendList(data); // Set the fetched balance
-          console.log(data);
-        } catch (error) {
-          console.error('Error fetching friend list:', error);
-        }
-      }
-    };
-
-    fetchFriendList();
-  }, [session]);
+    fetchFriendList(); // Fetch friend list on component mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
@@ -214,20 +215,8 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
               <HambergerMenu size="20" color="#141f1f"/>
             </button>
           </div>
-        </div>
-        <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
-          {chatsData.map((chat) => (
-            <MessageItem 
-              key={chat.id}
-              avatar={chat.avatar}
-              name={chat.name}
-              message={chat.messages[chat.messages.length - 1].content}
-              time={new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString()}
-              isSelected={selectedChat?.id === chat.id}
-              onClick={() => handleChatSelect(chat)}
-            />
-          ))}
-          <div className="p-4">
+
+          <div className="py-4">
             <p className="text-sm font-medium mb-2">Add friend by UNS</p>
             <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center overflow-hidden gap-x-2">
               <div className="pl-2">
@@ -239,6 +228,20 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
               </button>
             </div>
           </div>
+        </div>
+        <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
+          {friendList.map((chat) => (
+            <MessageItem 
+              key={chat.id}
+              // avatar={chat.avatar}
+              name={chat.uns}
+              // message={chat.messages[chat.messages.length - 1].content}
+              // time={new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString()}
+              isSelected={selectedChat?.id === chat.id}
+              onClick={() => handleChatSelect(chat)}
+            />
+          ))}
+          
         </div>
       </div>
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
