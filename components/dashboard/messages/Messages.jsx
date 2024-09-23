@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { chats } from "@/data/chats"; // Adjust the import path as necessary
-import { ArrowLeft, ArrowLeft2, HambergerMenu, SearchNormal1, User } from "iconsax-react";
+import { Add, ArrowLeft, ArrowLeft2, HambergerMenu, SearchNormal1, User } from "iconsax-react";
 import ChatInput from "./ChatInput";
 import Image from "next/image";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const truncateMessage = (message, limit = 50) => {
   const words = message.split(" ");
@@ -62,11 +65,6 @@ const ChatView = ({
 
   useEffect(scrollToBottom, [chat.messages]);
 
-  // Function to render message content, including handling receipt messages
-  const toggleReceiptModal = () => {
-    // Handle showing the receipt modal
-  };
-
   const renderMessageContent = (message) => {
     if (message.type === 'receipt') {
       return (
@@ -121,7 +119,10 @@ const ChatView = ({
 };
 
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMobile }) => {
+  const {data: session} = useSession();
+  const [friendUns, setFriendUns] = useState('');
   const [selectedChat, setSelectedChat] = useState(null);
+  const [friendList, setFriendList] = useState({});
   const [chatsData, setChatsData] = useState(chats); // Added state to manage chats
 
   const handleChatSelect = (chat) => {
@@ -136,6 +137,72 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
     setChatsData(updatedChats);
     setSelectedChat(updatedChats.find(chat => chat.id === selectedChat.id));
   };
+
+  const addFriend = async () => {
+    if (!friendUns) {
+      toast.error('This field is required');
+      return;
+    }
+
+    const data = {
+      uns: session.user.username,
+      friend_uns: friendUns,
+    };
+
+    const request = axios.post(
+      'https://api.granularx.com/chat/add?platform=web', data,
+      {
+        withCredentials: true, // Crucial for Axios to handle cookies correctly
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.authToken}`,
+          'x-csrf-token': `${session.csrfToken}`,
+        },
+      }
+    );
+  
+    toast.promise(
+      request,
+      {
+        loading: 'Adding friend...',
+        success: (response) => {
+          const data = response.data;
+          if (data.status === 'SUCCESS') {
+            return 'Friend added successfully';
+          }
+        },
+        error: (err) => {
+          console.error('API request failed:', err);
+          return 'An unexpected error occurred. Please try again later.';
+        },
+      }
+    );
+  }
+
+  useEffect(() => {
+    const fetchFriendList = async () => {
+      if (session) {
+        try {
+          const response = await axios.post(`https://api.granularx.com/chat/friends?platform=web`, {
+            uns: session.user.username,
+          }, {
+            headers: {
+              'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
+              'x-csrf-token': session.csrfToken,
+            },
+          });
+
+          const data = response.data;
+          setFriendList(data); // Set the fetched balance
+          console.log(data);
+        } catch (error) {
+          console.error('Error fetching friend list:', error);
+        }
+      }
+    };
+
+    fetchFriendList();
+  }, [session]);
 
   return (
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
@@ -162,9 +229,14 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
           ))}
           <div className="p-4">
             <p className="text-sm font-medium mb-2">Add friend by UNS</p>
-            <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center p-3 gap-x-2">
-              <SearchNormal1 size="18" color="#999999"/>
-              <input type="text" name="" id="" placeholder="Search by UNS..." className="bg-transparent outline-none flex-1 text-sm font-normal" />
+            <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center overflow-hidden gap-x-2">
+              <div className="pl-2">
+                <SearchNormal1 size="18" color="#999999" />
+              </div>
+              <input type="text" value={friendUns} onChange={(e) => setFriendUns(e.target.value)} placeholder="Add by UNS..." className="bg-transparent outline-none flex-1 text-sm font-normal" />
+              <button onClick={addFriend} className="bg-[#141f1f] text-white p-3">
+                <Add size="18" />
+              </button>
             </div>
           </div>
         </div>
