@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { ClipboardText, Clock } from 'iconsax-react';
 import WalletModal from '@/components/modal/WalletModal';
+import FiatonModal from '@/components/modal/FiatonModal';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
-const WalletBalance = ({ balance, setIsModalOpen }) => (
+const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
     <div className="flex items-center">
       <div className="bg-[#7df8ff3d] p-4 rounded-lg mr-4">
@@ -17,9 +18,14 @@ const WalletBalance = ({ balance, setIsModalOpen }) => (
         <p className="text-2xl font-bold">₦{balance.toLocaleString()}</p>
       </div>
     </div>
-    <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white font-medium px-6 py-2 rounded-lg">
-      Top Up
-    </button>
+    <div className='flex items-center gap-x-2'>
+      <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white font-medium px-6 py-2 rounded-lg">
+        Top Up
+      </button>
+      <button onClick={() => setIsFiatonModalOpen(true)} className="text-[#141F1F] text-sm bg-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
+        View Fiatons
+      </button>
+    </div>
   </div>
 );
 
@@ -47,7 +53,9 @@ const TransactionItem = ({ name, amount, receiver, time, type }) => (
 
 const Wallet = () => {
   const { data: session } = useSession();
+  const [fiatons, setFiatons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFiatonModalOpen, setIsFiatonModalOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0); // Set default balance to 0
   const [loading, setLoading] = useState(true);
   const transactions = [
@@ -55,6 +63,25 @@ const Wallet = () => {
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'EXCHANGE' },
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'FLIP' },
   ];
+
+  useEffect(() => {
+    const fetchFiatonData = async () => {
+      try {
+        const response = await axios.get(`https://api.granularx.com/fiatons/view/${session.user.username}`);
+        if (response.data.status === "SUCCESS") {
+          setFiatons(response.data.data); // Set the fiatons data
+        } else {
+          setError("Failed to fetch data");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFiatonData();
+  }, [session]);
 
   useEffect(() => {
     const fetchWalletBalance = async () => {
@@ -83,7 +110,7 @@ const Wallet = () => {
   return (
     <div className="p-0 md:py-6">
       {!loading ? (
-        <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} />
+        <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} setIsFiatonModalOpen={setIsFiatonModalOpen} />
       ) : (
         <p className='py-4 text-sm font-medium'>Loading wallet balance...</p>
       )}
@@ -96,6 +123,13 @@ const Wallet = () => {
         session={session}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        balance={walletBalance}
+      />
+      <FiatonModal
+        session={session}
+        fiatons={fiatons}
+        isOpen={isFiatonModalOpen}
+        onClose={() => setIsFiatonModalOpen(false)}
         balance={walletBalance}
       />
     </div>

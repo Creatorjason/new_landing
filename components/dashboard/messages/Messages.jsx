@@ -62,6 +62,25 @@ const ChatView = ({
 
   useEffect(scrollToBottom, [chat.messages]);
 
+  // Function to render message content, including handling receipt messages
+  const toggleReceiptModal = () => {
+    // Handle showing the receipt modal
+  };
+
+  const renderMessageContent = (message) => {
+    if (message.type === 'receipt') {
+      return (
+        <div className="bg-lightblue p-2 rounded-md">
+          <p>{message.content}</p>
+          <button className="text-blue-500" onClick={toggleReceiptModal}>
+            VIEW
+          </button>
+        </div>
+      );
+    }
+    return <p className='text-[13px]'>{message.content}</p>;
+  };
+
   return (
     <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
@@ -81,7 +100,8 @@ const ChatView = ({
               <div className={`${message.sender === 'You' ? 'flex items-end justify-end text-right' : 'flex items-end'}`}>
                 {message.sender !== "You" && <Image src={chat.avatar} alt={chat.name} width={100} height={100} className="w-7 h-7 rounded-full mr-2" />}
                 <div className={`inline-block p-3 rounded-lg ${message.sender === 'You' ? 'bg-[#141F1F]/50 text-white' : 'bg-[#F8F8F8] dark:bg-gray-700'}`}>
-                  <p className='text-[13px]'>{message.content}</p>
+                  {/* Use renderMessageContent function */}
+                  {renderMessageContent(message)}
                 </div>
                 {message.sender === "You" && <User size="22" color="#FF8A65" className="ml-2" variant="Bold"/>}
               </div>

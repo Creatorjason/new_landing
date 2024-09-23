@@ -11,8 +11,6 @@ const WalletAmountInput = ({ amount, setAmount, currency, setCurrency, balance, 
       setError('');
     } else if (parseFloat(numericAmount) < 100) {
       setError('Amount too low to send');
-    } else if (parseFloat(numericAmount) > balance) {
-      setError('Insufficient balance');
     } else {
       setError('');
     }
@@ -64,7 +62,7 @@ const WalletAmountInput = ({ amount, setAmount, currency, setCurrency, balance, 
             }}
           />
         </div>
-        <p className="text-xs text-[#999999] mt-1">Balance: ₦{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        {/* <p className="text-xs text-[#999999] mt-1">Balance: ₦{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p> */}
         {error && (
           <motion.p
             className="text-xs text-[#F27852] mt-1"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, ArrowCircleUp2 } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
 import { chats } from '../../../data/chats'; // Import the chats array
+import Receipt from '../payment/Receipt';
 
 const ChatInput = ({ selectedChatId, onUpdateChat }) => {
   const [message, setMessage] = useState('');
@@ -19,7 +20,7 @@ const ChatInput = ({ selectedChatId, onUpdateChat }) => {
     const receiptMessage = {
       id: Date.now(), // Use a unique ID, could use a better ID generation approach
       sender: "You",
-      content: `Transfer successful! Amount: ₦${transferDetails.amount.toLocaleString()}, Recipient: ${transferDetails.recipientName}, Date: ${new Date(transferDetails.date).toLocaleString()}`,
+      content: `Transfer successful! \n Amount: ₦${transferDetails.amount.toLocaleString()}, Recipient: ${transferDetails.recipientName}, Date: ${new Date(transferDetails.date).toLocaleString()}`,
       timestamp: new Date().toISOString(),
     };
 

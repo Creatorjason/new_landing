@@ -82,8 +82,6 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
       amount: parseInt(amount.replace(/,/g, ''))
     });
 
-    console.log(request)
-
     if (pin.length === 4) {
       setSubmitting(true);
 
