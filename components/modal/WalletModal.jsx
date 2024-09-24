@@ -166,19 +166,19 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
                 />
               )}
 
-              {step === 5 && transactionSuccess && !showReceipt && (
+              {step === 5 && !transactionSuccess && !showReceipt && (
                 <WalletSuccessStep
                   onViewReceipt={handleViewReceipt}
                 />
               )}
 
-              {step === 5 && !transactionSuccess && (
+              {/* {step === 5 && !transactionSuccess && (
                 <FailureStep
                   amount={amount}
                   currency={currency}
                   onGoBack={handleBack}
                 />
-              )}
+              )} */}
 
               {showReceipt && (
                 <Receipt
