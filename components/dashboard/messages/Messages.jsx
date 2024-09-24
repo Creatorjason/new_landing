@@ -210,7 +210,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">
-            <h2 className="text-lg font-bold flex items-center gap-x-2">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{chatsData.length}</span></h2>
+            <h2 className="text-lg font-bold flex items-center gap-x-2">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden">
               <HambergerMenu size="20" color="#141f1f"/>
             </button>

@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
+const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResult }) => {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('NGN');
   const [step, setStep] = useState(1);
@@ -24,53 +24,20 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check for payment status in URL parameters when component mounts
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('payment_status');
-    if (status) {
-      setPaymentStatus(status);
+    if (verificationResult) {
       setStep(5);
-      setTransactionSuccess(status === 'success');
-    }
-
-    console.log(window.location)
-  }, []);
-
-  useEffect(() => {
-    const verifyTransaction = async (reference) => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`https://api.granularx.com/wallet/topup/verify/${reference}`, {
-          headers: {
-            'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
-            'x-csrf-token': session.csrfToken,
-          },
-        });
-
-        const data = response.data;
-
-        if (data.status === 'SUCCESS') {
-          toast.success(data.data); // Show the success message from the response
-        } else {
-          toast.error(data.error || 'Transaction verification failed.');
-        }
-      } catch (error) {
-        console.error('Verification failed:', error);
-        toast.error('An error occurred during verification. Please try again.');
-      } finally {
-        setLoading(false);
+      setTransactionSuccess(verificationResult.success);
+      if (verificationResult.success) {
+        setApiResponse(verificationResult.data);
+      } else {
+        setError(verificationResult.error);
       }
-    };
-
-    if (status === 'success' && reference) {
-      verifyTransaction(reference); // Only verify if Paystack returns with success and a reference
     }
-  }, [session.authToken, session.csrfToken]);
+  }, [verificationResult]);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
 
-  // console.log(session.authToken);
 
   const handleConfirmOrder = async () => {
     const request = axios.post(
@@ -101,6 +68,7 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session }) => {
           const data = response.data;
           if (data.status === 'SUCCESS') {
             setApiResponse(data.data);
+            localStorage.setItem('reference', data.data.reference);
             window.location.href = data.data.auth_url;
             return 'Transaction logged. Redirecting to Paystack!';
           } else {

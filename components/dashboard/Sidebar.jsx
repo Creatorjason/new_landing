@@ -103,7 +103,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 <svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${pathname === '/dashboard/softservants' ? 'text-gray-300 dark:text-white' : 'text-[#333333] dark:text-white'}`}>
                   <ellipse opacity="0.4" cx="7" cy="14" rx="7" ry="4" className='fill-current'/>
                   <circle cx="7" cy="4" r="4" className='fill-current'/>
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16 11C17.6568 11 19 9.65684 19 7.99999C19 7.37487 18.8088 6.7944 18.4817 6.31387L14.3139 10.4816C14.0014 10.2689 13.7312 9.99866 13.5184 9.68615L17.6862 5.51837C17.2057 5.19122 16.6252 5 16 5C14.3431 5 13 6.34314 13 7.99999C13 9.65684 14.3431 11 16 11Z" className='fill-current'/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M16 11C17.6568 11 19 9.65684 19 7.99999C19 7.37487 18.8088 6.7944 18.4817 6.31387L14.3139 10.4816C14.0014 10.2689 13.7312 9.99866 13.5184 9.68615L17.6862 5.51837C17.2057 5.19122 16.6252 5 16 5C14.3431 5 13 6.34314 13 7.99999C13 9.65684 14.3431 11 16 11Z" className='fill-current'/>
                 </svg>
                 <span className='text-sm font-medium'>Soft Servants</span>
               </button>

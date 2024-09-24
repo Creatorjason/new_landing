@@ -6,6 +6,7 @@ import WalletModal from '@/components/modal/WalletModal';
 import FiatonModal from '@/components/modal/FiatonModal';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
@@ -19,7 +20,7 @@ const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
       </div>
     </div>
     <div className='flex items-center gap-x-2'>
-      <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white font-medium px-6 py-2 rounded-lg">
+      <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
         Top Up
       </button>
       <button onClick={() => setIsFiatonModalOpen(true)} className="text-[#141F1F] text-sm bg-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
@@ -58,6 +59,9 @@ const Wallet = () => {
   const [isFiatonModalOpen, setIsFiatonModalOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0); // Set default balance to 0
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [verificationResult, setVerificationResult] = useState(null);
+  const reference = localStorage.getItem("reference");
   const transactions = [
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'FLIP' },
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'EXCHANGE' },
@@ -84,6 +88,28 @@ const Wallet = () => {
   }, [session]);
 
   useEffect(() => {
+    if (reference) {
+      const verifyReference = async () => {
+        try {
+          const response = await axios.get(`https://api.granularx.com/wallet/topup/verify/${reference}`);
+          if (response.data.status === "SUCCESS") {
+            setVerificationResult({ success: true, data: response.data.data });
+            localStorage.removeItem("reference");
+          } else {
+            setVerificationResult({ success: false, error: response.data.error });
+          }
+          setIsModalOpen(true); // Automatically open the modal
+        } catch (err) {
+          setVerificationResult({ success: false, error: err.message });
+          setIsModalOpen(true); // Open modal even on error
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      verifyReference();
+    }
+
     const fetchWalletBalance = async () => {
       if (session) {
         try {
@@ -105,7 +131,7 @@ const Wallet = () => {
     };
 
     fetchWalletBalance();
-  }, [session]);
+  }, [session, reference]);
 
   return (
     <div className="p-0 md:py-6">
@@ -124,6 +150,7 @@ const Wallet = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         balance={walletBalance}
+        verificationResult={verificationResult}
       />
       <FiatonModal
         session={session}
