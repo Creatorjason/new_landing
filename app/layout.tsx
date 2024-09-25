@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`bg-white`}>
+      <body className={`bg-white transition-all ease-in-out duration-200 scroll-smooth`}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <SessionProvider>
             {children}

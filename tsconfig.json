@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.jsx", "components/FeatureSection.jsx", "components/auth/Register.jsx", "auth.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.jsx", "components/FeatureSection.jsx", "components/auth/Register.jsx", "auth.js", "components/Hero.jsx"],
   "exclude": ["node_modules"]
 }

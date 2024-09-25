@@ -1,12 +1,12 @@
-import FeatureSection from "@/components/FeatureSection";
+import Features from "@/components/Features";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";
 import TransferForm from "@/components/TransferForm";
 import CallToAction from "@/components/CallToAction";
 import Security from "@/components/Security";
 import Footer from "@/components/Footer";
 import AnimateOnScroll from "@/hooks/AnimateOnScroll";
+import Hero from "@/components/Hero";
 
 export default function Home() {
   return (
@@ -18,9 +18,8 @@ export default function Home() {
             <div className="line-bg-2"></div>
             <Hero />
           </AnimateOnScroll>
-          <AnimateOnScroll className="flex justify-center gap-4 md:gap-32 flex-wrap p-4 md:p-16 mb-10 bg-custom-gradient">
-            <FeatureSection />
-            <TransferForm />
+          <AnimateOnScroll className="py-4 bg-white">
+            <Features />
           </AnimateOnScroll>
           <AnimateOnScroll>
             <Testimonials />

@@ -29,7 +29,7 @@ const MessageItem = ({
   <div
     className={`flex items-center p-3 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
       isSelected ? "bg-[#F9F9F9] dark:bg-gray-700" : ""
-    }`}
+    }`} key={name}
     onClick={onClick}
   >
     <Image width={30} height={30} src={"/earth.png"} alt={name} className="w-10 h-10 rounded-full mr-3" />
@@ -135,6 +135,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
 
   const handleUpdateChat = (updatedChats) => {
     setChatsData(updatedChats);
+    // setChatsData(updatedChats);
     setSelectedChat(updatedChats.find(chat => chat.id === selectedChat.id));
   };
 

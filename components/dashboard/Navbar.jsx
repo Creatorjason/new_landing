@@ -74,7 +74,7 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
             <Notification size={24} className="text-[#333333] dark:text-white" variant="Bulk"/>
 
             {session ? (
-              <div className="flex items-center rounded-full p-2 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
+              <div className="flex items-center rounded-full p-1.5 relative bg-[#F2F2F2] dark:bg-[#0E1515]">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center text-sm rounded-full focus:outline-none"
