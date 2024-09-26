@@ -1,8 +1,10 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight2, Coin, ClipboardText, ArrowCircleUp2 } from 'iconsax-react';
 import PaymentModal from '@/components/modal/PaymentModal'
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
 const WalletBalance = ({ balance, setIsModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 gap-y-4 md:gap-y-0 flex items-center flex-wrap justify-between">
@@ -12,7 +14,7 @@ const WalletBalance = ({ balance, setIsModalOpen }) => (
       </div>
       <div>
         <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">Wallet Balance</p>
-        <p className="text-lg md:text-2xl font-bold">₦{balance}</p>
+        <p className="text-lg md:text-2xl font-bold">₦{balance.toLocaleString()}</p>
       </div>
     </div>
     <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] float-right text-sm dark:bg-[#7DF9FF3d] text-white font-medium px-6 py-2 rounded-lg">
@@ -61,9 +63,9 @@ const PaymentHistory = ({ payments }) => (
 );
 
 const Payment = () => {
+  const { data: session } = useSession();
+  const [walletBalance, setWalletBalance] = useState(0); // Set default balance to 0
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const walletBalance = '334,000,234.56';
   const paymentHistory = [
     { type: 'Dollar Payment', date: '17 Oct, 2020', amount: '100,000.00', status: 'Successful' },
     { type: 'Refund', date: '17 Oct, 2020', amount: '100,000.00', status: 'Successful' },
@@ -72,15 +74,38 @@ const Payment = () => {
     { type: 'Dollar Payment', date: '17 Oct, 2020', amount: '100,000.00', status: 'Successful' },
   ];
 
+  useEffect(() => {
+    const fetchWalletBalance = async () => {
+      if (session) {
+        try {
+          const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
+            headers: {
+              'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
+              'x-csrf-token': session.csrfToken,
+            },
+          });
+
+          const data = response.data;
+          setWalletBalance(parseFloat(data.data)); // Set the fetched balance
+        } catch (error) {
+          console.error('Error fetching wallet balance:', error);
+        }
+      }
+    };
+
+    fetchWalletBalance();
+  }, [session]);
+
   return (
     <div className="p-0 md:py-6">
       <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} />
       <PaymentHistory payments={paymentHistory} />
 
-      <PaymentModal 
+      <PaymentModal
+        session={session}
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        balance={parseFloat(walletBalance.replace(/,/g, ''))}
+        balance={walletBalance}
       />
     </div>
   );

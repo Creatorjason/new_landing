@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const ConfirmationStep = ({ onConfirm, onBack }) => {
+const ConfirmationStep = ({ onConfirm, onBack, amount, currency, recipientUNS }) => {
   return (
     <motion.div
       initial={{ x: 100, opacity: 0 }}
@@ -12,8 +12,16 @@ const ConfirmationStep = ({ onConfirm, onBack }) => {
         <div className="bg-[#7DF9FF1A] border border-[#7DF9FF70] rounded-lg p-3 px-6 inline-block mb-2">
           <span className="text-4xl font-bold">?</span>
         </div>
-        <h3 className="text-xl font-bold">Proceed to transfer</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+        <h3 className="text-xl font-bold">Confirm Transfer</h3>
+        <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="font-semibold">Amount:</span> {currency} {amount}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <span className="font-semibold">Recipient:</span> {recipientUNS}
+          </p>
+        </div>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
           For your first in-chat payment, you need to confirm an OTP sent to your mailbox. Would you like us to automate that process and send your money?
         </p>
       </div>

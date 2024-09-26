@@ -8,8 +8,9 @@ import SuccessStep from '@/components/dashboard/pay/SuccessStep';
 import Receipt from '@/components/dashboard/payment/Receipt';
 import UNSInput from '@/components/dashboard/pay/UNSInput';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
-const PaymentModal = ({ isOpen, onClose, balance }) => {
+const PaymentModal = ({ isOpen, onClose, balance, session }) => {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [step, setStep] = useState(1);
@@ -17,7 +18,7 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [recipientUNS, setRecipientUNS] = useState('');
-  const [apiError, setApiError] = useState(null); // State to handle API errors
+  const [submitting, setSubmitting] = useState(false);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
   const handleBack = () => setStep((prevStep) => prevStep - 1);
@@ -32,12 +33,13 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
 
   const resetModal = () => {
     setAmount('');
+    setCurrency('USD');
     setStep(1);
     setPin(['', '', '', '']);
     setTransactionSuccess(false);
     setShowReceipt(false);
     setRecipientUNS('');
-    setApiError(null); // Reset API error state
+    setSubmitting(false);
   };
 
   const handleCloseReceipt = () => {
@@ -45,47 +47,54 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
     onClose();
   };
 
-  const handleConfirmUNS = async (uns) => {
+  const handleConfirmUNS = (uns) => {
     setRecipientUNS(uns);
-    setStep(4);
+    handleProceed();
   };
 
-  const handleConfirmTransfer = async () => {
-    try {
-      // Prepare the API request payload
-      const formattedAmount = parseFloat(amount.replace(/,/g, ''));
-      const pinString = pin.join('');
-      const pinNumber = pinString ? parseInt(pinString, 10) : null;
-  
-      const payload = {
-        amount: formattedAmount,
-        uns: recipientUNS,
-        base_currency: currency,
-        transaction_type: 'base',
-        pin: pinNumber,
-      };
-  
-      // Make the API call
-      // const response = await axios.post('https://api.granularx.com/wallet/topup?type=base', payload);
-  
-      // console.log('API Response:', response.data);
+  const handlePinSubmit = async () => {
+    if (pin.length === 4) {
+      setSubmitting(true);
+      const request = axios.post('https://api.granularx.com/fiatons/send/peer?platform=web', {
+        sender_wallet_id: session.user.username,
+        receiver_wallet_id: recipientUNS,
+        amount: parseInt(amount.replace(/,/g, ''))
+      });
 
-      setTransactionSuccess(true);
-  
-      // // Check if the transaction was successful
-      // if (response.data.status === 'SUCCESS') {
-      //   const { auth_url } = response.data.data;
-  
-      //   // Redirect the user to the authentication URL
-      //   window.location.href = auth_url;
-      // } else {
-      //   setApiError(response.data.error || 'Transaction failed. Please try again.');
-      // }
-    } catch (error) {
-      console.error('API error:', error);
-      setApiError('Transaction failed. Please try again.');
+      toast.promise(
+        request,
+        {
+          loading: 'Processing transfer...',
+          success: (response) => {
+            if (response.data.status === 'SUCCESS') {
+              setSubmitting(false);
+              setTransactionSuccess(true);
+              setTimeout(() => {
+                handleViewReceipt();
+              }, 2000);
+              return 'Transfer successful!';
+            } else {
+              setSubmitting(false);
+              throw new Error(response.data.error || 'Transfer failed');
+            }
+          },
+          error: (error) => {
+            setSubmitting(false);
+            if (error.response) {
+              return error.response.data.error || 'An error occurred during the transfer.';
+            } else if (error.request) {
+              return 'No response from server. Please check your internet connection.';
+            } else {
+              return 'An error occurred while setting up the transfer.';
+            }
+          }
+        }
+      ).catch(() => setStep(1)); // Reset to step 1 if there's an error
+    } else {
+      setSubmitting(false);
+      toast.error('Please enter a valid 4-digit PIN.');
     }
-  };  
+  };
 
   if (!isOpen) return null;
 
@@ -114,6 +123,10 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
 
             <AnimatePresence mode='wait'>
               {step === 1 && (
+                <UNSInput onConfirm={handleConfirmUNS} />
+              )}
+
+              {step === 2 && (
                 <AmountInput
                   amount={amount}
                   setAmount={setAmount}
@@ -124,24 +137,23 @@ const PaymentModal = ({ isOpen, onClose, balance }) => {
                 />
               )}
 
-              {step === 2 && (
-                <PinInput
-                  pin={pin}
-                  setPin={setPin}
-                  onCreatePin={handleProceed}
+              {step === 3 && (
+                <ConfirmationStep
+                  onConfirm={handleProceed}
                   onBack={handleBack}
+                  amount={amount}
+                  currency={currency}
+                  recipientUNS={recipientUNS}
                 />
               )}
 
-              {step === 3 && (
-                <UNSInput onConfirm={handleConfirmUNS} />
-              )}
-
-              {step === 4 && !transactionSuccess && (
-                <ConfirmationStep
-                  onConfirm={handleConfirmTransfer}
+              {step === 4 && (
+                <PinInput
+                  pin={pin}
+                  setPin={setPin}
+                  onCreatePin={handlePinSubmit}
                   onBack={handleBack}
-                  apiError={apiError} // Display API error message if any
+                  submitting={submitting}
                 />
               )}
 

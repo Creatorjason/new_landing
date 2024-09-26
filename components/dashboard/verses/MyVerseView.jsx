@@ -62,27 +62,19 @@ const ProductForm = ({ onSubmit }) => {
       </div>
       <div>
         <label htmlFor="product-name" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Name <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-name" id="product-name" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product name" />
+        <input type="text" name="product-name" id="product-name" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none text-sm sm:text-base" placeholder="Enter product name" />
       </div>
       <div>
         <label htmlFor="product-price" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Price <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product price" />
-      </div>
-      <div>
-        <label htmlFor="product-price" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Minimum Price <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter minimum price" />
-      </div>
-      <div>
-        <label htmlFor="product-price" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Maximum Price <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter maximum price" />
+        <input type="text" name="product-price" id="product-price" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none text-sm sm:text-base" placeholder="Enter product price" />
       </div>
       <div>
         <label htmlFor="product-color" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Product Color <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter product color" />
+        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none text-sm sm:text-base" placeholder="Enter product color" />
       </div>
       <div>
         <label htmlFor="product-color" className="block text-sm font-medium dark:text-gray-50 text-gray-700">Keywords <span className='text-red-600'>*</span></label>
-        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none sm:text-sm" placeholder="Enter keywords" />
+        <input type="text" name="product-color" id="product-color" className="mt-1 block w-full border dark:bg-[#141F1F] border-gray-300 dark:border-[#666666] rounded-md shadow-sm p-3 outline-none text-sm sm:text-base" placeholder="Enter keywords" />
       </div>
       <div>
         <button type="submit" className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#141f1f]">
