@@ -53,14 +53,14 @@ export default function Header() {
               <p className='text-lg dark:text-white'>GranularX</p>
             </Link>
 
-            <div className='flex items-center gap-x-4'>
+            {/* <div className='flex items-center gap-x-4'>
               <Link href="#" className={`text-base text-white bg-[#141F1F] rounded-full p-1 px-4 flex items-center`}>
                 <p className='dark:text-white'>Personal</p>
               </Link>
               <Link href="#" className={`text-base text-[#141F1F] flex items-center`}>
                 <p className='dark:text-white'>Platform</p>
               </Link>
-            </div>
+            </div> */}
           </div>
 
           <div className="hidden md:flex items-center text-[#141F1F]">

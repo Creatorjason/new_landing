@@ -1,7 +1,6 @@
 import Features from "@/components/Features";
 import Header from "@/components/Header";
-import Testimonials from "@/components/Testimonials";
-import TransferForm from "@/components/TransferForm";
+import FAQs from "@/components/FAQs";
 import CallToAction from "@/components/CallToAction";
 import Security from "@/components/Security";
 import Footer from "@/components/Footer";
@@ -15,21 +14,20 @@ export default function Home() {
         <Header />
         <div className="container mx-auto">
           <AnimateOnScroll className="line-bg">
-            <div className="line-bg-2"></div>
             <Hero />
           </AnimateOnScroll>
           <AnimateOnScroll className="py-4 bg-white">
             <Features />
           </AnimateOnScroll>
           <AnimateOnScroll>
-            <Testimonials />
+            <FAQs />
           </AnimateOnScroll>
           <AnimateOnScroll>
             <CallToAction />
           </AnimateOnScroll>
-          <AnimateOnScroll>
+          {/* <AnimateOnScroll>
             <Security />
-          </AnimateOnScroll>
+          </AnimateOnScroll> */}
         </div>
         <Footer />
       </div>
