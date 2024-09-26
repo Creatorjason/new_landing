@@ -36,10 +36,10 @@ const DashboardContent = () => {
     <>
       {/* Stats grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
-        <StatCard icon="/others/money-bag.svg" title="Total Spend" value="₦9,000,000.00" />
-        <StatCard icon="/others/briefcase.svg" title="Active Sales" value="10,000" />
-        <StatCard icon="/others/money-bag.svg" title="Revenue" value="₦9,000,000.00" />
-        <StatCard icon="/others/briefcase.svg" title="Total Profit" value="₦900,000.00" />
+        <StatCard icon="/others/money-bag.svg" title="Total Spend" value="₦0.00" />
+        <StatCard icon="/others/briefcase.svg" title="Active Sales" value="0" />
+        <StatCard icon="/others/money-bag.svg" title="Revenue" value="₦0.00" />
+        <StatCard icon="/others/briefcase.svg" title="Total Profit" value="₦0.00" />
       </div>
 
       {/* Chart */}

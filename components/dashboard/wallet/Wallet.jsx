@@ -140,11 +140,22 @@ const Wallet = () => {
       ) : (
         <p className='py-4 text-sm font-medium'>Loading wallet balance...</p>
       )}
-      <div className="flex flex-col gap-y-4">
+      {/* <div className="flex flex-col gap-y-4">
         {transactions.map((transaction, index) => (
           <TransactionItem key={index} {...transaction} />
         ))}
+      </div> */}
+      {/* Empty State */}
+
+      <div className='flex items-center justify-center flex-col min-h-72 bg-white dark:bg-[#1C2626] rounded-lg p-6'>
+        <video autoPlay loop muted>
+          <source src="/others/notFound.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+
+        <p className='text-sm md:text-base text-gray-400 -mt-3'>You haven&apos;t topped up your wallet.</p>
       </div>
+
       <WalletModal
         session={session}
         isOpen={isModalOpen}

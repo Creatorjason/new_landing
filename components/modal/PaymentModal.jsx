@@ -45,6 +45,7 @@ const PaymentModal = ({ isOpen, onClose, balance, session }) => {
   const handleCloseReceipt = () => {
     setShowReceipt(false);
     onClose();
+    resetModal();
   };
 
   const handleConfirmUNS = (uns) => {
@@ -72,11 +73,9 @@ const PaymentModal = ({ isOpen, onClose, balance, session }) => {
               setTimeout(() => {
                 handleViewReceipt();
               }, 2000);
-              resetModal();
               return 'Transfer successful!';
             } else {
               setSubmitting(false);
-              resetModal();
               throw new Error(response.data.error || 'Transfer failed');
             }
           },

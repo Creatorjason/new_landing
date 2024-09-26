@@ -37,10 +37,10 @@ const VersesContent = () => {
     <>
       {/* Stats grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
-        <StatCard icon="/others/money-bag.svg" title="Total Orders" value="20,000.00" />
-        <StatCard icon="/others/briefcase.svg" title="Total Sales" value="10,000" />
-        <StatCard icon="/others/money-bag.svg" title="Receivables" value="₦120,000,000.00" />
-        <StatCard icon="/others/briefcase.svg" title="Total Profit" value="₦23,000,000.00" />
+        <StatCard icon="/others/money-bag.svg" title="Total Orders" value="0" />
+        <StatCard icon="/others/briefcase.svg" title="Total Sales" value="0" />
+        <StatCard icon="/others/money-bag.svg" title="Receivables" value="₦0.00" />
+        <StatCard icon="/others/briefcase.svg" title="Total Profit" value="₦0.00" />
       </div>
 
       {/* Chart */}

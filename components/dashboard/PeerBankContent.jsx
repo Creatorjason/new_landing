@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
 import { AreaChart, Area, XAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Setting2 } from 'iconsax-react';
 
 const data = [
   { name: 'J', value: 55000 },
@@ -35,13 +36,13 @@ const PeerBankContent = () => {
   return (
     <>
       {/* Stats grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
-        <StatCard icon="/others/money-bag.svg" title="Total Spend" value="₦9,000,000.00" />
-        <StatCard icon="/others/briefcase.svg" title="Total No. of Orders" value="₦900,000.00" />
-      </div>
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
+        <StatCard icon="/others/money-bag.svg" title="Total Spend" value="₦0.00" />
+        <StatCard icon="/others/briefcase.svg" title="Total No. of Orders" value="₦0.00" />
+      </div> */}
 
       {/* Chart */}
-      <div className="bg-white dark:bg-[#1C2626] p-4 md:p-6 rounded-lg shadow">
+      {/* <div className="bg-white dark:bg-[#1C2626] p-4 md:p-6 rounded-lg shadow">
         <h2 className="text-lg md:text-xl font-semibold mb-4">Total Transaction</h2>
         <div className='p-4 border'>
           <div className="flex items-center justify-center space-x-4 mb-4">
@@ -61,6 +62,11 @@ const PeerBankContent = () => {
             </ResponsiveContainer>
           </div>
         </div>
+      </div> */}
+
+      <div className='w-full h-60 flex flex-col justify-center items-center mt-10'>
+        <Setting2 size="100" variant='Bulk' color="#999999"/>
+        <p className='text-sm md:text-base font-medium'>This feature will be available soon</p>
       </div>
     </>
   )

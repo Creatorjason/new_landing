@@ -55,9 +55,19 @@ const PaymentHistory = ({ payments }) => (
       </button>
     </div>
     <div>
-      {payments.map((payment, index) => (
+      {/* {payments.map((payment, index) => (
         <PaymentHistoryItem key={index} {...payment} />
-      ))}
+      ))} */}
+
+      {/* Empty State */}
+      <div className='flex items-center justify-center flex-col min-h-60'>
+        <video autoPlay loop muted>
+          <source src="/others/notFound.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+
+        <p className='text-sm md:text-base text-gray-400 -mt-3'>You haven&apos;t initiated a transaction yet.</p>
+      </div>
     </div>
   </div>
 );
