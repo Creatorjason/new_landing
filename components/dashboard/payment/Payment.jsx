@@ -6,6 +6,7 @@ import PaymentModal from '@/components/modal/PaymentModal'
 import ServiceGrid from '@/components/dashboard/payment/ServiceGrid'
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import Image from 'next/image';
 
 const WalletBalance = ({ balance, setIsModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 gap-y-4 md:gap-y-0 flex items-center flex-wrap justify-between">
@@ -46,32 +47,53 @@ const PaymentHistoryItem = ({ type, date, amount, status }) => (
   </div>
 );
 
-const PaymentHistory = ({ payments }) => (
-  <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6">
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-base md:text-lg font-semibold">Payment History</h2>
-      <button className="text-blue-500 text-sm md:text-base flex items-center">
-        SEE ALL
-        <ArrowRight2 size={16} className="ml-1" />
-      </button>
-    </div>
-    <div>
-      {/* {payments.map((payment, index) => (
-        <PaymentHistoryItem key={index} {...payment} />
-      ))} */}
+const PaymentHistory = ({ payments }) => {
+  const [isIOS, setIsIOS] = useState(false);
 
-      {/* Empty State */}
-      <div className='flex items-center justify-center flex-col min-h-60'>
-        <video autoPlay loop muted>
-          <source src="/others/notFound.webm" type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
+  useEffect(() => {
+    // Check if the device is running iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    setIsIOS(iOS);
+  }, []);
+  
+  return (
+    <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-base md:text-lg font-semibold">Payment History</h2>
+        <button className="text-blue-500 text-sm md:text-base flex items-center">
+          SEE ALL
+          <ArrowRight2 size={16} className="ml-1" />
+        </button>
+      </div>
+      <div>
+        {/* {payments.map((payment, index) => (
+          <PaymentHistoryItem key={index} {...payment} />
+        ))} */}
 
-        <p className='text-sm md:text-base text-gray-400 -mt-3'>You haven&apos;t initiated a transaction yet.</p>
+        {/* Empty State */}
+        <div className='flex items-center justify-center flex-col min-h-60'>
+          {isIOS ? (
+            // <Image src={"/others/notfound.png"} alt='IOS Image' width={100} height={100} className='mb-4' />
+            <object
+              type="image/svg+xml"
+              data="/others/notfound.svg"
+              className="w-24 h-24 mb-6"
+            >
+              Your browser does not support SVG
+            </object>
+          ) : (
+            <video autoPlay loop muted>
+              <source src="/others/notFound.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          )}
+
+          <p className='text-sm md:text-base text-gray-400 -mt-3'>You haven&apos;t initiated a transaction yet.</p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  )
+};
 
 const Payment = () => {
   const { data: session } = useSession();
