@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight2, Coin, ClipboardText, ArrowCircleUp2 } from 'iconsax-react';
 import PaymentModal from '@/components/modal/PaymentModal'
+import ServiceGrid from '@/components/dashboard/payment/ServiceGrid'
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
@@ -109,6 +110,7 @@ const Payment = () => {
   return (
     <div className="p-0 md:py-6">
       <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} />
+      <ServiceGrid />
       <PaymentHistory payments={paymentHistory} />
 
       <PaymentModal

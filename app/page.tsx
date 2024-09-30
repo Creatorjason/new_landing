@@ -16,7 +16,7 @@ export default function Home() {
           <AnimateOnScroll className="line-bg">
             <Hero />
           </AnimateOnScroll>
-          <AnimateOnScroll className="py-4 bg-white">
+          <AnimateOnScroll className="py-4 bg-white dark:bg-[#141F1F]">
             <Features />
           </AnimateOnScroll>
           <AnimateOnScroll>

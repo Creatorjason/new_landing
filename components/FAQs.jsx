@@ -37,14 +37,14 @@ const FAQs = () => {
           Get quick answers to common questions about our tech solutions. Need more help? Contact our support team for personalized assistance.
         </p>
       </div>
-      <div className='w-full lg:w-2/3'>
+      <div className='w-full lg:w-2/3 dark:text-white'>
         <Accordion type="single" collapsible className="w-full border-b border-[#E6E6E6] space-y-4">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger className="flex justify-between p-4 text-sm md:text-base font-medium text-left text-gray-900">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="px-4 pt-2 pb-4 text-sm md:text-base text-gray-600">
+              <AccordionContent className="px-4 pt-2 pb-4 text-sm md:text-base">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

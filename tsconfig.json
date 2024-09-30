@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.jsx", "components/FeatureSection.jsx", "components/auth/Register.jsx", "auth.js", "components/Hero.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.jsx", "components/FeatureSection.jsx", "components/auth/Register.jsx", "auth.js", "components/Hero.jsx", "app/api/socket/route.js", "components/SocketClient.jsx"],
   "exclude": ["node_modules"]
 }

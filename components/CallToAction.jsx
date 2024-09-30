@@ -15,14 +15,16 @@ const CheckItem = ({ text }) => (
 const CallToAction = () => {
   return (
     <section className="bg-[#7DF9FF2E] dark:bg-[#1C2626] text-[#111111] p-10 mx-4 md:mx-10 md:p-16 lg:p-20 mb-16 rounded-2xl flex flex-col items-center justify-center">
-      <div className='w-full max-w-md lg:max-w-none'>
-        <h2 className="text-4xl md:text-5xl lg:text-7xl max-w-[12ch] mb-8 font-semibold text-left">
-          Sign up now to get started.
-        </h2>
-        <div className='mb-8 lg:mb-0'>
-          <CheckItem text="Free account" />
-          <CheckItem text="Private & Secure" />
-          <CheckItem text="Personalized to you" />
+      <div className='w-full md:flex md:items-center md:justify-center max-w-md lg:max-w-none'>
+        <div className='md:flex md:flex-col'>
+          <h2 className="text-4xl md:text-5xl lg:text-7xl max-w-[12ch] mb-8 font-semibold text-left">
+            Sign up now to get started.
+          </h2>
+          <div className='mb-8 lg:mb-0 md:flex md:gap-x-4'>
+            <CheckItem text="Free account" />
+            <CheckItem text="Private & Secure" />
+            <CheckItem text="Personalized to you" />
+          </div>
         </div>
         <div className='flex justify-start'>
           <Link href={"/auth/signup"} className="text-white bg-[#141F1F] dark:bg-white dark:text-[#1C2626] py-3 px-9 rounded-full font-medium hover:bg-opacity-90 transition duration-200">
