@@ -73,14 +73,7 @@ const PaymentHistory = ({ payments }) => {
         {/* Empty State */}
         <div className='flex items-center justify-center flex-col min-h-60'>
           {isIOS ? (
-            // <Image src={"/others/notfound.png"} alt='IOS Image' width={100} height={100} className='mb-4' />
-            <object
-              type="image/svg+xml"
-              data="/others/notfound.svg"
-              className="w-24 h-24 mb-6"
-            >
-              Your browser does not support SVG
-            </object>
+            <Image src={"/others/notFound.png"} alt='IOS Image' width={100} height={100} className='mb-4' />
           ) : (
             <video autoPlay loop muted>
               <source src="/others/notFound.webm" type="video/webm" />

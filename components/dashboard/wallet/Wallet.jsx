@@ -7,6 +7,7 @@ import FiatonModal from '@/components/modal/FiatonModal';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
@@ -62,11 +63,18 @@ const Wallet = () => {
   const [error, setError] = useState("");
   const [verificationResult, setVerificationResult] = useState(null);
   const reference = localStorage.getItem("reference");
+  const [isIOS, setIsIOS] = useState(false);
   const transactions = [
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'FLIP' },
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'EXCHANGE' },
     { name: 'Jason Charles', amount: '4,000.00', receiver: 'ID23456789', time: '12:00', type: 'FLIP' },
   ];
+
+  useEffect(() => {
+    // Check if the device is running iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    setIsIOS(iOS);
+  }, []);
 
   useEffect(() => {
     const fetchFiatonData = async () => {
@@ -147,11 +155,16 @@ const Wallet = () => {
       </div> */}
       {/* Empty State */}
 
-      <div className='flex items-center justify-center flex-col min-h-72 bg-white dark:bg-[#1C2626] rounded-lg p-6'>
-        <video autoPlay loop muted>
-          <source src="/others/notFound.webm" type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
+      {/* Empty State */}
+      <div className='flex items-center justify-center flex-col min-h-60'>
+        {isIOS ? (
+          <Image src={"/others/notFound.png"} alt='IOS Image' width={100} height={100} className='mb-4' />
+        ) : (
+          <video autoPlay loop muted>
+            <source src="/others/notFound.webm" type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+        )}
 
         <p className='text-sm md:text-base text-gray-400 -mt-3'>You haven&apos;t topped up your wallet.</p>
       </div>
