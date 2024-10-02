@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowDown2 } from 'iconsax-react';
 import { motion } from 'framer-motion'
 import Image from 'next/image';
 import VersesModal from './VersesModal'
+import axios from 'axios';
 
 const VerseItem = ({ title, description, price, imageSrc }) => {
   const [quantity, setQuantity] = useState(1);
@@ -153,17 +154,38 @@ const SuccessMessage = ({ title, message, onClose }) => (
   </motion.div>
 );
 
-const MyVerseView = () => {
-  const verses = [
-    { id: 1, title: "Apple Watch Series 7", description: "Golden", price: 250000, imageSrc: "/flags/nigeria.png" },
-    { id: 2, title: "Beylob 90 Speaker", description: "Space Gray", price: 250000, imageSrc: "/flags/nigeria.png" },
-    { id: 3, title: "Beoplay M5 Bluetooth Speaker", description: "Gray Edition", price: 250000, imageSrc: "/flags/nigeria.png" },
-    { id: 4, title: "Apple Watch Series 7 - 44mm", description: "Golden", price: 250000, imageSrc: "/flags/nigeria.png" },
-  ];
+const MyVerseView = ({ session }) => {
+  // const verses = [
+  //   { id: 1, title: "Apple Watch Series 7", description: "Golden", price: 250000, imageSrc: "/flags/nigeria.png" },
+  //   { id: 2, title: "Beylob 90 Speaker", description: "Space Gray", price: 250000, imageSrc: "/flags/nigeria.png" },
+  //   { id: 3, title: "Beoplay M5 Bluetooth Speaker", description: "Gray Edition", price: 250000, imageSrc: "/flags/nigeria.png" },
+  //   { id: 4, title: "Apple Watch Series 7 - 44mm", description: "Golden", price: 250000, imageSrc: "/flags/nigeria.png" },
+  // ];
+  const [verses, setVerses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isVerseModalOpen, setIsVerseModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isVerseSuccess, setIsVerseSuccess] = useState(false);
   const [isProductSuccess, setIsProductSuccess] = useState(false);
+
+  useEffect(() => {
+    fetchVerses();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchVerses = async () => {
+    try {
+      setIsLoading(true);
+      // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+      const response = await axios.get(`https://api.granularx.com/verse/verse/${session.user.username}`);
+      setVerses(response.data);
+      setIsLoading(false);
+    } catch (err) {
+      setError('Failed to fetch verses');
+      setIsLoading(false);
+    }
+  };
 
   const createVerseModal = () => {
     setIsVerseModalOpen(true);
@@ -175,6 +197,8 @@ const MyVerseView = () => {
 
   const handleVerseSubmit = () => {
     setIsVerseSuccess(true);
+    // After successful creation, refetch verses
+    fetchVerses();
   };
 
   const handleProductSubmit = () => {
@@ -191,25 +215,48 @@ const MyVerseView = () => {
     setIsProductSuccess(false);
   };
 
+  const EmptyState = () => (
+    <div className="text-center py-12">
+      <h3 className="mt-2 text-sm font-semibold text-gray-900">Create a verses</h3>
+      <p className="mt-1 text-sm max-w-[30ch] mx-auto text-gray-500">You haven&apos;t created a verse yet. Get started by creating a new verse.</p>
+      <div className="mt-6">
+        <button
+          onClick={createVerseModal}
+          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#141f1f] hover:bg-[#141f1f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#141f1f]"
+        >
+          Create Verse
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="p-0 md:py-4">
-      <div className='bg-gray-500 py-10 overflow-hidden flex flex-col items-center justify-center rounded-lg verses-banner bg-cover relative bg-opacity-35 bg-center'>
-        <div className='absolute bg-black opacity-65 inset-0 z-0'></div>
-        <div className='z-10 flex flex-col items-center justify-center text-center gap-y-8 p-4'>
-          <p className='text-white text-3xl md:text-6xl font-extrabold'>Get your gadgets at<br />affordable prices</p>
-          <p className='text-gray-100 text-base max-w-[50ch]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nunc nisl eu consectetur. Mi massa elementum odio eu viverra amet.</p>
-          <div className='flex items-center gap-x-2'>
-            <button onClick={createVerseModal} className='bg-white border dark:text-[#141f1f] rounded-md p-3 px-6 text-sm font-medium'>Create Verse</button>
-            <button onClick={createProductModal} className='bg-transparent text-white border rounded-md p-3 px-6 text-sm font-medium'>Create Product</button>
+      {verses.length > 0 && 
+        <div className='bg-gray-500 py-10 overflow-hidden flex flex-col items-center justify-center rounded-lg verses-banner bg-cover relative bg-opacity-35 bg-center'>
+          <div className='absolute bg-black opacity-65 inset-0 z-0'></div>
+          <div className='z-10 flex flex-col items-center justify-center text-center gap-y-8 p-4'>
+            <p className='text-white text-3xl md:text-6xl font-extrabold'>Get your gadgets at<br />affordable prices</p>
+            <p className='text-gray-100 text-base max-w-[50ch]'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nunc nisl eu consectetur. Mi massa elementum odio eu viverra amet.</p>
+            <div className='flex items-center gap-x-2'>
+              <button onClick={createVerseModal} className='bg-white border dark:text-[#141f1f] rounded-md p-3 px-6 text-sm font-medium'>Create Verse</button>
+              <button onClick={createProductModal} className='bg-transparent text-white border rounded-md p-3 px-6 text-sm font-medium'>Create Product</button>
+            </div>
           </div>
         </div>
-      </div>
+      }
 
       {/* List goes here */}
-      <div className="bg-white dark:bg-[#1C2626] rounded-lg shadow-md p-6 my-6 mt-8">
-        {verses.map((verse) => (
-          <VerseItem key={verse.id} {...verse} />
-        ))}
+      <div className="p-2">
+        {isLoading ? (
+          <p className='py-12 flex items-center justify-center text-sm font-medium'>Loading verses...</p>
+        ) : verses.length === 0 ? (
+          <EmptyState />
+        ) : (
+          verses.map((verse) => (
+            <VerseItem key={verse.id} {...verse} />
+          ))
+        )}
       </div>
 
       <VersesModal isOpen={isProductModalOpen} onClose={closeProductModal} title="Create Product">

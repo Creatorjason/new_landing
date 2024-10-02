@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import MyVerseView from './MyVerseView';
 import OtherVerses from './OtherVerses';
 
-const VersesTabView = () => {
+const VersesTabView = ({ session }) => {
   const [activeTab, setActiveTab] = useState('myVerse');
 
   return (
@@ -45,7 +45,7 @@ const VersesTabView = () => {
           transition={{ duration: 0.3 }}
         >
           {activeTab === 'myVerse' ? (
-            <MyVerse />
+            <MyVerse session={session} />
           ) : (
             <PeerBankView />
           )}
@@ -55,8 +55,8 @@ const VersesTabView = () => {
   );
 };
 
-const MyVerse = () => (
-  <MyVerseView />
+const MyVerse = ({ session }) => (
+  <MyVerseView session={session} />
 );
 
 const PeerBankView = () => (

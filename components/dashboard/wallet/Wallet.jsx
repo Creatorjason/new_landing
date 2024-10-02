@@ -6,6 +6,7 @@ import WalletModal from '@/components/modal/WalletModal';
 import FiatonModal from '@/components/modal/FiatonModal';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
+import ActionDropdown from '@/components/ActionBtns'
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 
@@ -21,12 +22,13 @@ const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
       </div>
     </div>
     <div className='flex items-center gap-x-2'>
-      <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
+      <ActionDropdown setIsFiatonModalOpen={setIsFiatonModalOpen} setIsModalOpen={setIsModalOpen} />
+      {/* <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
         Top Up
       </button>
       <button onClick={() => setIsFiatonModalOpen(true)} className="text-[#141F1F] text-sm bg-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
         View Fiatons
-      </button>
+      </button> */}
     </div>
   </div>
 );

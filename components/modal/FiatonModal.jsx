@@ -26,7 +26,7 @@ const FiatonsModal = ({ isOpen, onClose, fiatons, uns, session }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-white max-w-sm p-6 rounded-md shadow-lg"
+            className="bg-white dark:bg-[#141f1f] max-w-sm p-6 rounded-md shadow-lg"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -38,7 +38,7 @@ const FiatonsModal = ({ isOpen, onClose, fiatons, uns, session }) => {
               {fiatons.map((item, index) => (
                 <li key={index} className="flex max-w-sm items-center space-x-2 mb-2">
                   <span className="w-2 h-2 rounded-full bg-black"></span>
-                  <p className="text-sm max-w-[50ch] font-medium text-[#141f1f]">{item}</p>
+                  <p className="text-sm max-w-[50ch] font-medium text-[#141f1f] dark:text-white">{item}</p>
                 </li>
               ))}
             </ul>
