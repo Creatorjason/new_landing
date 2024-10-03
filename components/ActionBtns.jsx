@@ -38,7 +38,7 @@ const ActionDropdown = ({ setIsModalOpen, setIsFiatonModalOpen }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-white dark:bg-[#141f1f]">
-        <DropdownMenuLabel className="font-normal text-sm text-gray-500 dark:text-gray-300">Account Actions</DropdownMenuLabel>
+        <DropdownMenuLabel className="font-normal text-sm text-gray-500 dark:text-gray-300">Wallet Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => handleAction('topUp')} className="flex items-center gap-2 cursor-pointer dark:hover:bg-[#1c2626] hover:bg-gray-100">
           <Wallet className="h-4 w-4" /> Top Up
