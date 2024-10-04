@@ -120,7 +120,7 @@ const SuccessMessage = ({ title, message, onClose }) => (
 );
 
 const MyVerseView = ({ session }) => {
-  const [verses, setVerses] = useState();
+  const [verses, setVerses] = useState(null);
   const [products, setProducts] = useState([])
   const [services, setServices] = useState([])
   const [contents, setContents] = useState([])
@@ -259,7 +259,7 @@ const MyVerseView = ({ session }) => {
       <div className="mt-6">
         {isLoading ? (
           <p className='py-12 flex items-center justify-center text-sm font-medium'>Loading verses...</p>
-        ) : verses.length === 0 && (
+        ) : !verses && (
           <EmptyState />
         )}
         
