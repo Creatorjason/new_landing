@@ -193,7 +193,7 @@ const MyVerseView = ({ session }) => {
   
   const EmptyState = () => (
     <div className="text-center py-12">
-      <h3 className="mt-2 text-sm font-semibold text-gray-900">Create a verses</h3>
+      <h3 className="mt-2 text-sm font-semibold text-gray-900">Create a verse</h3>
       <p className="mt-1 text-sm max-w-[30ch] mx-auto text-gray-500">You haven&apos;t created a verse yet. Get started by creating a new verse.</p>
       <div className="mt-6">
         <button
@@ -214,8 +214,10 @@ const MyVerseView = ({ session }) => {
             style={{backgroundImage: `url(${verses?.verse_header.header_banner_url})`}}>
             <div className='absolute bg-black opacity-65 inset-0 z-0'></div>
             <div className='z-10 flex flex-col items-center justify-center text-center gap-y-8 p-4'>
-              <p className='text-white text-3xl md:text-6xl font-extrabold'>{verses.verse_header.header_title}</p>
-              <p className='text-gray-100 text-base max-w-[50ch]'>{verses.verse_header.header_description}</p>
+              <div>
+                <p className='text-white text-3xl md:text-6xl mb-1 font-extrabold'>{verses.verse_header.header_title}</p>
+                <p className='text-gray-100 text-base max-w-[50ch]'>{verses.verse_header.header_description}</p>
+              </div>
               <div className='flex items-center gap-x-2'>
                 <div className="mt-6">
                   <DropdownMenu>

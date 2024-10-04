@@ -21,22 +21,26 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
   const [showReceipt, setShowReceipt] = useState(false);
   const [apiResponse, setApiResponse] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [reference, setReference] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (verificationResult) {
       setStep(5);
+      console.log(verificationResult)
       setTransactionSuccess(verificationResult.success);
       if (verificationResult.success) {
         setApiResponse(verificationResult.data);
+        setReference(localStorage.getItem('reference'));
       } else {
         setError(verificationResult.error);
       }
     }
+    console.log(verificationResult)
   }, [verificationResult]);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
-  const handleBack = () => setStep((prevStep) => prevStep - 1);
+  const handleBack = () => setStep((prevStep) => prevStep - 4);
 
 
   const handleConfirmOrder = async () => {
@@ -166,19 +170,19 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
                 />
               )}
 
-              {step === 5 && !transactionSuccess && !showReceipt && (
+              {step === 5 && transactionSuccess && !showReceipt && (
                 <WalletSuccessStep
                   onViewReceipt={handleViewReceipt}
                 />
               )}
 
-              {/* {step === 5 && !transactionSuccess && (
+              {step === 5 && !transactionSuccess && !showReceipt && (
                 <FailureStep
                   amount={amount}
                   currency={currency}
                   onGoBack={handleBack}
                 />
-              )} */}
+              )}
 
               {showReceipt && (
                 <Receipt
@@ -187,8 +191,8 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
                   status={transactionSuccess ? "Success" : "Failed"}
                   transactionType="Fund Wallet"
                   bankName="GranularX"
-                  accountNumber={apiResponse?.reference || "N/A"}
-                  accountName={uns}
+                  accountNumber={reference || apiResponse?.reference || "N/A"}
+                  accountName={session.user.username}
                   transactionID={apiResponse?.access_code || "N/A"}
                   onClose={handleCloseModal}
                 />

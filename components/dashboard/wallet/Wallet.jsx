@@ -7,7 +7,6 @@ import FiatonModal from '@/components/modal/FiatonModal';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import ActionDropdown from '@/components/ActionBtns'
-import toast from 'react-hot-toast';
 import Image from 'next/image';
 
 const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
@@ -23,12 +22,6 @@ const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
     </div>
     <div className='flex items-center gap-x-2'>
       <ActionDropdown setIsFiatonModalOpen={setIsFiatonModalOpen} setIsModalOpen={setIsModalOpen} />
-      {/* <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] text-sm text-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
-        Top Up
-      </button>
-      <button onClick={() => setIsFiatonModalOpen(true)} className="text-[#141F1F] text-sm bg-white border border-[#141f1f] font-medium px-6 py-2 rounded-lg">
-        View Fiatons
-      </button> */}
     </div>
   </div>
 );
@@ -104,13 +97,15 @@ const Wallet = () => {
           const response = await axios.get(`https://api.granularx.com/wallet/topup/verify/${reference}`);
           if (response.data.status === "SUCCESS") {
             setVerificationResult({ success: true, data: response.data.data });
-            localStorage.removeItem("reference");
+            // localStorage.removeItem("reference");
           } else {
             setVerificationResult({ success: false, error: response.data.error });
+            // localStorage.removeItem("reference");
           }
           setIsModalOpen(true); // Automatically open the modal
         } catch (err) {
           setVerificationResult({ success: false, error: err.message });
+          // localStorage.removeItem("reference");
           setIsModalOpen(true); // Open modal even on error
         } finally {
           setLoading(false);

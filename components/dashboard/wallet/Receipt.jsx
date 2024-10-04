@@ -35,6 +35,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
       element.style.display = 'none';
       onclose();
       resetModal();
+      localStorage.removeItem("reference");
     } catch (error) {
       console.error('Failed to generate PDF:', error);
     }
@@ -65,7 +66,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
             <strong className='text-[#666666] dark:text-gray-400'>Bank Name:</strong> {bankName}
           </p>
           <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
-            <strong className='text-[#666666] dark:text-gray-400'>Account Number:</strong> {accountNumber}
+            <strong className='text-[#666666] dark:text-gray-400'>Reference:</strong> {accountNumber}
           </p>
           <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F] dark:text-white'>
             <strong className='text-[#666666] dark:text-gray-400'>Account Name:</strong> {accountName}
@@ -113,7 +114,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
               <strong className='text-[#666666]'>Bank Name:</strong> {bankName}
             </p>
             <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
-              <strong className='text-[#666666]'>Account Number:</strong> {accountNumber}
+              <strong className='text-[#666666]'>Reference:</strong> {accountNumber}
             </p>
             <p className='flex items-center justify-between text-sm md:text-base text-[#0F0F0F]'>
               <strong className='text-[#666666]'>Account Name:</strong> {accountName}
