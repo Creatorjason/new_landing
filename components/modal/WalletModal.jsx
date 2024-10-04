@@ -27,7 +27,6 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
   useEffect(() => {
     if (verificationResult) {
       setStep(5);
-      console.log(verificationResult)
       setTransactionSuccess(verificationResult.success);
       if (verificationResult.success) {
         setApiResponse(verificationResult.data);
@@ -36,7 +35,6 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
         setError(verificationResult.error);
       }
     }
-    console.log(verificationResult)
   }, [verificationResult]);
 
   const handleProceed = () => setStep((prevStep) => prevStep + 1);
@@ -44,6 +42,8 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
 
 
   const handleConfirmOrder = async () => {
+    localStorage.setItem('amount', amount);
+    
     const request = axios.post(
       'https://api.granularx.com/wallet/topup?type=base&platform=web',
       {
@@ -72,6 +72,7 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
           const data = response.data;
           if (data.status === 'SUCCESS') {
             setApiResponse(data.data);
+
             localStorage.setItem('reference', data.data.reference);
             window.location.href = data.data.auth_url;
             return 'Transaction logged. Redirecting to Paystack!';
@@ -97,6 +98,8 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
 
   const handleCloseModal = (e) => {
     if (e.target === e.currentTarget || e.type === 'click') {
+      localStorage.removeItem("reference");
+      localStorage.removeItem("amount");
       resetModal();
       onClose();
     }
@@ -186,7 +189,7 @@ const WalletModal = ({ isOpen, onClose, balance, uns, session, verificationResul
 
               {showReceipt && (
                 <Receipt
-                  amount={amount}
+                  amount={localStorage.getItem("amount")}
                   date={new Date().toLocaleString()}
                   status={transactionSuccess ? "Success" : "Failed"}
                   transactionType="Fund Wallet"
