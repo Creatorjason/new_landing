@@ -23,7 +23,7 @@ const Receipt = ({ amount, date, status, transactionType, bankName, accountNumbe
     const element = pdfReceiptRef.current;
     const opt = {
       margin: 10,
-      filename: `GX_Receipt-${transactionID}.pdf`,
+      filename: `GX_Receipt-${accountName}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 3 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
