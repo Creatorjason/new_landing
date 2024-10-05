@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import crypto from 'crypto';
 
 const MessageItem = ({
   name,
@@ -12,8 +13,23 @@ const MessageItem = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
+
+const generateUnifiedChatID = (sender, receiver) => {
+  // Sort the sender and receiver to ensure deterministic order
+  const participants = [sender, receiver].sort();
+
+  // Concatenate the participants
+  const concatenated = participants.join('-');
+
+  // Hash the concatenated string using SHA-256
+  const hash = crypto.createHash('sha256').update(concatenated).digest('hex');
+
+  // Return the hex representation of the hash as the ChatID
+  return hash;
+}
+
   const handleClick = async () => {
-    const chatID = `${session.user.username}-${name}`;
+    const chatID = generateUnifiedChatID(session.user.username, name);
     onClick(chatID);
     await fetchChatHistory(chatID);
   };

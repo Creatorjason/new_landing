@@ -67,7 +67,20 @@ const useWebSocket = (userUNS) => {
     }
   };
 
-  return { messages, sendMessage };
+  // New function to send one-way transaction alert
+  const sendTransactionAlert = (receiverUNS, amount, senderName) => {
+    if (ws.current) {
+      const alertPayload = JSON.stringify({
+        action: 'send_message',
+        receiver: receiverUNS,
+        sender: 'SYSTEM',
+        content: `Transaction Alert: ₦${amount} from ${senderName}`,
+      });
+      ws.current.send(alertPayload);
+    }
+  };
+
+  return { messages, sendMessage, sendTransactionAlert };
 };
 
 export default useWebSocket;

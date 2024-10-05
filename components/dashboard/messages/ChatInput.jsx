@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, ArrowCircleUp2 } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
 
-const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage }) => {
+const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage, onSuccessfulTransfer }) => {
   const [message, setMessage] = useState('');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [lastTransfer, setLastTransfer] = useState(null);
 
   const togglePaymentModal = () => {
     setIsPaymentModalOpen(!isPaymentModalOpen);
@@ -13,7 +12,6 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // console.log("Message in handleSubmit:", message);
     if (message.trim()) {
       sendMessage(selectedChatId, message);
       setMessage('');
@@ -21,33 +19,12 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage }) => {
   };
 
   const handleSuccessfulTransfer = (transferDetails) => {
-    setLastTransfer(transferDetails);
-  
-    // Create the receipt message for payment with actual receipt details
-    const receiptMessage = {
-      id: Date.now(),
-      sender: "You",
-      content: {
-        amount: transferDetails.amount,
-        recipientName: transferDetails.recipientName,
-        date: transferDetails.date,
-      },
-      timestamp: new Date().toISOString(),
-    };
-  
-    // Update the chat with the new message
-    handleUpdateChat((prevChats) => {
-      return prevChats.map(chat => {
-        if (chat.id === selectedChatId) {
-          return {
-            ...chat,
-            messages: [...chat.messages, receiptMessage],
-          };
-        }
-        return chat;
-      });
-    });
-  };  
+    // Call the onSuccessfulTransfer callback provided by the parent component
+    onSuccessfulTransfer(transferDetails);
+
+    // Close the payment modal
+    setIsPaymentModalOpen(false);
+  };
 
   return (
     <>
