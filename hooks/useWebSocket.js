@@ -13,10 +13,10 @@ const useWebSocket = (userUNS) => {
     };
 
     ws.current.onmessage = (event) => {
-      console.log("Received WebSocket message:", event.data);
+      // console.log("Received WebSocket message:", event.data);
       try {
         const data = JSON.parse(event.data);
-        console.log("Parsed WebSocket data:", data);
+        // console.log("Parsed WebSocket data:", data);
         if (data.action === 'send_message') {
           const newMessage = {
             id: Date.now(),
@@ -24,7 +24,7 @@ const useWebSocket = (userUNS) => {
             content: data.content,
             timestamp: new Date().toISOString(),
           };
-          console.log("New message in onmessage:", newMessage);
+          // console.log("New message in onmessage:", newMessage);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
    
           ((prevChats) => {
@@ -37,7 +37,7 @@ const useWebSocket = (userUNS) => {
             return prevChats;
           });
         }
-        console.log("Data Parsed! ", data)
+        // console.log("Data Parsed! ", data)
       } catch (error) {
         console.error("Failed to parse WebSocket message:", error);
       }
@@ -51,12 +51,6 @@ const useWebSocket = (userUNS) => {
       console.log('WebSocket connection closed');
     };
 
-    // Cleanup on component unmount
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
   }, [userUNS, messages]);
 
   // Function to send message via WebSocket
@@ -68,7 +62,7 @@ const useWebSocket = (userUNS) => {
         sender: userUNS,
         content: content,
       });
-      console.log("Sending WebSocket message:", messagePayload);
+      // console.log("Sending WebSocket message:", messagePayload);
       ws.current.send(messagePayload);
     }
   };

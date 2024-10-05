@@ -14,10 +14,12 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [friendList, setFriendList] = useState([]);
   const [chatsData, setChatsData] = useState({});
+  const [chatHistory, setChatHistory] = useState(null);
+  const [chatIdentifier, setChatID] = useState(null);
 
   const handleNewMessage = useCallback((message) => {
     if (message && message.sender && message.content) {
-      console.log("Received new message:", message);
+      // console.log("Received new message:", message);
       setChatsData(prevChats => ({
         ...prevChats,
         [message.sender]: {
@@ -39,7 +41,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { sendMessage } = useWebSocket(session?.user?.username, handleNewMessage);
 
   const handleSendMessage = useCallback((receiverUns, content) => {
-    console.log("Sending message:", { receiverUns, content });
+    // console.log("Sending message:", { receiverUns, content });
     if (typeof content !== 'string') {
       console.error("Invalid message content type:", typeof content);
       return;
@@ -160,9 +162,11 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
         </div>
         <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
           {friendList?.map((friend) => (
-            <MessageItem 
+            <MessageItem
+              session={session}
               key={friend.uns}
-              name={friend.uns}
+              name={friend.uns} setChatID={setChatID}
+              setChatHistory={setChatHistory}
               isSelected={selectedChat?.id === friend.uns}
               onClick={() => handleChatSelect(friend)}
             />
@@ -174,7 +178,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
           <ChatView 
             chat={selectedChat} 
             chatsData={chatsData} 
-            onBack={handleBack} 
+            onBack={handleBack} chatIdentifier={chatIdentifier}
             selectedChat={selectedChat} 
             handleUpdateChat={handleSendMessage} // Pass send message handler
           />

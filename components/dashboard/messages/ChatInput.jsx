@@ -13,7 +13,7 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Message in handleSubmit:", message);
+    // console.log("Message in handleSubmit:", message);
     if (message.trim()) {
       sendMessage(selectedChatId, message);
       setMessage('');
