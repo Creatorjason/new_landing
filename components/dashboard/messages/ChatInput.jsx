@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, ArrowCircleUp2 } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
 import { chats } from '../../../data/chats'; // Import the chats array
 import Receipt from '../payment/Receipt';
 
-const ChatInput = ({ selectedChatId, onUpdateChat }) => {
+const ChatInput = ({ selectedChatId, handleUpdateChat }) => {
   const [message, setMessage] = useState('');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [lastTransfer, setLastTransfer] = useState(null);
 
   const togglePaymentModal = () => {
     setIsPaymentModalOpen(!isPaymentModalOpen);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (message.trim()) {
+      handleUpdateChat(message.trim());
+      setMessage('');
+    }
   };
 
   const handleSuccessfulTransfer = (transferDetails) => {
@@ -43,7 +51,7 @@ const ChatInput = ({ selectedChatId, onUpdateChat }) => {
     <>
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1C2626] mb-0">
         <div className="flex flex-col bg-gray-50 dark:bg-[#141F1F] rounded-md p-2">
-          <div className='flex items-center justify-between'>
+          <form onSubmit={handleSubmit} className='flex items-center justify-between'>
             <input
               type="text"
               placeholder="Write a message"
@@ -51,10 +59,10 @@ const ChatInput = ({ selectedChatId, onUpdateChat }) => {
               onChange={(e) => setMessage(e.target.value)}
               className="flex-grow bg-transparent outline-none mx-2 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <button className="p-2">
+            <button type='submit' className="p-2">
               <ArrowCircleUp2 size={30} className="text-[#141F1F] dark:text-white" variant="Bold"/>
             </button>
-          </div>
+          </form>
           <div className="flex items-center">
             <button className="p-2">
               <Menu size={20} className="text-[#141F1F] dark:text-white" />

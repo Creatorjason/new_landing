@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { chats } from "@/data/chats"; // Adjust the import path as necessary
-import { Add, ArrowLeft, ArrowLeft2, HambergerMenu, SearchNormal1, User } from "iconsax-react";
-import ChatInput from "./ChatInput";
-import Image from "next/image";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Add, ArrowLeft, HambergerMenu, SearchNormal1 } from "iconsax-react";
+import ChatView from "./ChatView";
+import MessageItem from "./MessageItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import useWebSocket from '@/hooks/useWebSocket'
 
 const truncateMessage = (message, limit = 50) => {
   const words = message.split(" ");
@@ -16,127 +16,95 @@ const truncateMessage = (message, limit = 50) => {
   return message.length > limit ? message.slice(0, limit) + "..." : message;
 };
 
-const MessageItem = ({
-  // avatar,
-  name,
-  // message,
-  // time,
-  // pinned,
-  // unread,
-  isSelected,
-  onClick,
-}) => (
-  <div
-    className={`flex items-center p-3 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
-      isSelected ? "bg-[#F9F9F9] dark:bg-gray-700" : ""
-    }`} key={name}
-    onClick={onClick}
-  >
-    <Image width={30} height={30} src={"/earth.png"} alt={name} className="w-10 h-10 rounded-full mr-3" />
-    <div className="flex-1 min-w-0">
-      <div className="flex justify-between items-center">
-        <p className="font-semibold truncate text-base">{name}</p>
-        {/* <span className="text-[13px] text-gray-500 ml-2 font-medium flex-shrink-0">{time}</span> */}
-      </div>
-      {/* <p className="text-[13px] text-gray-600 dark:text-gray-400 truncate">
-        {truncateMessage(message)}
-      </p> */}
-    </div>
-    {/* {pinned && <span className="ml-2 text-blue-500 flex-shrink-0">📌</span>} */}
-    {/* {unread > 0 && (
-      <span className="ml-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full flex-shrink-0">
-        {unread}
-      </span>
-    )} */}
-  </div>
-);
-
-const ChatView = ({
-  chat,
-  onBack,
-  selectedChat,
-  handleUpdateChat,
-}) => {
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(scrollToBottom, [chat.messages]);
-
-  const renderMessageContent = (message) => {
-    if (message.type === 'receipt') {
-      return (
-        <div className="bg-lightblue p-2 rounded-md">
-          <p>{message.content}</p>
-          <button className="text-blue-500" onClick={toggleReceiptModal}>
-            VIEW
-          </button>
-        </div>
-      );
-    }
-    return <p className='text-[13px]'>{message.content}</p>;
-  };
-
-  return (
-    <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-        <button onClick={onBack} className="mr-4 sm:hidden">
-          <ArrowLeft size="24" />
-        </button>
-        <Image src={chat.avatar} alt={chat.name} width={100} height={100} className="w-9 h-9 rounded-full mr-3" />
-        <div>
-          <h2 className="text-lg md:text-xl font-bold">{chat.name}</h2>
-          <small className='text-[#27962b] bg-[#11c0171a] px-2.5 py-1 text-xs rounded-full'>Active</small>
-        </div>
-      </div>
-      <div className="flex-1">
-        <div className="p-4 pb-0 md:pb-[70px] overflow-y-scroll h-[calc(100vh-215px)] md:h-[420px] sm:pb-4">
-          {chat.messages.map((message) => (
-            <div key={message.id} className={`mb-4 ${message.sender === 'You' ? 'text-right' : ''}`}>
-              <div className={`${message.sender === 'You' ? 'flex items-end justify-end text-right' : 'flex items-end'}`}>
-                {message.sender !== "You" && <Image src={chat.avatar} alt={chat.name} width={100} height={100} className="w-7 h-7 rounded-full mr-2" />}
-                <div className={`inline-block p-3 rounded-lg ${message.sender === 'You' ? 'bg-[#141F1F]/50 text-white' : 'bg-[#F8F8F8] dark:bg-gray-700'}`}>
-                  {/* Use renderMessageContent function */}
-                  {renderMessageContent(message)}
-                </div>
-                {message.sender === "You" && <User size="22" color="#FF8A65" className="ml-2" variant="Bold"/>}
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </p>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-      <div className="relative sm:static sm:mb-4"> {/* Wrap the input with a relative div */}
-        <ChatInput selectedChatId={selectedChat?.id} onUpdateChat={handleUpdateChat} />
-      </div>
-    </div>
-  );
-};
-
-const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMobile }) => {
-  const {data: session} = useSession();
+const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
+  const { data: session } = useSession();
   const [friendUns, setFriendUns] = useState('');
   const [selectedChat, setSelectedChat] = useState(null);
   const [friendList, setFriendList] = useState([]);
-  const [chatsData, setChatsData] = useState(chats); // Added state to manage chats
+  const [chatsData, setChatsData] = useState({});
 
-  const handleChatSelect = (chat) => {
-    setSelectedChat(chat);
+  const handleNewMessage = useCallback((message) => {
+    if (message && message.sender && message.content) {
+      setChatsData(prevChatsData => {
+        const chatUns = message.sender;
+        const updatedChat = prevChatsData[chatUns] || { id: chatUns, name: chatUns, uns: chatUns, messages: [] };
+        const messageExists = updatedChat.messages.some(msg => 
+          msg.content === message.content && msg.sender === message.sender
+        );
+
+        if (!messageExists) {
+          return {
+            ...prevChatsData,
+            [chatUns]: {
+              ...updatedChat,
+              messages: [
+                ...updatedChat.messages,
+                {
+                  id: Date.now(),
+                  content: message.content,
+                  sender: message.sender,
+                  timestamp: new Date().toISOString()
+                }
+              ]
+            }
+          };
+        }
+        return prevChatsData;
+      });
+    }
+  }, []);
+
+  // Use the custom WebSocket hook
+  const { isConnected, lastMessage, sendMessage } = useWebSocket(session?.user?.username);
+
+  useEffect(() => {
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (lastMessage && lastMessage.action === 'send_message') {
+      handleNewMessage(lastMessage);
+    }
+  }, [lastMessage, handleNewMessage]);
+
+  const handleChatSelect = (friend) => {
+    // If we don't have chat data for this friend yet, initialize it
+    if (!chatsData[friend.uns]) {
+      setChatsData(prev => ({
+        ...prev,
+        [friend.uns]: {
+          id: friend.uns,
+          name: friend.uns,
+          uns: friend.uns,
+          messages: []
+        }
+      }));
+    }
+    setSelectedChat(chatsData[friend.uns] || { id: friend.uns, name: friend.uns, uns: friend.uns, messages: [] });
   };
 
   const handleBack = () => {
     setSelectedChat(null);
   };
 
-  const handleUpdateChat = (updatedChats) => {
-    setChatsData(updatedChats);
-    // setChatsData(updatedChats);
-    setSelectedChat(updatedChats.find(chat => chat.id === selectedChat.id));
+  const handleUpdateChat = (message) => {
+    if (selectedChat) {
+      const updatedChats = {
+        ...chatsData,
+        [selectedChat.uns]: {
+          ...chatsData[selectedChat.uns],
+          messages: [
+            ...(chatsData[selectedChat.uns]?.messages || []),
+            {
+              id: Date.now(),
+              content: message,
+              sender: session.user.username,
+              timestamp: new Date().toISOString()
+            }
+          ]
+        }
+      };
+      setChatsData(updatedChats);
+    }
   };
 
   const fetchFriendList = async () => {
@@ -201,6 +169,18 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
     );
   };
 
+  const handleSendMessage = useCallback((content) => {
+    if (selectedChat && isConnected) {
+      sendMessage('send_message', session.user.username, selectedChat?.uns, content);
+      handleNewMessage({
+        receiver: selectedChat?.uns,
+        content: content
+      });
+    }
+    handleUpdateChat(content)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat, isConnected, sendMessage, session, handleNewMessage]);
+
   useEffect(() => {
     fetchFriendList(); // Fetch friend list on component mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -231,15 +211,14 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
           </div>
         </div>
         <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
-          {friendList.map((chat) => (
+          {friendList?.map((friend) => (
             <MessageItem 
-              key={chat.id}
-              // avatar={chat.avatar}
-              name={chat.uns}
+              key={friend.uns}
+              name={friend.uns}
               // message={chat.messages[chat.messages.length - 1].content}
               // time={new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString()}
-              isSelected={selectedChat?.id === chat.id}
-              onClick={() => handleChatSelect(chat)}
+              isSelected={selectedChat?.id === friend.uns}
+              onClick={() => handleChatSelect(friend)}
             />
           ))}
           
@@ -247,7 +226,13 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile, setIsMo
       </div>
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
         {selectedChat ? (
-          <ChatView chat={selectedChat} onBack={handleBack} selectedChat={selectedChat} handleUpdateChat={handleUpdateChat} />
+          <ChatView 
+            chat={selectedChat} 
+            chatsData={chatsData} 
+            onBack={handleBack} 
+            selectedChat={selectedChat} 
+            handleUpdateChat={handleSendMessage}
+          />
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
