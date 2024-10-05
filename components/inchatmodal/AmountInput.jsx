@@ -19,7 +19,7 @@ const AmountInput = ({ amount, balance, formattedAmount, setAmount, setFormatted
   return (
     <>
       <div className="text-center mb-6">
-        <span className="text-3xl md:text-4xl font-bold text-[#141f1f]">₦{formattedAmount || '0.00'}</span>
+        <span className="text-3xl md:text-4xl font-bold dark:text-white text-[#141f1f]">₦{formattedAmount || '0.00'}</span>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Wallet balance: ₦{balance.toLocaleString()}</p>
       </div>
       <div className="flex flex-1 flex-wrap items-center justify-center gap-4 mb-6 mx-auto max-w-[280px] md:max-w-xs">

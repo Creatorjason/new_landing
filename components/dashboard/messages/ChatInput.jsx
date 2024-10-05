@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, ArrowCircleUp2 } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
-import { chats } from '../../../data/chats'; // Import the chats array
-import Receipt from '../payment/Receipt';
 
-const ChatInput = ({ selectedChatId, handleUpdateChat }) => {
+const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage }) => {
   const [message, setMessage] = useState('');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [lastTransfer, setLastTransfer] = useState(null);
@@ -13,39 +11,43 @@ const ChatInput = ({ selectedChatId, handleUpdateChat }) => {
     setIsPaymentModalOpen(!isPaymentModalOpen);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("Message in handleSubmit:", message);
     if (message.trim()) {
-      handleUpdateChat(message.trim());
+      sendMessage(selectedChatId, message);
       setMessage('');
     }
   };
 
   const handleSuccessfulTransfer = (transferDetails) => {
     setLastTransfer(transferDetails);
-
-    // Create the receipt message
+  
+    // Create the receipt message for payment with actual receipt details
     const receiptMessage = {
-      id: Date.now(), // Use a unique ID, could use a better ID generation approach
+      id: Date.now(),
       sender: "You",
-      content: `Transfer successful! \n Amount: ₦${transferDetails.amount.toLocaleString()}, Recipient: ${transferDetails.recipientName}, Date: ${new Date(transferDetails.date).toLocaleString()}`,
+      content: {
+        amount: transferDetails.amount,
+        recipientName: transferDetails.recipientName,
+        date: transferDetails.date,
+      },
       timestamp: new Date().toISOString(),
     };
-
-    // Find the chat by ID and update it
-    const updatedChats = chats.map(chat => {
-      if (chat.id === selectedChatId) {
-        return {
-          ...chat,
-          messages: [...chat.messages, receiptMessage],
-        };
-      }
-      return chat;
+  
+    // Update the chat with the new message
+    handleUpdateChat((prevChats) => {
+      return prevChats.map(chat => {
+        if (chat.id === selectedChatId) {
+          return {
+            ...chat,
+            messages: [...chat.messages, receiptMessage],
+          };
+        }
+        return chat;
+      });
     });
-
-    // Update the chat state in the parent component
-    onUpdateChat(updatedChats);
-  };
+  };  
 
   return (
     <>
@@ -86,6 +88,7 @@ const ChatInput = ({ selectedChatId, handleUpdateChat }) => {
         isOpen={isPaymentModalOpen}
         onClose={togglePaymentModal}
         onSuccessfulTransfer={handleSuccessfulTransfer}
+        selectedChatId={selectedChatId}
       />
     </>
   );

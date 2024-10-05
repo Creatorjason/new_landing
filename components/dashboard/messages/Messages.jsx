@@ -1,20 +1,12 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Add, ArrowLeft, HambergerMenu, SearchNormal1 } from "iconsax-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Add, HambergerMenu, SearchNormal1 } from "iconsax-react";
 import ChatView from "./ChatView";
 import MessageItem from "./MessageItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import useWebSocket from '@/hooks/useWebSocket'
-
-const truncateMessage = (message, limit = 50) => {
-  const words = message.split(" ");
-  if (words.length > 5) {
-    return words.slice(0, 5).join(" ") + "...";
-  }
-  return message.length > limit ? message.slice(0, limit) + "..." : message;
-};
+import useWebSocket from '@/hooks/useWebSocket';
 
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { data: session } = useSession();
@@ -25,49 +17,38 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
 
   const handleNewMessage = useCallback((message) => {
     if (message && message.sender && message.content) {
-      setChatsData(prevChatsData => {
-        const chatUns = message.sender;
-        const updatedChat = prevChatsData[chatUns] || { id: chatUns, name: chatUns, uns: chatUns, messages: [] };
-        const messageExists = updatedChat.messages.some(msg => 
-          msg.content === message.content && msg.sender === message.sender
-        );
-
-        if (!messageExists) {
-          return {
-            ...prevChatsData,
-            [chatUns]: {
-              ...updatedChat,
-              messages: [
-                ...updatedChat.messages,
-                {
-                  id: Date.now(),
-                  content: message.content,
-                  sender: message.sender,
-                  timestamp: new Date().toISOString()
-                }
-              ]
-            }
-          };
-        }
-        return prevChatsData;
-      });
+      console.log("Received new message:", message);
+      setChatsData(prevChats => ({
+        ...prevChats,
+        [message.sender]: {
+          ...prevChats[message.sender],
+          messages: [
+            ...(prevChats[message.sender]?.messages || []),
+            {
+              id: Date.now(),
+              content: message.content,
+              sender: message.sender,
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        },
+      }));
     }
   }, []);
 
-  // Use the custom WebSocket hook
-  const { isConnected, lastMessage, sendMessage } = useWebSocket(session?.user?.username);
+  const { sendMessage } = useWebSocket(session?.user?.username, handleNewMessage);
 
-  useEffect(() => {
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (lastMessage && lastMessage.action === 'send_message') {
-      handleNewMessage(lastMessage);
+  const handleSendMessage = useCallback((receiverUns, content) => {
+    console.log("Sending message:", { receiverUns, content });
+    if (typeof content !== 'string') {
+      console.error("Invalid message content type:", typeof content);
+      return;
     }
-  }, [lastMessage, handleNewMessage]);
+    sendMessage(receiverUns, content);
+    handleNewMessage({ sender: session.user.username, content, receiver: receiverUns });
+  }, [session, sendMessage, handleNewMessage]);
 
   const handleChatSelect = (friend) => {
-    // If we don't have chat data for this friend yet, initialize it
     if (!chatsData[friend.uns]) {
       setChatsData(prev => ({
         ...prev,
@@ -84,27 +65,6 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
 
   const handleBack = () => {
     setSelectedChat(null);
-  };
-
-  const handleUpdateChat = (message) => {
-    if (selectedChat) {
-      const updatedChats = {
-        ...chatsData,
-        [selectedChat.uns]: {
-          ...chatsData[selectedChat.uns],
-          messages: [
-            ...(chatsData[selectedChat.uns]?.messages || []),
-            {
-              id: Date.now(),
-              content: message,
-              sender: session.user.username,
-              timestamp: new Date().toISOString()
-            }
-          ]
-        }
-      };
-      setChatsData(updatedChats);
-    }
   };
 
   const fetchFriendList = async () => {
@@ -169,18 +129,6 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
     );
   };
 
-  const handleSendMessage = useCallback((content) => {
-    if (selectedChat && isConnected) {
-      sendMessage('send_message', session.user.username, selectedChat?.uns, content);
-      handleNewMessage({
-        receiver: selectedChat?.uns,
-        content: content
-      });
-    }
-    handleUpdateChat(content)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat, isConnected, sendMessage, session, handleNewMessage]);
-
   useEffect(() => {
     fetchFriendList(); // Fetch friend list on component mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,7 +139,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
         <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">
-            <h2 className="text-lg font-bold flex items-center gap-x-2">Messsages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
+            <h2 className="text-lg font-bold flex items-center gap-x-2">Messages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden">
               <HambergerMenu size="20" color="#141f1f"/>
             </button>
@@ -215,13 +163,10 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
             <MessageItem 
               key={friend.uns}
               name={friend.uns}
-              // message={chat.messages[chat.messages.length - 1].content}
-              // time={new Date(chat.messages[chat.messages.length - 1].timestamp).toLocaleTimeString()}
               isSelected={selectedChat?.id === friend.uns}
               onClick={() => handleChatSelect(friend)}
             />
           ))}
-          
         </div>
       </div>
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
@@ -231,7 +176,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
             chatsData={chatsData} 
             onBack={handleBack} 
             selectedChat={selectedChat} 
-            handleUpdateChat={handleSendMessage}
+            handleUpdateChat={handleSendMessage} // Pass send message handler
           />
         ) : (
           <div className="flex items-center justify-center h-full">

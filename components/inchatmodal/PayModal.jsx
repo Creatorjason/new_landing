@@ -11,11 +11,11 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
+const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => {
   const [step, setStep] = useState(1);
   const [amount, setAmount] = useState('');
   const [formattedAmount, setFormattedAmount] = useState('');
-  const [recipientName, setRecipientName] = useState('');
+  const [recipientName, setRecipientName] = useState(selectedChatId);
   const [submitting, setSubmitting] = useState(false)
   const [balance, setBalance] = useState('0')
   const [pin, setPin] = useState('');
@@ -189,7 +189,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
                     (step === 1 && !amount) ||
                     (step === 2 && !recipientName)
                   }
-                  className={`w-full bg-[#141f1f] text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
+                  className={`w-full dark:bg-white dark:text-[#141f1f] bg-[#141f1f] text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
                     ((step === 1 && !amount) || (step === 2 && !recipientName))
                       ? 'opacity-50 cursor-not-allowed'
                       : ''
@@ -202,7 +202,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer }) => {
                 <button
                   onClick={handlePinSubmit}
                   disabled={pin.length !== 4 || submitting}
-                  className={`w-full bg-[#141f1f] flex items-center justify-center gap-x-1 text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
+                  className={`w-full dark:text-[#141f1f] dark:bg-[#11C017] bg-[#141f1f] flex items-center justify-center gap-x-1 text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
                     pin.length !== 4 ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
