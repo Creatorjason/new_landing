@@ -142,8 +142,8 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
         <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">
             <h2 className="text-lg font-bold flex items-center gap-x-2">Messages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden">
-              <HambergerMenu size="20" color="#141f1f"/>
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden text-[#141f1f] dark:text-gray-50">
+              <HambergerMenu size="20"/>
             </button>
           </div>
 

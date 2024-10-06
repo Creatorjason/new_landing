@@ -6,7 +6,7 @@ import useWebSocket from '@/hooks/useWebSocket';
 
 const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handleUpdateChat }) => {
   const { data: session } = useSession();
-  const { messages: liveMessages, sendMessage, sendTransactionAlert } = useWebSocket(session.user.username);
+  const { messages: liveMessages, sendMessage, sendTransactionAlert, isConnected } = useWebSocket(session.user.username);
   const [allMessages, setAllMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const previousLiveMessagesLengthRef = useRef(0);
@@ -18,7 +18,6 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
   useEffect(() => {
     const chatHistory = JSON.parse(localStorage.getItem(`chatHistory_${chatIdentifier}`)) || { message: [] };
     
-    // Filter out duplicates from liveMessages
     const newLiveMessages = liveMessages.filter(liveMsg => 
       !chatHistory.message.some(historyMsg => historyMsg.timestamp === liveMsg.timestamp)
     );
@@ -31,7 +30,6 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
 
     setAllMessages(sortedMessages);
 
-    // Update localStorage only with new messages
     if (newLiveMessages.length > 0) {
       const updatedChatHistory = {
         ...chatHistory,
@@ -40,12 +38,10 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
       localStorage.setItem(`chatHistory_${chatIdentifier}`, JSON.stringify(updatedChatHistory));
     }
 
-    // Scroll to bottom after updating messages
     scrollToBottom();
     previousLiveMessagesLengthRef.current = liveMessages.length;
   }, [selectedChat, liveMessages, chatIdentifier]);
 
-  // Additional useEffect to handle initial scroll and window resize
   useEffect(() => {
     scrollToBottom();
     window.addEventListener('resize', scrollToBottom);
@@ -146,7 +142,9 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
         </button>
         <div>
           <h2 className="text-sm md:text-base font-bold">{chat.name}</h2>
-          <small className='text-[#27962b] bg-[#11c0171a] px-2 py-1 text-[10px] font-medium rounded-full'>active</small>
+          <small className={`px-2 py-1 text-[10px] font-medium rounded-full ${isConnected ? 'text-[#27962b] bg-[#11c0171a]' : 'text-red-500 bg-red-100'}`}>
+            {isConnected ? 'Connection active' : 'connecting...'}
+          </small>
         </div>
       </div>
       <div className="flex-1">
@@ -158,7 +156,7 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
       <div className="relative sm:static sm:mb-4">
         <ChatInput 
           selectedChatId={selectedChat?.id} 
-          sendMessage={sendMessage} 
+          sendMessage={sendMessage}
           handleUpdateChat={handleUpdateChat}
           onSuccessfulTransfer={(transferDetails) => {
             const receiptMessage = {
@@ -178,7 +176,6 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
             localStorage.setItem(`chatHistory_${chatIdentifier}`, JSON.stringify(updatedChatHistory));
             
             const newContent = JSON.parse(receiptMessage.content)
-            // Send the transaction alert through WebSocket
             sendTransactionAlert(selectedChat?.id, newContent.amount, session.user.username);
           }}
         />

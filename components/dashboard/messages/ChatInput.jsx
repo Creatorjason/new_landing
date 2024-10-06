@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Moneys, Happyemoji, VoiceCricle, Menu, ArrowCircleUp2 } from 'iconsax-react';
 import PayModal from '../../inchatmodal/PayModal';
 
@@ -18,11 +18,12 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage, onSuccessful
     }
   };
 
-  const handleSuccessfulTransfer = (transferDetails) => {
-    // Call the onSuccessfulTransfer callback provided by the parent component
-    onSuccessfulTransfer(transferDetails);
+  const handleInputChange = (e) => {
+    setMessage(e.target.value);
+  };
 
-    // Close the payment modal
+  const handleSuccessfulTransfer = (transferDetails) => {
+    onSuccessfulTransfer(transferDetails);
     setIsPaymentModalOpen(false);
   };
 
@@ -35,7 +36,7 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage, onSuccessful
               type="text"
               placeholder="Write a message"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputChange}
               className="flex-grow bg-transparent outline-none mx-2 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
             />
             <button type='submit' className="p-2">

@@ -1,22 +1,30 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const useWebSocket = (userUNS) => {
   const ws = useRef(null);
   const [messages, setMessages] = useState([]);
+  const typingTimeoutRef = useRef({});
+  const [isConnected, setIsConnected] = useState(false);
+  const messageQueue = useRef([]);
+
+  const sendQueuedMessages = useCallback(() => {
+    while (messageQueue.current.length > 0 && isConnected) {
+      const message = messageQueue.current.shift();
+      ws.current.send(message);
+    }
+  }, [isConnected]);
 
   useEffect(() => {
-    // Establish WebSocket connection
     ws.current = new WebSocket(`wss://socket.granularx.com/ws/${userUNS}`);
 
     ws.current.onopen = () => {
       console.log('WebSocket connected');
+      setIsConnected(true);
     };
 
     ws.current.onmessage = (event) => {
-      // console.log("Received WebSocket message:", event.data);
       try {
         const data = JSON.parse(event.data);
-        // console.log("Parsed WebSocket data:", data);
         if (data.action === 'send_message') {
           const newMessage = {
             id: Date.now(),
@@ -24,63 +32,68 @@ const useWebSocket = (userUNS) => {
             content: data.content,
             timestamp: new Date().toISOString(),
           };
-          // console.log("New message in onmessage:", newMessage);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
-   
-          ((prevChats) => {
-            const chatToUpdate = prevChats.find(chat => chat.id === data.receiver);
-            if (chatToUpdate) {
-              return prevChats.map(chat => chat.id === chatToUpdate.id
-                ? { ...chatToUpdate, messages: [...chatToUpdate.messages, newMessage] }
-                : chat);
-            }
-            return prevChats;
-          });
         }
-        // console.log("Data Parsed! ", data)
       } catch (error) {
         console.error("Failed to parse WebSocket message:", error);
       }
-    };     
+    };
 
     ws.current.onerror = (error) => {
       console.error('WebSocket error:', error);
+      setIsConnected(false);
     };
 
     ws.current.onclose = () => {
       console.log('WebSocket connection closed');
+      setIsConnected(false);
     };
 
-  }, [userUNS, messages]);
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const timeouts = { ...typingTimeoutRef.current };
+      Object.values(timeouts).forEach(clearTimeout);
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
+  }, [userUNS]);
 
-  // Function to send message via WebSocket
-  const sendMessage = (receiverUNS, content) => {
-    if (ws.current) {
-      const messagePayload = JSON.stringify({
-        action: 'send_message',
-        receiver: receiverUNS,
-        sender: userUNS,
-        content: content,
-      });
-      // console.log("Sending WebSocket message:", messagePayload);
+  useEffect(() => {
+    if (isConnected) {
+      sendQueuedMessages();
+    }
+  }, [isConnected, sendQueuedMessages]);
+
+  const sendMessage = useCallback((receiverUNS, content) => {
+    const messagePayload = JSON.stringify({
+      action: 'send_message',
+      receiver: receiverUNS,
+      sender: userUNS,
+      content: content,
+    });
+    if (isConnected && ws.current) {
       ws.current.send(messagePayload);
+    } else {
+      messageQueue.current.push(messagePayload);
     }
-  };
+  }, [isConnected, userUNS]);
 
-  // New function to send one-way transaction alert
-  const sendTransactionAlert = (receiverUNS, amount, senderName) => {
-    if (ws.current) {
-      const alertPayload = JSON.stringify({
-        action: 'send_message',
-        receiver: receiverUNS,
-        sender: 'SYSTEM',
-        content: `Transaction Alert: ₦${amount} from ${senderName}`,
-      });
+  const sendTransactionAlert = useCallback((receiverUNS, amount, senderName) => {
+    const alertPayload = JSON.stringify({
+      action: 'send_message',
+      receiver: receiverUNS,
+      sender: 'SYSTEM',
+      content: `Transaction Alert: ₦${amount} from ${senderName}`,
+    });
+    if (isConnected && ws.current) {
       ws.current.send(alertPayload);
+    } else {
+      messageQueue.current.push(alertPayload);
     }
-  };
+  }, [isConnected]);
 
-  return { messages, sendMessage, sendTransactionAlert };
+  return { messages, sendMessage, sendTransactionAlert, isConnected };
 };
 
 export default useWebSocket;
