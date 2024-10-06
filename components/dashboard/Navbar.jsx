@@ -108,7 +108,7 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
                       aria-orientation="vertical"
                       aria-labelledby="user-menu"
                     >
-                      <Link href="/dashboard/settings" onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                      <Link href="/dashboard/settings" onClick={() => setIsDropdownOpen(false)} className="flex items-center gap-x-2 p-2 rounded-md text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
                         <ProfileCircle size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk"/>
                         <span>Profile</span>
                       </Link>
@@ -116,7 +116,7 @@ const Navbar = ({ setIsMobileMenuOpen, isMobileMenuOpen }) => {
                         <Setting2 size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk" />
                         <span>Settings</span>
                       </Link> */}
-                      <button onClick={handleSignOut} className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
+                      <button onClick={handleSignOut} className="flex items-center gap-x-2 p-2 text-base text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600" role="menuitem">
                         <LogoutCurve size={24} className="text-[#333333] dark:text-gray-50" variant="Bulk"/>
                         <span>Log Out</span>
                       </button>

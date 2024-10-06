@@ -63,18 +63,27 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Fields that should have whitespace removed
+    const noWhitespaceFields = ['username', 'identifier', 'email', 'password', 'confirmPassword'];
+    
+    let processedValue = value;
+    if (noWhitespaceFields.includes(name)) {
+      processedValue = value.replace(/\s/g, '');
+    }
+  
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: processedValue
     }));
-
+  
     if (name === 'password') {
       setPasswordValidation({
-        hasMinLength: value.length >= 10,
-        hasUppercase: /[A-Z]/.test(value),
-        hasLowerCase: /[a-z]/.test(value),
-        hasNumber: /\d/.test(value),
-        hasSpecialChar: /[@$!%*?&]/.test(value),
+        hasMinLength: processedValue.length >= 10,
+        hasUppercase: /[A-Z]/.test(processedValue),
+        hasLowerCase: /[a-z]/.test(processedValue),
+        hasNumber: /\d/.test(processedValue),
+        hasSpecialChar: /[@$!%*?&]/.test(processedValue),
       });
     }
   };

@@ -14,8 +14,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const login = String(credentials.login);
           const password = String(credentials.password);
 
+          // Determine if login is email or uns
+          const isEmail = login.includes('@');
+
           const res = await axios.post("https://api.granularx.com/auth/signin?platform=web", {
-            uns: login, // Backend should handle both email and UNS
+            [isEmail ? 'email' : 'uns']: login, // Backend should handle both email and UNS
             password: password,
           });
 

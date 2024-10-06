@@ -8,7 +8,7 @@ const RecipientInput = ({ recipientName, setRecipientName }) => {
         placeholder="Enter recipient's UNS"
         value={recipientName}
         onChange={(e) => setRecipientName(e.target.value)}
-        className="w-full p-2 py-3 mb-4 text-sm uppercase border outline-none rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        className="w-full p-2 py-3 mb-4 text-sm border outline-none rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
       />
     </div>
   );
