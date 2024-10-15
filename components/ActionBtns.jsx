@@ -8,9 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Wallet, Eye, RefreshCw, RotateCcw } from "lucide-react";
+import { ChevronDown, Wallet, Eye, RefreshCw } from "lucide-react";
 
-const ActionDropdown = ({ setIsModalOpen, setIsFiatonModalOpen }) => {
+const ActionDropdown = ({ setIsModalOpen, setIsFiatonModalOpen, setIsSwapModalOpen }) => {
   const handleAction = (action) => {
     switch (action) {
       case 'topUp':
@@ -20,10 +20,7 @@ const ActionDropdown = ({ setIsModalOpen, setIsFiatonModalOpen }) => {
         setIsFiatonModalOpen(true);
         break;
       case 'swapFiatons':
-        console.log('Swap Fiatons');
-        break;
-      case 'reverseTransaction':
-        console.log('Reverse Transaction');
+        setIsSwapModalOpen(true);
         break;
       default:
         console.log('Unknown action');
@@ -48,9 +45,6 @@ const ActionDropdown = ({ setIsModalOpen, setIsFiatonModalOpen }) => {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleAction('swapFiatons')} className="flex items-center gap-2 cursor-pointer dark:hover:bg-[#1c2626] hover:bg-gray-100">
           <RefreshCw className="h-4 w-4" /> Swap Fiatons
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction('reverseTransaction')} className="flex items-center gap-2 cursor-pointer dark:hover:bg-[#1c2626] hover:bg-gray-100">
-          <RotateCcw className="h-4 w-4" /> Reverse Transaction
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

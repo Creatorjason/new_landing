@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { ClipboardText, Clock } from 'iconsax-react';
 import WalletModal from '@/components/modal/WalletModal';
 import FiatonModal from '@/components/modal/FiatonModal';
+import Swap from '@/components/modal/Swap';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import ActionDropdown from '@/components/ActionBtns'
 import Image from 'next/image';
 
-const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
+const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen, setIsSwapModalOpen }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 flex-wrap gap-y-4 md:gap-y-0 flex items-center justify-between">
     <div className="flex items-center">
       <div className="bg-[#7df8ff3d] p-4 rounded-lg mr-4">
@@ -21,7 +22,7 @@ const WalletBalance = ({ balance, setIsModalOpen, setIsFiatonModalOpen }) => (
       </div>
     </div>
     <div className='flex items-center gap-x-2'>
-      <ActionDropdown setIsFiatonModalOpen={setIsFiatonModalOpen} setIsModalOpen={setIsModalOpen} />
+      <ActionDropdown setIsFiatonModalOpen={setIsFiatonModalOpen} setIsSwapModalOpen={setIsSwapModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   </div>
 );
@@ -53,6 +54,7 @@ const Wallet = () => {
   const [fiatons, setFiatons] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFiatonModalOpen, setIsFiatonModalOpen] = useState(false);
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false)
   const [walletBalance, setWalletBalance] = useState(0); // Set default balance to 0
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -141,7 +143,7 @@ const Wallet = () => {
   return (
     <div className="p-0 md:py-6">
       {!loading ? (
-        <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} setIsFiatonModalOpen={setIsFiatonModalOpen} />
+        <WalletBalance balance={walletBalance} setIsSwapModalOpen={setIsSwapModalOpen} setIsModalOpen={setIsModalOpen} setIsFiatonModalOpen={setIsFiatonModalOpen} />
       ) : (
         <p className='py-4 text-sm font-medium'>Loading wallet balance...</p>
       )}
@@ -178,6 +180,12 @@ const Wallet = () => {
         fiatons={fiatons}
         isOpen={isFiatonModalOpen}
         onClose={() => setIsFiatonModalOpen(false)}
+        balance={walletBalance}
+      />
+      <Swap
+        session={session}
+        isOpen={isSwapModalOpen}
+        onClose={() => setIsSwapModalOpen(false)}
         balance={walletBalance}
       />
     </div>

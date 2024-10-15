@@ -4,11 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight2, Coin, ClipboardText, ArrowCircleUp2 } from 'iconsax-react';
 import PaymentModal from '@/components/modal/PaymentModal'
 import ServiceGrid from '@/components/dashboard/payment/ServiceGrid'
+import PaymentDropdown from '@/components/PaymentBtns'
+import MITD from '@/components/modal/MITD'
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import Image from 'next/image';
 
-const WalletBalance = ({ balance, setIsModalOpen }) => (
+const WalletBalance = ({ balance, setIsModalOpen, setMITD }) => (
   <div className="bg-white dark:bg-[#1C2626] rounded-lg p-6 mb-6 gap-y-4 md:gap-y-0 flex items-center flex-wrap justify-between">
     <div className="flex items-center">
       <div className="bg-[#7df8ff3d] p-4 rounded-lg mr-4">
@@ -19,9 +21,9 @@ const WalletBalance = ({ balance, setIsModalOpen }) => (
         <p className="text-lg md:text-2xl font-bold">₦{balance.toLocaleString()}</p>
       </div>
     </div>
-    <button onClick={() => setIsModalOpen(true)} className="bg-[#141F1F] float-right text-sm dark:bg-[#7DF9FF3d] text-white font-medium px-6 py-2 rounded-lg">
-      New Payment
-    </button>
+    <div className='flex items-center gap-x-2'>
+      <PaymentDropdown setIsModalOpen={setIsModalOpen} setMITD={setMITD} />
+    </div>
   </div>
 );
 
@@ -91,6 +93,7 @@ const PaymentHistory = ({ payments }) => {
 const Payment = () => {
   const { data: session } = useSession();
   const [walletBalance, setWalletBalance] = useState(0); // Set default balance to 0
+  const [mitd, setMITD] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const paymentHistory = [
     { type: 'Dollar Payment', date: '17 Oct, 2020', amount: '100,000.00', status: 'Successful' },
@@ -124,7 +127,7 @@ const Payment = () => {
 
   return (
     <div className="p-0 md:py-6">
-      <WalletBalance balance={walletBalance} setIsModalOpen={setIsModalOpen} />
+      <WalletBalance balance={walletBalance} setMITD={setMITD} setIsModalOpen={setIsModalOpen} />
       <ServiceGrid />
       <PaymentHistory payments={paymentHistory} />
 
@@ -133,6 +136,10 @@ const Payment = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         balance={walletBalance}
+      />
+      <MITD
+        isOpen={mitd}
+        onClose={() => setMITD(false)}
       />
     </div>
   );
