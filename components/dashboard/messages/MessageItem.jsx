@@ -1,6 +1,6 @@
-import axios from 'axios';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import axios from 'axios';
 import crypto from 'crypto';
 
 const MessageItem = ({
@@ -8,25 +8,24 @@ const MessageItem = ({
   isSelected,
   onClick,
   session,
-  setChatHistory,
-  setChatID
+  setChatID,
+  setChatHistory
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const generateUnifiedChatID = (sender, receiver) => {
+    // Sort the sender and receiver to ensure deterministic order
+    const participants = [sender, receiver].sort();
 
-const generateUnifiedChatID = (sender, receiver) => {
-  // Sort the sender and receiver to ensure deterministic order
-  const participants = [sender, receiver].sort();
+    // Concatenate the participants
+    const concatenated = participants.join('-');
 
-  // Concatenate the participants
-  const concatenated = participants.join('-');
+    // Hash the concatenated string using SHA-256
+    const hash = crypto.createHash('sha256').update(concatenated).digest('hex');
 
-  // Hash the concatenated string using SHA-256
-  const hash = crypto.createHash('sha256').update(concatenated).digest('hex');
-
-  // Return the hex representation of the hash as the ChatID
-  return hash;
-}
+    // Return the hex representation of the hash as the ChatID
+    return hash;
+  }
 
   const handleClick = async () => {
     const chatID = generateUnifiedChatID(session.user.username, name);
@@ -56,18 +55,21 @@ const generateUnifiedChatID = (sender, receiver) => {
 
   return (
     <div
-      className={`flex items-center p-3 pr-5 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer ${
-        isSelected ? "bg-[#F9F9F9] dark:bg-gray-700" : ""
+      className={`flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${
+        isSelected ? "bg-gray-100 dark:bg-gray-600" : ""
       } ${isLoading ? "opacity-50" : ""}`}
       onClick={handleClick}
     >
-      <Image width={30} height={30} src="/earth.png" alt={name} className="w-10 h-10 rounded-full mr-3" />
+      <Image width={30} height={30} src="/earth.png" alt={name} className="w-8 h-8 rounded-full mr-3" />
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-center">
-          <p className="font-semibold truncate text-sm md:text-base">{name}</p>
-        </div>
+        <p className="font-medium truncate text-sm">{name}</p>
       </div>
-      {isLoading && <span className="ml-2">Loading...</span>}
+      {Math.random() > 0.5 ? (
+        <span className="bg-gray-200 dark:bg-gray-600 text-xs font-medium px-2 py-1 rounded-full">2</span>
+      ) : (
+        isSelected && <span className="text-blue-500">✓</span>
+      )}
+      {isLoading && <span className="ml-2 text-xs">Loading...</span>}
     </div>
   );
 };

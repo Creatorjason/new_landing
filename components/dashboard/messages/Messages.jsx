@@ -1,12 +1,63 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
-import { Add, HambergerMenu, SearchNormal1 } from "iconsax-react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Add, HambergerMenu, SearchNormal1, ArrowDown2, ArrowUp2, UserAdd } from "iconsax-react";
 import ChatView from "./ChatView";
 import MessageItem from "./MessageItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useWebSocket from '@/hooks/useWebSocket';
+import Image from 'next/image';
+
+// New component for the friends list
+const FriendsList = ({ friends, selectedChat, handleChatSelect, setChatID, setChatHistory, session }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [height, setHeight] = useState('auto');
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(isExpanded ? contentRef.current.scrollHeight + 'px' : '0px');
+    }
+  }, [isExpanded, friends]);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className="px-4 mb-2">
+      <button 
+        onClick={toggleExpand}
+        className="w-full text-left px-4 py-2 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-between"
+      >
+        <span className="text-sm font-medium">Your Friends</span>
+        {isExpanded ? <ArrowUp2 size="16" /> : <ArrowDown2 size="16" />}
+      </button>
+      <div 
+        style={{ height: height, overflow: 'hidden', transition: 'height 0.3s ease-in-out' }}
+        className="mt-2"
+      >
+        <div
+          ref={contentRef}
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+        >
+          {friends.map((friend) => (
+            <MessageItem
+              key={friend.uns}
+              session={session}
+              name={friend.uns}
+              setChatID={setChatID}
+              setChatHistory={setChatHistory}
+              isSelected={selectedChat?.id === friend.uns}
+              onClick={() => handleChatSelect(friend)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { data: session } = useSession();
@@ -16,6 +67,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const [chatsData, setChatsData] = useState({});
   const [chatHistory, setChatHistory] = useState(null);
   const [chatIdentifier, setChatID] = useState(null);
+  const [showFriends, setShowFriends] = useState(true);
 
   const handleNewMessage = useCallback((message) => {
     if (message && message.sender && message.content) {
@@ -131,6 +183,10 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
     );
   };
 
+  const toggleFriendsList = () => {
+    setShowFriends(!showFriends);
+  };
+
   useEffect(() => {
     fetchFriendList(); // Fetch friend list on component mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +195,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   return (
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
-        <div className="p-4 border-r-2 border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">
             <h2 className="text-lg font-bold flex items-center gap-x-2">Messages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="sm:hidden text-[#141f1f] dark:text-gray-50">
@@ -147,32 +203,58 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
             </button>
           </div>
 
-          <div className="py-4">
-            <p className="text-sm font-medium mb-2">Add friend by UNS</p>
-            <div className="border border-[#e6e6e6] dark:border-gray-700 rounded-md flex items-center overflow-hidden gap-x-2">
-              <div className="pl-2">
-                <SearchNormal1 size="18" color="#999999" />
-              </div>
-              <input type="text" value={friendUns} onChange={(e) => setFriendUns(e.target.value)} placeholder="Add by UNS..." className="bg-transparent outline-none flex-1 text-sm font-normal" />
-              <button onClick={addFriend} className="bg-[#141f1f] text-white p-3">
-                <Add size="18" />
-              </button>
-            </div>
+          <div className="mt-4 relative">
+            <SearchNormal1 size="18" color="#999999" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
+            <input 
+              type="text" 
+              placeholder="Search Messages" 
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-full bg-gray-50 dark:bg-[#141f1f] text-sm"
+            />
           </div>
         </div>
-        <div className="overflow-y-auto h-dvh md:h-[calc(100vh-260px)] pl-0 md:pl-4">
-          {friendList?.map((friend) => (
-            <MessageItem
-              session={session}
-              key={friend.uns}
-              name={friend.uns} setChatID={setChatID}
-              setChatHistory={setChatHistory}
-              isSelected={selectedChat?.id === friend.uns}
-              onClick={() => handleChatSelect(friend)}
+
+        <div className="py-4">
+          <div className="px-4 mb-2">
+            <button className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between">
+              <span className="text-sm font-medium">Your Sofi Servant</span>
+              <ArrowDown2 size="16" />
+            </button>
+          </div>
+          <div className="px-4 mb-2">
+            <button className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between">
+              <span className="text-sm font-medium">Your Plugs</span>
+              <ArrowDown2 size="16" />
+            </button>
+          </div>
+          <FriendsList 
+            friends={friendList}
+            selectedChat={selectedChat}
+            handleChatSelect={handleChatSelect}
+            setChatID={setChatID}
+            setChatHistory={setChatHistory}
+            session={session}
+          />
+        </div>
+
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="mb-2 p-0.5 focus:border focus:border-gray-200 focus:dark:border-gray-700 overflow-hidden relative flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-full">
+            <input
+              type="text"
+              placeholder="Enter friend's UNS"
+              value={friendUns}
+              onChange={(e) => setFriendUns(e.target.value)}
+              className="w-full bg-transparent py-2 outline-none px-4 text-sm"
             />
-          ))}
+            <button 
+              onClick={addFriend}
+              className="flex items-center justify-center bg-[#141f1f] text-white p-2 rounded-r-full"
+            >
+              <UserAdd size="20" />
+            </button>
+          </div>
         </div>
       </div>
+
       <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
         {selectedChat ? (
           <ChatView 
