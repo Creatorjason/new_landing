@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft } from 'iconsax-react';
+import { ArrowLeft, CloseCircle } from 'iconsax-react';
+import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
 import AmountInput from './AmountInput';
 import RecipientInput from './RecipientInput';
 import ConfirmTransfer from './ConfirmTransfer';
 import PinInput from './PinInput';
 import TransferSuccess from './TransferSuccess';
-import { CloseCircle } from 'iconsax-react';
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 
 const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => {
   const [step, setStep] = useState(1);
@@ -17,33 +18,26 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   const [formattedAmount, setFormattedAmount] = useState('');
   const [recipientName, setRecipientName] = useState(selectedChatId);
   const [submitting, setSubmitting] = useState(false)
-  const [balance, setBalance] = useState('0')
   const [pin, setPin] = useState('');
   const modalRef = useRef(null);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    const fetchWalletBalance = async () => {
-      if (session) {
-        try {
-          const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
-            headers: {
-              'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
-              'x-csrf-token': session.csrfToken,
-            },
-          });
+  const fetchWalletBalance = async () => {
+    const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
+      headers: {
+        'Authorization': `Bearer ${session.authToken}`,
+        'x-csrf-token': session.csrfToken,
+      },
+    });
+    return parseFloat(response.data.data);
+  };
 
-          const data = response.data;
-          setBalance(parseFloat(data.data)); // Set the fetched balance
-        } catch (error) {
-          console.error('Error fetching wallet balance:', error);
-        }
-      }
-    };
+  const { data: balance, isLoading, isError } = useQuery({
+    queryKey: ['walletBalance', session?.user?.username],
+    queryFn: fetchWalletBalance,
+    enabled: !!session,
+  });
 
-    fetchWalletBalance();
-  }, [session]);
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -61,11 +55,16 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (selectedChatId) {
+      setRecipientName(selectedChatId);
+    }
+  }, [selectedChatId]);
+
   const resetModal = () => {
     setStep(1);
     setAmount('');
     setFormattedAmount('');
-    setRecipientName('');
     setPin('');
   };
 
@@ -76,11 +75,19 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   };
 
   const handlePinSubmit = async () => {
+    // Check if the amount is less than the balance
+    if (parseFloat(amount.replace(/,/g, '')) > balance) {
+      toast.error('Insufficient balance. Please enter a lower amount.');
+      setStep(1); // Reset to step 1
+      return;
+    }
+
     const request = axios.post('https://api.granularx.com/fiatons/send/peer?platform=web', {
       sender_wallet_id: session.user.username,
       receiver_wallet_id: recipientName,
       amount: parseInt(amount.replace(/,/g, ''))
     });
+
 
     if (pin.length === 4) {
       setSubmitting(true);
@@ -132,14 +139,20 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <AmountInput balance={balance} amount={amount} formattedAmount={formattedAmount} setAmount={setAmount} setFormattedAmount={setFormattedAmount} />;
+        return <AmountInput 
+          balance={balance || 0} 
+          amount={amount} 
+          formattedAmount={formattedAmount} 
+          setAmount={setAmount} 
+          setFormattedAmount={setFormattedAmount} 
+          isLoading={isLoading}
+          isError={isError}
+        />;
       case 2:
-        return <RecipientInput recipientName={recipientName} setRecipientName={setRecipientName} />;
-      case 3:
         return <ConfirmTransfer amount={formattedAmount} recipientName={recipientName} />;
-      case 4:
+      case 3:
         return <PinInput pin={pin} setPin={setPin} recipientName={recipientName} />;
-      case 5:
+      case 4:
         return <TransferSuccess amount={formattedAmount} recipientName={recipientName} />;
       default:
         return null;
@@ -172,9 +185,8 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
                 )}
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                   {step === 1 ? 'In-Chat payment' : 
-                   step === 2 ? 'Recipient Details' :
-                   step === 3 ? 'Confirm Transfer' :
-                   step === 4 ? 'Enter PIN' : 'Transfer Status'}
+                   step === 2 ? 'Confirm Transfer' :
+                   step === 3 ? 'Enter PIN' : 'Transfer Status'}
                 </h2>
 
                 <button onClick={() => onClose()}>
@@ -182,12 +194,11 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
                 </button>
               </div>
               {renderStep()}
-              {step < 4 && (
+              {step < 3 && (
                 <button
                   onClick={handleProceed}
                   disabled={
-                    (step === 1 && !amount) ||
-                    (step === 2 && !recipientName)
+                    (step === 1 && !amount)
                   }
                   className={`w-full dark:bg-white dark:text-[#141f1f] bg-[#141f1f] text-white py-3 rounded-md hover:bg-[#090e0e] transition-colors ${
                     ((step === 1 && !amount) || (step === 2 && !recipientName))
@@ -195,10 +206,10 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
                       : ''
                   }`}
                 >
-                  {step === 3 ? 'Confirm' : 'Proceed'}
+                  {step === 2 ? 'Confirm' : 'Proceed'}
                 </button>
               )}
-              {step === 4 && (
+              {step === 3 && (
                 <button
                   onClick={handlePinSubmit}
                   disabled={pin.length !== 4 || submitting}

@@ -1,15 +1,18 @@
-import { ArrowLeft, ProfileCircle, User, Receipt21 } from 'iconsax-react';
+import { ArrowLeft, ProfileCircle, User, Receipt21, WalletAdd1 } from 'iconsax-react';
 import React, { useEffect, useRef, useState } from 'react'
 import ChatInput from "./ChatInput";
 import { useSession } from "next-auth/react";
 import useWebSocket from '@/hooks/useWebSocket';
+import TopUpModal from '../softservant/TopUpModal';
 
-const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handleUpdateChat }) => {
+const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handleUpdateChat, isSoftServantMode = false }) => {
+  const balance = 0;
   const { data: session } = useSession();
   const { messages: liveMessages, sendMessage, sendTransactionAlert, isConnected } = useWebSocket(session.user.username);
   const [allMessages, setAllMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const previousLiveMessagesLengthRef = useRef(0);
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -136,16 +139,27 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
  
   return (
     <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
-        <button onClick={onBack} className="mr-4 sm:hidden">
-          <ArrowLeft size="24" />
-        </button>
-        <div>
-          <h2 className="text-sm md:text-base font-bold">{chat.name}</h2>
-          <small className={`px-2 py-1 text-[10px] font-medium rounded-full ${isConnected ? 'text-[#27962b] bg-[#11c0171a]' : 'text-red-500 bg-red-100'}`}>
-            {isConnected ? 'Connection active' : 'connecting...'}
-          </small>
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="flex items-center">
+          <button onClick={onBack} className="mr-4 sm:hidden">
+            <ArrowLeft size="24" />
+          </button>
+          <div>
+            <h2 className="text-sm md:text-base font-bold">{chat.name}</h2>
+            <small className={`px-2 py-1 text-[10px] font-medium rounded-full ${isConnected ? 'text-[#27962b] bg-[#11c0171a]' : 'text-red-500 bg-red-100'}`}>
+              {isConnected ? 'Connection active' : 'connecting...'}
+            </small>
+          </div>
         </div>
+        {isSoftServantMode && (
+          <button 
+            onClick={() => setIsTopUpModalOpen(true)} 
+            className="flex items-center bg-[#141F1F]/90 hover:bg-[#141F1F] text-white px-3 py-2 rounded-lg text-sm transition-colors duration-200"
+          >
+            <WalletAdd1 size="16" variant='Bulk' className="mr-1" />
+            Add Money
+          </button>
+        )}
       </div>
       <div className="flex-1">
         <div className="p-4 pb-0 overflow-y-scroll max-h-96 h-auto sm:pb-4">
@@ -180,6 +194,12 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
           }}
         />
       </div>
+      
+      {/* Add the TopUpModal component */}
+      <TopUpModal 
+        isOpen={isTopUpModalOpen} balance={balance}
+        onClose={() => setIsTopUpModalOpen(false)} 
+      />
     </div>
   );
 };

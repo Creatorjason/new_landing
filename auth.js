@@ -54,7 +54,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error(user.error || "Authentication failed");
           }
         } catch (error) {
-          console.error("Auth error:", error);
           throw new Error(error.response?.data?.error || "An error occurred during authentication");
         }
       }
@@ -94,4 +93,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.AUTH_SECRET,
 });

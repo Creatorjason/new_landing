@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useWebSocket from '@/hooks/useWebSocket';
 import Image from 'next/image';
+import ChatInput from "./ChatInput";
 
 // New component for the friends list
 const FriendsList = ({ friends, selectedChat, handleChatSelect, setChatID, setChatHistory, session }) => {
@@ -59,6 +60,55 @@ const FriendsList = ({ friends, selectedChat, handleChatSelect, setChatID, setCh
   );
 };
 
+const SoftServantDropdown = ({ onSelectMode }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [height, setHeight] = useState('0px');
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(isExpanded ? `${contentRef.current.scrollHeight}px` : '0px');
+    }
+  }, [isExpanded]);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className="px-4 mb-2">
+      <button 
+        onClick={toggleExpand}
+        className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between transition-colors duration-300"
+      >
+        <span className="text-sm font-medium">Your Soft Servant</span>
+        <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+          <ArrowDown2 size="16" />
+        </div>
+      </button>
+      <div 
+        style={{ height, overflow: 'hidden', transition: 'height 0.3s ease-in-out' }}
+        className="mt-1"
+      >
+        <div ref={contentRef} className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          <button 
+            onClick={() => onSelectMode('Errand')}
+            className="w-full text-sm text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+          >
+            Errand Mode
+          </button>
+          <button 
+            onClick={() => onSelectMode('Assistant')}
+            className="w-full text-sm text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+          >
+            Assistant Mode
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { data: session } = useSession();
   const [friendUns, setFriendUns] = useState('');
@@ -68,6 +118,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const [chatHistory, setChatHistory] = useState(null);
   const [chatIdentifier, setChatID] = useState(null);
   const [showFriends, setShowFriends] = useState(true);
+  const [softServantMode, setSoftServantMode] = useState(null);
 
   const handleNewMessage = useCallback((message) => {
     if (message && message.sender && message.content) {
@@ -187,6 +238,15 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
     setShowFriends(!showFriends);
   };
 
+  const handleSelectSoftServantMode = (mode) => {
+    setSoftServantMode(mode);
+    setSelectedChat(null);
+  };
+
+  const handleBackFromSoftServant = () => {
+    setSoftServantMode(null);
+  };
+
   useEffect(() => {
     fetchFriendList(); // Fetch friend list on component mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -194,7 +254,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
 
   return (
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
-      <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && selectedChat ? 'hidden' : 'block'}`}>
+      <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && (selectedChat || softServantMode) ? 'hidden' : 'block'}`}>
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">
             <h2 className="text-lg font-bold flex items-center gap-x-2">Messages <span className="bg-gray-50 dark:bg-[#141f1f] p-2 py-1 border rounded-md text-sm font-medium">{friendList.length}</span></h2>
@@ -214,12 +274,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
         </div>
 
         <div className="py-4">
-          <div className="px-4 mb-2">
-            <button className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between">
-              <span className="text-sm font-medium">Your Sofi Servant</span>
-              <ArrowDown2 size="16" />
-            </button>
-          </div>
+          <SoftServantDropdown onSelectMode={handleSelectSoftServantMode} />
           <div className="px-4 mb-2">
             <button className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between">
               <span className="text-sm font-medium">Your Plugs</span>
@@ -236,8 +291,8 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
           />
         </div>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="mb-2 p-0.5 focus:border focus:border-gray-200 focus:dark:border-gray-700 overflow-hidden relative flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-full">
+        <div className="p-4 border-t border-gray-300 dark:border-gray-700">
+          <div className="mb-2 p-0.5 focus:border focus:border-gray-200 focus:dark:border-gray-700 overflow-hidden relative flex items-center justify-between border border-gray-400 dark:border-gray-700 rounded-full">
             <input
               type="text"
               placeholder="Enter friend's UNS"
@@ -255,14 +310,29 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
         </div>
       </div>
 
-      <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
+      <div className={`w-full sm:w-2/3 ${isMobile && !selectedChat && !softServantMode ? 'hidden' : 'block h-[90%] md:h-auto'}`}>
         {selectedChat ? (
           <ChatView 
             chat={selectedChat} 
             chatsData={chatsData} 
-            onBack={handleBack} chatIdentifier={chatIdentifier}
+            onBack={handleBack}
+            chatIdentifier={chatIdentifier}
             selectedChat={selectedChat} 
-            handleUpdateChat={handleSendMessage} // Pass send message handler
+            handleUpdateChat={handleSendMessage}
+            isSoftServantMode={false}
+          />
+        ) : softServantMode ? (
+          <ChatView 
+            chat={{ name: `${softServantMode} Mode`, id: softServantMode.toLowerCase() }}
+            chatsData={{}}
+            onBack={handleBackFromSoftServant}
+            chatIdentifier={`softservant_${softServantMode.toLowerCase()}`}
+            selectedChat={{ id: softServantMode.toLowerCase() }}
+            handleUpdateChat={(receiverUns, content) => {
+              // Handle soft servant messages here
+              console.log(`Soft Servant ${softServantMode} Mode:`, content);
+            }}
+            isSoftServantMode={true}
           />
         ) : (
           <div className="flex items-center justify-center h-full">
