@@ -14,7 +14,7 @@ const Dashboard = () => {
     const fetchWalletBalance = async () => {
       if (session) {
         try {
-          const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
+          const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}/NGN`, {
             headers: {
               'Authorization': `Bearer ${session.authToken}`, // Include the user's auth token
               'x-csrf-token': session.csrfToken,

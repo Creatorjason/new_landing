@@ -1,22 +1,21 @@
 import { ArrowLeft, ProfileCircle, User, Receipt21, WalletAdd1 } from 'iconsax-react';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import ChatInput from "./ChatInput";
 import { useSession } from "next-auth/react";
 import useWebSocket from '@/hooks/useWebSocket';
 import TopUpModal from '../softservant/TopUpModal';
 
-const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handleUpdateChat, isSoftServantMode = false }) => {
+const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat, isSoftServantMode = false }) => {
   const balance = 0;
   const { data: session } = useSession();
   const { messages: liveMessages, sendMessage, sendTransactionAlert, isConnected } = useWebSocket(session.user.username);
   const [allMessages, setAllMessages] = useState([]);
   const messagesEndRef = useRef(null);
-  const previousLiveMessagesLengthRef = useRef(0);
   const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     const chatHistory = JSON.parse(localStorage.getItem(`chatHistory_${chatIdentifier}`)) || { message: [] };
@@ -25,25 +24,26 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
       !chatHistory.message.some(historyMsg => historyMsg.timestamp === liveMsg.timestamp)
     );
     
-    const combinedMessages = [...chatHistory.message, ...newLiveMessages];
-    
-    const sortedMessages = combinedMessages.sort((a, b) => 
-      new Date(a.timestamp) - new Date(b.timestamp)
-    );
-
-    setAllMessages(sortedMessages);
-
     if (newLiveMessages.length > 0) {
+      const combinedMessages = [...chatHistory.message, ...newLiveMessages];
+      
+      const sortedMessages = combinedMessages.sort((a, b) => 
+        new Date(a.timestamp) - new Date(b.timestamp)
+      );
+
+      setAllMessages(sortedMessages);
+
       const updatedChatHistory = {
         ...chatHistory,
         message: sortedMessages
       };
       localStorage.setItem(`chatHistory_${chatIdentifier}`, JSON.stringify(updatedChatHistory));
+    } else {
+      setAllMessages(chatHistory.message);
     }
 
     scrollToBottom();
-    previousLiveMessagesLengthRef.current = liveMessages.length;
-  }, [selectedChat, liveMessages, chatIdentifier]);
+  }, [selectedChat, liveMessages, chatIdentifier, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
@@ -52,18 +52,18 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
     return () => {
       window.removeEventListener('resize', scrollToBottom);
     };
-  }, []);
+  }, [scrollToBottom]);
 
-  const isReceiptContent = (content) => {
+  const isReceiptContent = useCallback((content) => {
     try {
       const parsedContent = JSON.parse(content);
       return parsedContent && typeof parsedContent === 'object' && 'amount' in parsedContent;
     } catch {
       return false;
     }
-  };
+  }, []);
 
-  const renderMessage = (msg) => {
+  const renderMessage = useCallback((msg) => {
     const isCurrentUser = msg.sender === session.user.username;
     
     if (typeof msg.content === 'string' && isReceiptContent(msg.content)) {
@@ -135,8 +135,31 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
         </p>
       </div>
     );
-  };
- 
+  }, [session.user.username, isReceiptContent]);
+
+  const memoizedMessages = useMemo(() => allMessages.map(renderMessage), [allMessages, renderMessage]);
+
+  const handleSuccessfulTransfer = useCallback((transferDetails) => {
+    const receiptMessage = {
+      id: Date.now(),
+      sender: session.user.username,
+      content: JSON.stringify({
+        amount: transferDetails.amount,
+        from: session.user.username,
+        recipientName: transferDetails.recipientName,
+        date: transferDetails.date,
+      }),
+      timestamp: new Date().toISOString(),
+    };
+    setAllMessages(prev => [...prev, receiptMessage]);
+    const updatedChatHistory = JSON.parse(localStorage.getItem(`chatHistory_${chatIdentifier}`)) || { message: [] };
+    updatedChatHistory.message.push(receiptMessage);
+    localStorage.setItem(`chatHistory_${chatIdentifier}`, JSON.stringify(updatedChatHistory));
+    
+    const newContent = JSON.parse(receiptMessage.content)
+    sendTransactionAlert(selectedChat?.id, newContent.amount, session.user.username);
+  }, [session.user.username, chatIdentifier, selectedChat?.id, sendTransactionAlert]);
+
   return (
     <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
@@ -163,7 +186,7 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
       </div>
       <div className="flex-1">
         <div className="p-4 pb-0 overflow-y-scroll max-h-96 h-auto sm:pb-4">
-          {allMessages.map(renderMessage)}
+          {memoizedMessages}
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -172,26 +195,7 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
           selectedChatId={selectedChat?.id} 
           sendMessage={sendMessage}
           handleUpdateChat={handleUpdateChat}
-          onSuccessfulTransfer={(transferDetails) => {
-            const receiptMessage = {
-              id: Date.now(),
-              sender: session.user.username,
-              content: JSON.stringify({
-                amount: transferDetails.amount,
-                from: session.user.username,
-                recipientName: transferDetails.recipientName,
-                date: transferDetails.date,
-              }),
-              timestamp: new Date().toISOString(),
-            };
-            setAllMessages(prev => [...prev, receiptMessage]);
-            const updatedChatHistory = JSON.parse(localStorage.getItem(`chatHistory_${chatIdentifier}`)) || { message: [] };
-            updatedChatHistory.message.push(receiptMessage);
-            localStorage.setItem(`chatHistory_${chatIdentifier}`, JSON.stringify(updatedChatHistory));
-            
-            const newContent = JSON.parse(receiptMessage.content)
-            sendTransactionAlert(selectedChat?.id, newContent.amount, session.user.username);
-          }}
+          onSuccessfulTransfer={handleSuccessfulTransfer}
         />
       </div>
       
@@ -204,4 +208,4 @@ const ChatView = ({ chat, chatsData, onBack, selectedChat, chatIdentifier, handl
   );
 };
 
-export default ChatView;
+export default React.memo(ChatView);

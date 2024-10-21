@@ -3,8 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CloseCircle, ArrowDown2, ArrowSwapHorizontal, InfoCircle, TickCircle } from 'iconsax-react';
 import { toast } from 'react-hot-toast';
 import { CircleHelp } from 'lucide-react';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
-const Swap = ({ isOpen, onClose }) => {
+const Swap = ({ isOpen, onClose, balance }) => {
+  const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     fromCurrency: 'USD',
@@ -41,9 +44,30 @@ const Swap = ({ isOpen, onClose }) => {
     setStep(2);
   };
 
-  const handleConfirm = () => {
-    toast.success('Swap processed successfully');
-    setStep(3);
+  const handleConfirm = async () => {
+    try {
+      const response = await axios.post('https://api.granularx.com/wallet/swap', {
+        uns: session.user.username,
+        amount: parseInt(formData.amount),
+        base_currency: formData.fromCurrency,
+        rebase_currency: formData.toCurrency
+      }, {
+        headers: {
+          'Authorization': `Bearer ${session.authToken}`,
+          'x-csrf-token': session.csrfToken,
+        },
+      });
+
+      if (response.data.status === "SUCCESS") {
+        toast.success('Swap processed successfully');
+        setStep(3);
+      } else {
+        toast.error(response.data.error || 'Swap failed');
+      }
+    } catch (error) {
+      console.error('Error processing swap:', error);
+      toast.error('Failed to process swap');
+    }
   };
 
   const handleClose = () => {

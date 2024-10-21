@@ -55,7 +55,7 @@ const MessageItem = ({
 
   return (
     <div
-      className={`flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${
+      className={`flex items-center p-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${
         isSelected ? "bg-gray-100 dark:bg-gray-600" : ""
       } ${isLoading ? "opacity-50" : ""}`}
       onClick={handleClick}

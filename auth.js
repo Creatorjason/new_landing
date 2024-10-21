@@ -75,6 +75,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.authToken = user.authToken;
         token.refreshToken = user.refreshToken;
         token.csrfToken = user.csrfToken;
+        token.metadata = user.metadata; // Include metadata in the token
       }
       return token;
     },
@@ -91,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.csrfToken = token.csrfToken;
       session.authToken = token.authToken;
       session.refreshToken = token.refreshToken;
+      session.metadata = token.metadata; // Include metadata in the session
       return session;
     },
   },

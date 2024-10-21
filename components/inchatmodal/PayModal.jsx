@@ -77,7 +77,13 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   const handlePinSubmit = async () => {
     // Check if the amount is less than the balance
     if (parseFloat(amount.replace(/,/g, '')) > balance) {
-      toast.error('Insufficient balance. Please enter a lower amount.');
+      toast.error('Insufficient balance. Please enter a lower amount.', {
+        style: {
+          fontSize: '13px',
+          fontWeight: '500'
+        },
+        position: 'top-center',
+      });
       setStep(1); // Reset to step 1
       return;
     }
@@ -128,6 +134,12 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
               return 'An error occurred while setting up the transfer.';
             }
           }
+        }, {
+          style: {
+            fontSize: '13px',
+            fontWeight: '500'
+          },
+          position: 'top-center',
         }
       ).catch(() => setStep(1)); // Reset to step 1 if there's an error
     } else {

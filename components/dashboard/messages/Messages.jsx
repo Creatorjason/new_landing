@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Add, HambergerMenu, SearchNormal1, ArrowDown2, ArrowUp2, UserAdd } from "iconsax-react";
 import ChatView from "./ChatView";
 import MessageItem from "./MessageItem";
@@ -9,9 +9,8 @@ import toast from "react-hot-toast";
 import useWebSocket from '@/hooks/useWebSocket';
 import Image from 'next/image';
 import ChatInput from "./ChatInput";
-
-// New component for the friends list
-const FriendsList = ({ friends, selectedChat, handleChatSelect, setChatID, setChatHistory, session }) => {
+// Memoize FriendsList component
+const FriendsList = React.memo(({ friends, selectedChat, handleChatSelect, setChatID, setChatHistory, session }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [height, setHeight] = useState('auto');
   const contentRef = useRef(null);
@@ -58,9 +57,12 @@ const FriendsList = ({ friends, selectedChat, handleChatSelect, setChatID, setCh
       </div>
     </div>
   );
-};
+});
 
-const SoftServantDropdown = ({ onSelectMode }) => {
+FriendsList.displayName = 'FriendsList';
+
+// Memoize SoftServantDropdown component
+const SoftServantDropdown = React.memo(({ onSelectMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [height, setHeight] = useState('0px');
   const contentRef = useRef(null);
@@ -107,7 +109,9 @@ const SoftServantDropdown = ({ onSelectMode }) => {
       </div>
     </div>
   );
-};
+});
+
+SoftServantDropdown.displayName = 'SoftServantDropdown';
 
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { data: session } = useSession();
@@ -120,9 +124,9 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const [showFriends, setShowFriends] = useState(true);
   const [softServantMode, setSoftServantMode] = useState(null);
 
+  // Memoize handleNewMessage callback
   const handleNewMessage = useCallback((message) => {
     if (message && message.sender && message.content) {
-      // console.log("Received new message:", message);
       setChatsData(prevChats => ({
         ...prevChats,
         [message.sender]: {
@@ -143,8 +147,8 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
 
   const { sendMessage } = useWebSocket(session?.user?.username, handleNewMessage);
 
+  // Memoize handleSendMessage callback
   const handleSendMessage = useCallback((receiverUns, content) => {
-    // console.log("Sending message:", { receiverUns, content });
     if (typeof content !== 'string') {
       console.error("Invalid message content type:", typeof content);
       return;
@@ -153,26 +157,31 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
     handleNewMessage({ sender: session.user.username, content, receiver: receiverUns });
   }, [session, sendMessage, handleNewMessage]);
 
-  const handleChatSelect = (friend) => {
-    if (!chatsData[friend.uns]) {
-      setChatsData(prev => ({
-        ...prev,
-        [friend.uns]: {
-          id: friend.uns,
-          name: friend.uns,
-          uns: friend.uns,
-          messages: []
-        }
-      }));
-    }
-    setSelectedChat(chatsData[friend.uns] || { id: friend.uns, name: friend.uns, uns: friend.uns, messages: [] });
-  };
+  // Memoize handleChatSelect callback
+  const handleChatSelect = useCallback((friend) => {
+    setChatsData(prev => {
+      if (!prev[friend.uns]) {
+        return {
+          ...prev,
+          [friend.uns]: {
+            id: friend.uns,
+            name: friend.uns,
+            uns: friend.uns,
+            messages: []
+          }
+        };
+      }
+      return prev;
+    });
+    setSelectedChat(prev => prev?.id === friend.uns ? prev : { id: friend.uns, name: friend.uns, uns: friend.uns, messages: [] });
+  }, []);
 
   const handleBack = () => {
     setSelectedChat(null);
   };
 
-  const fetchFriendList = async () => {
+  // Memoize fetchFriendList function
+  const fetchFriendList = useCallback(async () => {
     if (session) {
       try {
         const response = await axios.post(`https://api.granularx.com/chat/friends?platform=web`, {
@@ -185,12 +194,21 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
         });
 
         const data = response.data.data;
-        setFriendList(data); // Set the fetched list
+        setFriendList(data);
       } catch (error) {
         console.error('Error fetching friend list:', error);
       }
     }
-  };
+  }, [session]);
+
+  // Use useMemo for complex calculations or filtering
+  const sortedFriendList = useMemo(() => {
+    return [...friendList].sort((a, b) => a.uns.localeCompare(b.uns));
+  }, [friendList]);
+
+  useEffect(() => {
+    fetchFriendList();
+  }, [fetchFriendList]);
 
   const addFriend = async () => {
     if (!friendUns) {
@@ -230,6 +248,12 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
           console.error('API request failed:', err);
           return 'An unexpected error occurred. Please try again later.';
         },
+      }, {
+        style: {
+          fontSize: '13px',
+          fontWeight: '500'
+        },
+        position: 'top-center',
       }
     );
   };
@@ -246,11 +270,6 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const handleBackFromSoftServant = () => {
     setSoftServantMode(null);
   };
-
-  useEffect(() => {
-    fetchFriendList(); // Fetch friend list on component mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
@@ -282,7 +301,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
             </button>
           </div>
           <FriendsList 
-            friends={friendList}
+            friends={sortedFriendList}
             selectedChat={selectedChat}
             handleChatSelect={handleChatSelect}
             setChatID={setChatID}
@@ -350,4 +369,4 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   );
 };
 
-export default MessagesPage;
+export default React.memo(MessagesPage);
