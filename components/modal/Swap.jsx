@@ -10,8 +10,8 @@ const Swap = ({ isOpen, onClose, balance }) => {
   const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    fromCurrency: 'USD',
-    toCurrency: 'NGN',
+    fromCurrency: 'NGN',
+    toCurrency: 'USD',
     amount: '',
   });
   const [exchangeRates, setExchangeRates] = useState({});
@@ -72,13 +72,13 @@ const Swap = ({ isOpen, onClose, balance }) => {
 
   const handleClose = () => {
     setStep(1);
-    setFormData({ fromCurrency: 'USD', toCurrency: 'NGN', amount: '' });
+    setFormData({ fromCurrency: 'NGN', toCurrency: 'USD', amount: '' });
     onClose();
   };
 
   const calculateExchangeRate = () => {
     if (!exchangeRates[formData.toCurrency]) return 'N/A';
-    const rate = exchangeRates[formData.toCurrency] / exchangeRates[formData.fromCurrency];
+    const rate = exchangeRates[formData.fromCurrency] / exchangeRates[formData.toCurrency];
     return (rate * formData.amount).toFixed(2);
   };
 
@@ -116,8 +116,8 @@ const Swap = ({ isOpen, onClose, balance }) => {
                   <div className="bg-gray-100 dark:bg-[#141F1F] p-3 rounded-lg">
                     <div className="flex items-center justify-between gap-x-2 w-full">
                       <select
-                        name="fromCurrency"
-                        value={formData.fromCurrency}
+                        name="toCurrency"
+                        value={formData.toCurrency}
                         onChange={handleInputChange}
                         className="dark:bg-[#141F1F] bg-transparent text-lg font-semibold outline-none dark:text-white"
                       >
@@ -143,11 +143,11 @@ const Swap = ({ isOpen, onClose, balance }) => {
                   <div className="mb-4 bg-gray-100 dark:bg-[#141F1F] p-3 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <span className="text-lg font-semibold mr-2 dark:text-white">{formData.fromCurrency}</span>
+                        <span className="text-lg font-semibold mr-2 dark:text-white">{formData.toCurrency}</span>
                         <ArrowSwapHorizontal size="20" className="text-[#141F1F] dark:text-white mx-2" />
                         <select
-                          name="toCurrency"
-                          value={formData.toCurrency}
+                          name="fromCurrency"
+                          value={formData.fromCurrency}
                           onChange={handleInputChange}
                           className="dark:bg-[#141F1F] bg-transparent text-lg font-semibold outline-none dark:text-white ml-2"
                         >
@@ -174,7 +174,7 @@ const Swap = ({ isOpen, onClose, balance }) => {
                   </div>
                   <p className="mb-4 font-bold text-lg dark:text-white">Confirm Swap</p>
                   <p className="mb-4 text-sm dark:text-gray-300">
-                    Are you sure you want to swap {formData.amount} {formData.fromCurrency} to {formData.toCurrency}?
+                    Are you sure you want to swap {formData.amount} {formData.toCurrency} from your {formData.fromCurrency} wallet?
                   </p>
                   <div className="flex flex-col gap-y-2">
                     <button onClick={handleConfirm} className="bg-[#141F1F] text-sm shadow-sm shadow-[#7DF9FF] font-medium text-white p-3 rounded-lg w-full">Confirm Swap</button>
@@ -190,7 +190,7 @@ const Swap = ({ isOpen, onClose, balance }) => {
                   </div>
                   <p className="mb-4 font-bold text-lg dark:text-white">Swap Successful!</p>
                   <p className="mb-4 text-sm dark:text-gray-300">
-                    You have successfully swapped {formData.amount} {formData.fromCurrency} to {formData.toCurrency}.
+                    You have successfully swapped {formData.amount} {formData.toCurrency} from your {formData.fromCurrency} wallet.
                   </p>
                   <button onClick={handleClose} className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold">Done</button>
                 </motion.div>

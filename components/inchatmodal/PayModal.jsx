@@ -88,10 +88,11 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
       return;
     }
 
-    const request = axios.post('https://api.granularx.com/fiatons/send/peer?platform=web', {
+    const request = axios.post('https://api.granularx.com/fiatons/send/peer', {
       sender_wallet_id: session.user.username,
       receiver_wallet_id: recipientName,
-      amount: parseInt(amount.replace(/,/g, ''))
+      amount: parseInt(amount.replace(/,/g, '')),
+      backing: "NGN"
     });
 
 
