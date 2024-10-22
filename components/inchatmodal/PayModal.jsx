@@ -23,7 +23,7 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   const { data: session } = useSession();
 
   const fetchWalletBalance = async () => {
-    const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}?platform=web`, {
+    const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}/NGN`, {
       headers: {
         'Authorization': `Bearer ${session.authToken}`,
         'x-csrf-token': session.csrfToken,
