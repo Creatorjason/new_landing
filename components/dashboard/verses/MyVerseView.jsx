@@ -144,7 +144,11 @@ const MyVerseView = ({ session }) => {
     try {
       setIsLoading(true);
       // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
-      const response = await axios.get(`https://api.granularx.com/verse/${session.user.username}`);
+      const response = await axios.get(`https://api.granularx.com/verse/${session.user.username}`, {
+        headers: {
+          'Authorization': `Bearer ${session.authToken}`
+        }
+      });
       setVerses(response.data.data);
       setProducts(response.data.data.verse_products)
       setServices(response.data.data.verse_services)
@@ -211,7 +215,7 @@ const MyVerseView = ({ session }) => {
       {verses && 
         <>
           <div className='bg-gray-500 py-10 overflow-hidden flex flex-col items-center justify-center rounded-lg bg-auto relative bg-opacity-35 bg-center'
-            style={{backgroundImage: `url(${verses?.verse_header.header_banner_url})`}}>
+            style={{backgroundImage: `url(${verses?.verse_header.header_banner_url})`, backgroundSize: 'cover'}}>
             <div className='absolute bg-black opacity-65 inset-0 z-0'></div>
             <div className='z-10 flex flex-col items-center justify-center text-center gap-y-8 p-4'>
               <div>

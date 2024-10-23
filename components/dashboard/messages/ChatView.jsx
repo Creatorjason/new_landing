@@ -185,7 +185,7 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
         )}
       </div>
       <div className="flex-1">
-        <div className="p-4 pb-0 overflow-y-scroll max-h-96 h-auto sm:pb-4">
+        <div className="p-4 pb-0 overflow-y-scroll max-h-[calc(100vh-200px)] h-full sm:pb-4">
           {memoizedMessages}
           <div ref={messagesEndRef} />
         </div>
@@ -196,6 +196,7 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
           sendMessage={sendMessage}
           handleUpdateChat={handleUpdateChat}
           onSuccessfulTransfer={handleSuccessfulTransfer}
+          isSoftServantMode={!isSoftServantMode}
         />
       </div>
       

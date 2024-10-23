@@ -1,14 +1,14 @@
 "use client";
+
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Add, HambergerMenu, SearchNormal1, ArrowDown2, ArrowUp2, UserAdd } from "iconsax-react";
+import { HambergerMenu, SearchNormal1, ArrowDown2, ArrowUp2, UserAdd } from "iconsax-react";
 import ChatView from "./ChatView";
 import MessageItem from "./MessageItem";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import useWebSocket from '@/hooks/useWebSocket';
-import Image from 'next/image';
-import ChatInput from "./ChatInput";
+
 // Memoize FriendsList component
 const FriendsList = React.memo(({ friends, selectedChat, handleChatSelect, setChatID, setChatHistory, session }) => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -272,7 +272,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   };
 
   return (
-    <div className="flex h-full transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
+    <div className="flex h-[calc(100vh-150px)] transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && (selectedChat || softServantMode) ? 'hidden' : 'block'}`}>
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between py-2 sm:py-0">

@@ -87,16 +87,32 @@ const Verify = () => {
   const handleResendOTP = async () => {
     const storedEmail = localStorage.getItem('userEmail');
     if (!storedEmail) {
-      toast.error("Email not found. Please try signing up again.");
+      toast.error("Email or username not found. Please try signing up again.", {
+        style: { fontSize: '13px', fontWeight: '500' },
+        position: 'top-center',
+      });
       return;
     }
 
     try {
-      await axios.post(`${BASE_URL}/auth/resend-otp`, { email: storedEmail });
-      toast.success("OTP resent successfully!");
-      setResendTimer(300);  // Start a 60-second timer
+      const response = await axios.post(`${BASE_URL}/auth/resend-otp`, {
+        email: storedEmail,
+      });
+
+      if (response.data.status === "SUCCESS") {
+        toast.success("OTP resent successfully!", {
+          style: { fontSize: '13px', fontWeight: '500' },
+          position: 'top-center',
+        });
+        setResendTimer(300);  // Start a 5-minute timer
+      } else {
+        throw new Error(response.data.error || "Failed to resend OTP");
+      }
     } catch (error) {
-      toast.error(error.response?.data?.error || "Failed to resend OTP");
+      toast.error(error.message || "Failed to resend OTP", {
+        style: { fontSize: '13px', fontWeight: '500' },
+        position: 'top-center',
+      });
     }
   }
 

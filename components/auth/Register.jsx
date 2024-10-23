@@ -391,7 +391,7 @@ const Register = () => {
                   />
                 </svg>
               )}
-              <span>{loading ? "Creating your account..." : "Create a peer account"}</span>
+              <span>{loading ? "Creating your account..." : "Create account"}</span>
             </button>
           </form>
           
