@@ -104,7 +104,7 @@ const ChatInput = ({ selectedChatId, handleUpdateChat, sendMessage, onSuccessful
       />
       <ErrandModal
         isOpen={isErrandModalOpen}
-        onClose={toggleErrandModal}
+        onClose={() => setIsErrandModalOpen(false)}
       />
     </>
   );

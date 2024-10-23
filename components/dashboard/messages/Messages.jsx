@@ -113,6 +113,54 @@ const SoftServantDropdown = React.memo(({ onSelectMode }) => {
 
 SoftServantDropdown.displayName = 'SoftServantDropdown';
 
+const PlugsList = React.memo(({ plugs, onSelectPlug }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [height, setHeight] = useState('0px');
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(isExpanded ? `${contentRef.current.scrollHeight}px` : '0px');
+    }
+  }, [isExpanded, plugs]);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  return (
+    <div className="px-4 mb-2">
+      <button 
+        onClick={toggleExpand}
+        className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between transition-colors duration-300"
+      >
+        <span className="text-sm font-medium">Your Plugs</span>
+        <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+          <ArrowDown2 size="16" />
+        </div>
+      </button>
+      <div 
+        style={{ height, overflow: 'hidden', transition: 'height 0.3s ease-in-out' }}
+        className="mt-1"
+      >
+        <div ref={contentRef} className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+          {plugs.map((plug, index) => (
+            <button 
+              key={index}
+              onClick={() => onSelectPlug(plug)}
+              className="w-full text-sm text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+            >
+              {plug}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+});
+
+PlugsList.displayName = 'PlugsList';
+
 const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const { data: session } = useSession();
   const [friendUns, setFriendUns] = useState('');
@@ -123,6 +171,7 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
   const [chatIdentifier, setChatID] = useState(null);
   const [showFriends, setShowFriends] = useState(true);
   const [softServantMode, setSoftServantMode] = useState(null);
+  const [plugs, setPlugs] = useState([]);
 
   // Memoize handleNewMessage callback
   const handleNewMessage = useCallback((message) => {
@@ -271,6 +320,32 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
     setSoftServantMode(null);
   };
 
+  // Add this new function to fetch plugs
+  const fetchPlugs = useCallback(async () => {
+    if (session) {
+      try {
+        const response = await axios.get(`https://api.granularx.com/users/${session.user.username}/plugs`, {
+          headers: {
+            'Authorization': `Bearer ${session.authToken}`,
+            'x-csrf-token': session.csrfToken,
+          },
+        });
+        setPlugs(response.data.data);
+      } catch (error) {
+        console.error('Error fetching plugs:', error);
+      }
+    }
+  }, [session]);
+
+  useEffect(() => {
+    fetchPlugs();
+  }, [fetchPlugs]);
+
+  const handleSelectPlug = (plug) => {
+    // Handle plug selection here
+    console.log(`Selected plug:`, plug);
+  };
+
   return (
     <div className="flex h-[calc(100vh-150px)] transition-all ease-in-out duration-200 rounded-lg bg-white dark:bg-[#1C2626] p-0 sm:p-2">
       <div className={`w-full sm:w-1/3 border-r border-gray-200 dark:border-gray-700 ${isMobile && (selectedChat || softServantMode) ? 'hidden' : 'block'}`}>
@@ -294,12 +369,10 @@ const MessagesPage = ({ isMobileMenuOpen, setIsMobileMenuOpen, isMobile }) => {
 
         <div className="py-4">
           <SoftServantDropdown onSelectMode={handleSelectSoftServantMode} />
-          <div className="px-4 mb-2">
-            <button className="w-full text-left px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between">
-              <span className="text-sm font-medium">Your Plugs</span>
-              <ArrowDown2 size="16" />
-            </button>
-          </div>
+          <PlugsList 
+            plugs={plugs}
+            onSelectPlug={handleSelectPlug}
+          />
           <FriendsList 
             friends={sortedFriendList}
             selectedChat={selectedChat}

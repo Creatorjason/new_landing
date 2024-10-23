@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, CloseCircle, TickCircle } from 'iconsax-react';
 import Image from 'next/image';
+import axios from 'axios';
 
 const ErrandModal = ({ isOpen, onClose }) => {
   const [customErrand, setCustomErrand] = useState('');
@@ -10,6 +11,9 @@ const ErrandModal = ({ isOpen, onClose }) => {
   const [showTagSelection, setShowTagSelection] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showDetailsInput, setShowDetailsInput] = useState(false);
+  const [actionDetails, setActionDetails] = useState('');
+  const [generatedResponse, setGeneratedResponse] = useState('');
   const modalRef = useRef(null);
 
   const sectorsTags = {
@@ -18,27 +22,25 @@ const ErrandModal = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        resetModal();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+    if (!isOpen) {
+      resetModalState();
     }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const resetModal = () => {
+  const resetModalState = () => {
+    setCustomErrand('');
     setSelectedErrand(null);
+    setSelectedTag(null);
+    setShowTagSelection(false);
     setShowConfirmation(false);
     setShowSuccess(false);
-    setCustomErrand('');
+    setShowDetailsInput(false);
+    setActionDetails('');
+    setGeneratedResponse('');
+  };
+
+  const resetModal = () => {
+    resetModalState();
     onClose();
   };
 
@@ -56,14 +58,14 @@ const ErrandModal = ({ isOpen, onClose }) => {
     if (errand.label === 'Order Ride' || errand.label === 'Order a Meal') {
       setShowTagSelection(true);
     } else {
-      setShowConfirmation(true);
+      setShowDetailsInput(true);
     }
   };
 
   const handleTagSelect = (tag) => {
     setSelectedTag(tag);
     setShowTagSelection(false);
-    setShowConfirmation(true);
+    setShowDetailsInput(true);
   };
 
   const renderTagSelection = () => {
@@ -103,26 +105,74 @@ const ErrandModal = ({ isOpen, onClose }) => {
   const handleConfirmation = () => {
     setShowConfirmation(false);
     setShowSuccess(true);
+    // Remove the timeout to keep the success screen visible
     setTimeout(() => {
       resetModal();
     }, 5000);
+  };
+
+  const handleDetailsSubmit = async () => {
+    if (actionDetails.trim()) {
+      try {
+        const response = await axios.post('https://softservants.granularx.com/generate_response', {
+          action_type: selectedErrand.label,
+          action_item: actionDetails,
+          user_price: 0
+        });
+        setGeneratedResponse(response.data.response);
+        setShowDetailsInput(false);
+        setShowConfirmation(true);
+      } catch (error) {
+        console.error('Error generating response:', error);
+        // Handle error (e.g., show error message to user)
+      }
+    }
+  };
+
+  const renderDetailsInput = () => {
+    return (
+      <div className="flex flex-col items-center justify-center h-full space-y-4 px-4">
+        <h3 className="text-lg font-semibold text-center">Provide more details for {selectedErrand.label}</h3>
+        {selectedTag && (
+          <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+            Selected option: <span className="font-medium">{selectedTag}</span>
+          </p>
+        )}
+        <textarea
+          value={actionDetails}
+          onChange={(e) => setActionDetails(e.target.value)}
+          placeholder="Enter more details about your request..."
+          className="w-full p-2 resize-none text-sm bg-gray-100 dark:bg-[#1C2626] rounded-lg text-gray-800 dark:text-white"
+          rows="4"
+        />
+        <button
+          onClick={handleDetailsSubmit}
+          className="w-full text-sm font-medium bg-[#141F1F] text-white p-2 rounded-lg hover:bg-[#0D1414]"
+        >
+          Submit Details
+        </button>
+      </div>
+    );
   };
 
   const renderContent = () => {
     if (showSuccess) {
       return (
         <div className="flex flex-col items-center justify-center h-full space-y-4 px-4">
-        <div className="">
-          <TickCircle size="48" className="text-green-500" variant='Bulk' />
+          <div className="">
+            <TickCircle size="48" className="text-green-500" variant='Bulk' />
+          </div>
+          <h3 className="text-lg font-semibold text-center">Errand Confirmed!</h3>
+          <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-2">
+            {generatedResponse}
+          </p>
+          <button
+            onClick={resetModal}
+            className="w-full text-sm font-medium bg-[#141F1F] text-white p-2 rounded-lg hover:bg-[#0D1414]"
+          >
+            Close
+          </button>
         </div>
-        <h3 className="text-lg font-semibold text-center">Errand Confirmed!</h3>
-        <p className="text-sm text-center text-gray-600 dark:text-gray-300 mb-2">
-          Your errand <span className="font-medium text-[#141F1F] dark:text-white capitalize">&quot;{selectedErrand.label}&quot;</span> has been successfully submitted. Our team will process your request promptly.
-        </p>
-        <p className="text-sm text-center text-gray-600 dark:text-gray-300">
-        You&apos;ll receive updates on the progress of your errand via notifications. Thank you for using our service!
-        </p>
-      </div>
       );
     }
 
@@ -136,7 +186,8 @@ const ErrandModal = ({ isOpen, onClose }) => {
           <p className="text-sm text-center text-gray-600 dark:text-gray-300">
             You have chosen to <span className="font-medium text-[#141F1F] dark:text-white capitalize">&quot;{selectedErrand.label.toLowerCase()}&quot;</span>
             {selectedTag && <> for <span className="font-medium text-[#141F1F] dark:text-white capitalize">&quot;{selectedTag}&quot;</span></>}. 
-            Please do let me know if you are fine with this.
+            
+            Please let me know if you are fine with this.
           </p>
           <button
             onClick={handleConfirmation}
@@ -145,13 +196,17 @@ const ErrandModal = ({ isOpen, onClose }) => {
             Yes, Continue
           </button>
           <button
-            onClick={() => {setShowConfirmation(false); setSelectedTag(null);}}
+            onClick={() => {setShowConfirmation(false); setSelectedTag(null); setGeneratedResponse(''); setShowDetailsInput(true);}}
             className="w-full text-sm font-medium bg-white dark:bg-[#1C2626] text-[#141F1F] dark:text-white p-2 rounded-lg border border-[#141F1F] dark:border-white"
           >
-            No, Cancel
+            No, Go Back
           </button>
         </div>
       );
+    }
+
+    if (showDetailsInput) {
+      return renderDetailsInput();
     }
 
     if (showTagSelection) {

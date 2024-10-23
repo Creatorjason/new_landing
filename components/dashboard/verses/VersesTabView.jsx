@@ -47,7 +47,7 @@ const VersesTabView = ({ session }) => {
           {activeTab === 'myVerse' ? (
             <MyVerse session={session} />
           ) : (
-            <PeerBankView />
+            <PeerBankView session={session} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -59,8 +59,8 @@ const MyVerse = ({ session }) => (
   <MyVerseView session={session} />
 );
 
-const PeerBankView = () => (
-  <OtherVerses />
+const PeerBankView = ({ session }) => (
+  <OtherVerses session={session} />
 );
 
 export default VersesTabView;
