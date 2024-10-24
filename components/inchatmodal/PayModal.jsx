@@ -123,9 +123,8 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
       sender_wallet_id: session.user.username,
       receiver_wallet_id: recipientName,
       amount: parseInt(amount.replace(/,/g, '')),
-      backing: "NGN"
+      backing: selectedCurrency.code // Use the selected currency as backing
     });
-
 
     if (pin.length === 4) {
       setSubmitting(true);
@@ -156,14 +155,12 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
             }
           },
           error: (error) => {
+            setSubmitting(false);
             if (error.response) {
-              setSubmitting(false)
               return error.response.data.error || 'An error occurred during the transfer.';
             } else if (error.request) {
-              setSubmitting(false)
               return 'No response from server. Please check your internet connection.';
             } else {
-              setSubmitting(false)
               return 'An error occurred while setting up the transfer.';
             }
           }
@@ -195,11 +192,19 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
           balance={balance}
         />;
       case 2:
-        return <ConfirmTransfer amount={formattedAmount} recipientName={recipientName} />;
+        return <ConfirmTransfer 
+          selectedCurrency={selectedCurrency} 
+          amount={formattedAmount} 
+          recipientName={recipientName} 
+        />;
       case 3:
         return <PinInput pin={pin} setPin={setPin} recipientName={recipientName} />;
       case 4:
-        return <TransferSuccess amount={formattedAmount} recipientName={recipientName} />;
+        return <TransferSuccess 
+          amount={formattedAmount} 
+          recipientName={recipientName}
+          currency={selectedCurrency?.code}
+        />;
       case 5:
         return <TransferSuccess 
           amount={transferDetails?.amount} 

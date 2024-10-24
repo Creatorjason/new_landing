@@ -1,7 +1,7 @@
 import React from 'react';
 import { InfoCircle } from 'iconsax-react';
 
-const ConfirmTransfer = ({ amount, recipientName }) => {
+const ConfirmTransfer = ({ selectedCurrency, amount, recipientName }) => {
   return (
     <div className="flex-grow flex flex-col justify-center items-center text-center p-4 max-w-md mx-auto">
       <div className="bg-blue-100 dark:bg-[#7df8ff2a] rounded-full p-4 mb-6">
@@ -10,7 +10,7 @@ const ConfirmTransfer = ({ amount, recipientName }) => {
       <h3 className="text-2xl font-bold mb-6 text-[#141f1f] dark:text-white">Confirm Transfer</h3>
       <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-6">
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">You are sending</p>
-        <p className="text-3xl font-bold text-green-600 dark:text-green-400">₦{amount}</p>
+        <p className="text-3xl font-bold text-green-600 dark:text-green-400">{selectedCurrency?.code} {amount}</p>
       </div>
       <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-6">
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">To</p>

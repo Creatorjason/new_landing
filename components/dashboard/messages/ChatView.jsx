@@ -95,7 +95,7 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
                 <div className="space-y-2">
                   <p className="text-sm flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Amount:</span>
-                    <span className='font-medium'>₦{receiptContent.amount}</span>
+                    <span className='font-medium'>{receiptContent.selectedCurrency?.code} {receiptContent.amount}</span>
                   </p>
                   <p className="text-sm flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">From:</span>
