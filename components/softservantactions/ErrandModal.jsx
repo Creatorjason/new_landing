@@ -106,9 +106,9 @@ const ErrandModal = ({ isOpen, onClose }) => {
     setShowConfirmation(false);
     setShowSuccess(true);
     // Remove the timeout to keep the success screen visible
-    setTimeout(() => {
-      resetModal();
-    }, 5000);
+    // setTimeout(() => {
+    // resetModal();
+    // }, 5000);
   };
 
   const handleDetailsSubmit = async () => {
