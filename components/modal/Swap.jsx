@@ -6,7 +6,7 @@ import { CircleHelp } from 'lucide-react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
-const Swap = ({ isOpen, onClose, balance }) => {
+const Swap = ({ isOpen, onClose, balance, onSwapComplete }) => {
   const { data: session } = useSession();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -60,6 +60,7 @@ const Swap = ({ isOpen, onClose, balance }) => {
 
       if (response.data.status === "SUCCESS") {
         toast.success('Swap processed successfully');
+        onSwapComplete();
         setStep(3);
       } else {
         toast.error(response.data.error || 'Swap failed');
@@ -192,7 +193,7 @@ const Swap = ({ isOpen, onClose, balance }) => {
                   <p className="mb-4 text-sm dark:text-gray-300">
                     You have successfully swapped {formData.amount} {formData.toCurrency} from your {formData.fromCurrency} wallet.
                   </p>
-                  <button onClick={handleClose} className="w-full bg-green-500 text-white p-3 rounded-lg font-semibold">Done</button>
+                  <button onClick={handleClose} className="w-full bg-[#141f1f] text-white p-3 rounded-lg font-semibold">Done</button>
                 </motion.div>
               )}
             </AnimatePresence>

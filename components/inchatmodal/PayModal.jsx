@@ -19,47 +19,78 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
   const [recipientName, setRecipientName] = useState(selectedChatId);
   const [submitting, setSubmitting] = useState(false)
   const [pin, setPin] = useState('');
+  const [availableCurrencies, setAvailableCurrencies] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const modalRef = useRef(null);
   const { data: session } = useSession();
+  const [transferDetails, setTransferDetails] = useState(null);
 
-  const fetchWalletBalance = async () => {
-    const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}/NGN`, {
-      headers: {
-        'Authorization': `Bearer ${session.authToken}`,
-        'x-csrf-token': session.csrfToken,
-      },
-    });
-    return parseFloat(response.data.data);
+  const fetchFiatons = async () => {
+    if (!session) return [];
+    try {
+      const response = await axios.get(`https://api.granularx.com/fiatons/view/${session.user.username}`, {
+        headers: {
+          'Authorization': `Bearer ${session.authToken}`,
+          'x-csrf-token': session.csrfToken,
+        },
+      });
+      if (response.data.status === "SUCCESS") {
+        const currencies = Object.keys(response.data.data).map(code => ({
+          code,
+          balance: response.data.data[code],
+        }));
+        setAvailableCurrencies(currencies);
+        if (currencies.length > 0 && !selectedCurrency) {
+          setSelectedCurrency(currencies[0]);
+        }
+        return currencies;
+      }
+      return [];
+    } catch (err) {
+      console.error("Failed to fetch fiatons:", err);
+      return [];
+    }
   };
 
-  const { data: balance, isLoading, isError } = useQuery({
-    queryKey: ['walletBalance', session?.user?.username],
-    queryFn: fetchWalletBalance,
-    enabled: !!session,
+  const { refetch: refetchFiatons } = useQuery({
+    queryKey: ['fiatons'],
+    queryFn: fetchFiatons,
+    enabled: isOpen && !!session,
   });
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        resetModal();
-        onClose();
-      }
-    };
-
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      refetchFiatons();
     }
+  }, [isOpen, refetchFiatons]);
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose]);
+  const fetchWalletBalance = async (currency) => {
+    if (!session || !currency) return 0;
+    try {
+      const response = await axios.get(`https://api.granularx.com/wallet/balance/${session.user.username}/${currency}`, {
+        headers: {
+          'Authorization': `Bearer ${session.authToken}`,
+          'x-csrf-token': session.csrfToken,
+        },
+      });
+      return parseFloat(response.data.data);
+    } catch (err) {
+      console.error("Failed to fetch wallet balance:", err);
+      return 0;
+    }
+  };
+
+  const { data: balance, refetch: refetchBalance } = useQuery({
+    queryKey: ['walletBalance', session?.user?.username, selectedCurrency?.code],
+    queryFn: () => fetchWalletBalance(selectedCurrency?.code),
+    enabled: !!session && !!selectedCurrency,
+  });
 
   useEffect(() => {
-    if (selectedChatId) {
-      setRecipientName(selectedChatId);
+    if (selectedCurrency) {
+      refetchBalance();
     }
-  }, [selectedChatId]);
+  }, [selectedCurrency, refetchBalance]);
 
   const resetModal = () => {
     setStep(1);
@@ -106,14 +137,15 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
           success: (response) => {
             if (response.data.status === 'SUCCESS') {
               setSubmitting(false);
-
+              const details = {
+                amount: formattedAmount,
+                recipientName,
+                currency: selectedCurrency.code
+              };
+              setTransferDetails(details);
               setStep(5);
               setTimeout(() => {
-                onSuccessfulTransfer({
-                  amount: parseFloat(amount),
-                  recipientName,
-                  date: new Date().toISOString(),
-                });
+                onSuccessfulTransfer(details);
                 resetModal();
                 onClose();
               }, 2000);
@@ -153,13 +185,14 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
     switch (step) {
       case 1:
         return <AmountInput 
-          balance={balance || 0} 
-          amount={amount} 
-          formattedAmount={formattedAmount} 
-          setAmount={setAmount} 
-          setFormattedAmount={setFormattedAmount} 
-          isLoading={isLoading}
-          isError={isError}
+          amount={amount}
+          formattedAmount={formattedAmount}
+          setAmount={setAmount}
+          setFormattedAmount={setFormattedAmount}
+          availableCurrencies={availableCurrencies}
+          selectedCurrency={selectedCurrency}
+          setSelectedCurrency={setSelectedCurrency}
+          balance={balance}
         />;
       case 2:
         return <ConfirmTransfer amount={formattedAmount} recipientName={recipientName} />;
@@ -167,6 +200,12 @@ const PayModal = ({ isOpen, onClose, onSuccessfulTransfer, selectedChatId }) => 
         return <PinInput pin={pin} setPin={setPin} recipientName={recipientName} />;
       case 4:
         return <TransferSuccess amount={formattedAmount} recipientName={recipientName} />;
+      case 5:
+        return <TransferSuccess 
+          amount={transferDetails?.amount} 
+          recipientName={transferDetails?.recipientName}
+          currency={transferDetails?.currency}
+        />;
       default:
         return null;
     }

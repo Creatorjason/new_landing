@@ -1,27 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { formatNumber } from './utils';
-
-const currencies = [
-  { code: 'USD', flag: '🇺🇸', name: 'US Dollar' },
-  { code: 'EUR', flag: '🇪🇺', name: 'Euro' },
-  { code: 'GBP', flag: '🇬🇧', name: 'British Pound' },
-  { code: 'JPY', flag: '🇯🇵', name: 'Japanese Yen' },
-  { code: 'NGN', flag: '🇳🇬', name: 'Nigerian Naira' },
-];
 
 const AmountInput = ({ 
   amount, 
-  balance, 
   formattedAmount, 
   setAmount, 
   setFormattedAmount,
-  isLoading,
-  isError
+  availableCurrencies,
+  selectedCurrency,
+  setSelectedCurrency,
+  balance
 }) => {
-  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0]);
-
   const handleSelectChange = (event) => {
-    const newCurrency = currencies.find(c => c.code === event.target.value);
+    const newCurrency = availableCurrencies.find(c => c.code === event.target.value);
     setSelectedCurrency(newCurrency);
   };
 
@@ -55,13 +46,13 @@ const AmountInput = ({
         </label>
         <div className="flex items-center bg-white dark:bg-[#1C2626] border p-2 py-1 border-gray-300 dark:border-gray-600 rounded-md focus:outline-none gap-x-4">
           <select
-            value={selectedCurrency.code}
+            value={selectedCurrency?.code}
             onChange={handleSelectChange}
             className="bg-white dark:bg-[#1C2626] border-none focus:outline-none text-gray-700 dark:text-gray-300 py-2 pl-2 pr-4"
           >
-            {currencies.map((currency) => (
+            {availableCurrencies.map((currency) => (
               <option key={currency.code} value={currency.code}>
-                {currency.flag} {currency.code}
+                {currency.code}
               </option>
             ))}
           </select>
@@ -73,10 +64,8 @@ const AmountInput = ({
         </div>
       </div>
       <p className="text-xs text-center text-gray-500 dark:text-gray-400 mb-10">
-        Wallet balance: {selectedCurrency.code} {' '}
-        {isLoading ? 'Loading...' : 
-         isError ? 'Error fetching balance' : 
-         balance.toLocaleString()}
+        Wallet balance: {selectedCurrency?.code} {' '}
+        {balance?.toLocaleString()}
       </p>
       <div className="grid grid-cols-3 gap-4 mx-auto mb-10">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, '.', 0].map((num) => (

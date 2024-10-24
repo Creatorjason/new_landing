@@ -29,9 +29,9 @@ const WalletBalance = ({ balance, selectedCurrency, onCurrencyChange, setIsModal
             ) : error ? (
               <p className="text-2xl font-bold text-red-500">Error fetching balance</p>
             ) : (
-              <p className="text-xl font-bold mr-2 text-[#141F1F] dark:text-white">
-                {getCurrencySymbol(selectedCurrency)}
-                {balance.toLocaleString()}
+              <p className="text-xl flex items-center gap-x-1 font-bold mr-2 text-[#141F1F] dark:text-white">
+                <span className='text-sm'>{getCurrencySymbol(selectedCurrency)}</span>
+                <span>{balance.toLocaleString()}</span>
               </p>
             )}
             <Select value={selectedCurrency} onValueChange={onCurrencyChange}>
@@ -99,27 +99,42 @@ const Wallet = () => {
   }, [session, reference]);
 
   const fetchFiatons = async () => {
-    if (session) {
-      try {
-        const response = await axios.get(`https://api.granularx.com/fiatons/view/${session.user.username}`, {
-          headers: {
-            'Authorization': `Bearer ${session.authToken}`,
-            'x-csrf-token': session.csrfToken,
-          },
-        });
-        if (response.data.status === "SUCCESS") {
-          setAvailableCurrencies(Object.keys(response.data.data));
-        }
-      } catch (err) {
-        console.error("Failed to fetch fiatons:", err);
+    if (!session) {
+      return []; // Return an empty array if there's no session
+    }
+
+    try {
+      const response = await axios.get(`https://api.granularx.com/fiatons/view/${session.user.username}`, {
+        headers: {
+          'Authorization': `Bearer ${session.authToken}`,
+          'x-csrf-token': session.csrfToken,
+        },
+      });
+      if (response.data.status === "SUCCESS") {
+        const currencies = Object.keys(response.data.data);
+        setAvailableCurrencies(currencies);
+        return currencies; // Return the fetched currencies
       }
+      return []; // Return an empty array if the status is not SUCCESS
+    } catch (err) {
+      console.error("Failed to fetch fiatons:", err);
+      return []; // Return an empty array in case of error
     }
   };
 
+  // Use React Query for fetching fiatons
+  const { data: fiatons, refetch: refetchFiatons } = useQuery({
+    queryKey: ['fiatons'],
+    queryFn: fetchFiatons,
+    enabled: !!session,
+  });
+
+  // Update availableCurrencies when fiatons data changes
   useEffect(() => {
-    fetchFiatons();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+    if (fiatons) {
+      setAvailableCurrencies(fiatons);
+    }
+  }, [fiatons]);
 
   const fetchBalance = async ({ queryKey }) => {
     const [_, currency] = queryKey;
@@ -132,7 +147,7 @@ const Wallet = () => {
     return parseFloat(response.data.data);
   };
 
-  const { data: balance, isLoading, error } = useQuery({
+  const { data: balance, isLoading, error, refetch: refetchBalance } = useQuery({
     queryKey: ['balance', selectedCurrency],
     queryFn: fetchBalance,
     enabled: !!session,
@@ -145,6 +160,9 @@ const Wallet = () => {
 
   const handleSwapComplete = () => {
     queryClient.invalidateQueries(['balance', selectedCurrency]);
+    queryClient.invalidateQueries(['fiatons']);
+    refetchBalance(); // Refetch balance immediately after swap
+    refetchFiatons(); // Refetch fiatons immediately after swap
   };
 
   return (

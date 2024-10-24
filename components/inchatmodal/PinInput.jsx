@@ -12,11 +12,11 @@ const PinInput = ({ pin, setPin, recipientName }) => {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center w-full max-w-md mx-auto">
-      <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">Enter transaction PIN</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 text-center">
+      <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Enter transaction PIN</h3>
+      <p className="text-xs text-gray-600 dark:text-gray-400 mb-4 text-center">
         Please enter your 4-digit PIN to confirm the transfer to <span className='font-semibold capitalize'>{recipientName}</span>
       </p>
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="flex justify-center space-x-4 mb-4">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
@@ -32,7 +32,7 @@ const PinInput = ({ pin, setPin, recipientName }) => {
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'backspace'].map((num, index) => (
           <button
             key={index}
@@ -50,7 +50,7 @@ const PinInput = ({ pin, setPin, recipientName }) => {
           </button>
         ))}
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+      <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-4">
         Forgot your PIN? Contact support for assistance.
       </p>
     </div>

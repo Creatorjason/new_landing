@@ -67,29 +67,49 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
     const isCurrentUser = msg.sender === session.user.username;
     
     if (typeof msg.content === 'string' && isReceiptContent(msg.content)) {
-      // This is a transaction receipt
+      // Transaction receipt
       const receiptContent = JSON.parse(msg.content);
       return (
-        <div key={msg.timestamp} className={`mb-4 flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
-          <div className={`${isCurrentUser ? 'flex items-end justify-end' : 'flex items-end'}`}>
+        <div key={msg.timestamp} className={`mb-6 flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+          <div className={`flex ${isCurrentUser ? 'items-end' : 'items-start'} max-w-xs sm:max-w-sm`}>
             {!isCurrentUser && (
               <ProfileCircle
-                size="22"
-                color="#999999"
-                className="mr-2"
+                size="32"
+                color="#6366F1"
+                className="mr-2 mb-2"
                 variant="Bold"
               />
             )}
 
-            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg max-w-xs">
-              <div className="flex items-center justify-center mb-2">
-                <Receipt21 size="24" color="#27962b" variant="Bold" />
-                <span className="ml-2 font-bold text-sm">Transaction Receipt</span>
+            <div className="flex flex-col">
+              <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center">
+                    <Receipt21 size="24" color="#10B981" variant="Bold" />
+                    <span className="ml-2 font-bold text-sm text-green-600 dark:text-green-400">Transaction Receipt</span>
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {new Date(receiptContent.date).toLocaleString()}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Amount:</span>
+                    <span className='font-medium'>₦{receiptContent.amount}</span>
+                  </p>
+                  <p className="text-sm flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">From:</span>
+                    <span className='font-medium'>{receiptContent.from}</span>
+                  </p>
+                  <p className="text-sm flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">To:</span>
+                    <span className='font-medium'>{receiptContent.recipientName}</span>
+                  </p>
+                </div>
               </div>
-              <p className="text-sm p-2">Amount: <span className='font-medium'>₦{receiptContent.amount}</span></p>
-              <p className="text-sm p-2">From: <span className='font-medium'>{receiptContent.from}</span></p>
-              <p className="text-sm p-2">To: <span className='font-medium'>{receiptContent.recipientName}</span></p>
-              <p className="text-sm p-2">Date: <span className='font-medium'>{new Date(receiptContent.date).toLocaleString()}</span></p>
+              <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 self-end">
+                {new Date(msg.timestamp).toLocaleTimeString()}
+              </span>
             </div>
 
             {isCurrentUser && (
@@ -161,36 +181,41 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
   }, [session.user.username, chatIdentifier, selectedChat?.id, sendTransactionAlert]);
 
   return (
-    <div className="h-dvh md:h-full flex flex-col transition-all ease-in-out duration-200 relative">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+    <div className="h-dvh md:h-full flex flex-col bg-gray-50 dark:bg-gray-900 transition-all ease-in-out duration-200 relative">
+      {/* Header */}
+      <div className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between shadow-sm">
         <div className="flex items-center">
-          <button onClick={onBack} className="mr-4 sm:hidden">
+          <button onClick={onBack} className="mr-4 sm:hidden hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full transition-colors">
             <ArrowLeft size="24" />
           </button>
           <div>
-            <h2 className="text-sm md:text-base font-bold">{chat.name}</h2>
-            <small className={`px-2 py-1 text-[10px] font-medium rounded-full ${isConnected ? 'text-[#27962b] bg-[#11c0171a]' : 'text-red-500 bg-red-100'}`}>
-              {isConnected ? 'Connection active' : 'connecting...'}
+            <h2 className="text-lg md:text-xl font-bold">{chat.name}</h2>
+            <small className={`px-2 py-1 text-xs font-medium rounded-full ${isConnected ? 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900' : 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900'}`}>
+              {isConnected ? 'Connection active' : 'Connecting...'}
             </small>
           </div>
         </div>
         {isSoftServantMode && (
           <button 
             onClick={() => setIsTopUpModalOpen(true)} 
-            className="flex items-center bg-[#141F1F]/90 hover:bg-[#141F1F] text-white px-3 py-2 rounded-lg text-sm transition-colors duration-200"
+            className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200"
           >
-            <WalletAdd1 size="16" variant='Bulk' className="mr-1" />
+            <WalletAdd1 size="18" variant='Bulk' className="mr-2" />
             Add Money
           </button>
         )}
       </div>
-      <div className="flex-1">
-        <div className="p-4 pb-0 overflow-y-scroll max-h-[calc(100vh-200px)] h-full sm:pb-4">
+
+      {/* Messages */}
+      <div className="flex-1 overflow-hidden">
+        <div className="p-4 overflow-y-auto max-h-[calc(100vh-200px)] h-full space-y-4">
           {memoizedMessages}
           <div ref={messagesEndRef} />
         </div>
       </div>
-      <div className="relative sm:static sm:mb-4">
+
+      {/* Chat Input */}
+      <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <ChatInput 
           selectedChatId={selectedChat?.id} 
           sendMessage={sendMessage}
@@ -200,9 +225,10 @@ const ChatView = ({ chat, onBack, selectedChat, chatIdentifier, handleUpdateChat
         />
       </div>
       
-      {/* Add the TopUpModal component */}
+      {/* TopUpModal */}
       <TopUpModal 
-        isOpen={isTopUpModalOpen} balance={balance}
+        isOpen={isTopUpModalOpen}
+        balance={balance}
         onClose={() => setIsTopUpModalOpen(false)} 
       />
     </div>
